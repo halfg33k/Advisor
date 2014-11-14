@@ -15,6 +15,5 @@ The requirements are as follows:
 4. View report: the faculty should be able to view the following reports:
   1. Student academic advising report:  The faculty should be able to select one or more students, or all students, and view complete academic advising reports for the selected students.  Please check Appendix A for the information that should be presented in the report. 
   2. Graduation application report:  This report lists all of the students who submitted the graduation application. Please check Appendix B for the information that should be presented in the report. 
-
-There will be two types of graduation application reports. One report is for the students qualified for graduation. The other one lists all the students who are not qualify for graduation. Please check Appendix C for the presented information. 
+    1. There will be two types of graduation application reports. One report is for the students qualified for graduation. The other one lists all the students who are not qualify for graduation. Please check Appendix C for the presented information. 
 
