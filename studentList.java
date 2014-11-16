@@ -2,7 +2,7 @@ public class studentList{
 	Node root;
 	Node head;
 	
-	public void addStudent(String name, int id, int grade){
+	public void addNode(String name, int id, int grade){
 		Node node = new Node(name, id, grade);
 		
 		if (root == null){
@@ -13,7 +13,7 @@ public class studentList{
 			head.setNext(node);
 			head = node;
 		}
-	} // addStudent
+	} // addNode
 	
 	// find a particular node by it's name
 	public Node getNode(String name){
