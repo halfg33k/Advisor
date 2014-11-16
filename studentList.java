@@ -15,6 +15,7 @@ public class studentList{
 		}
 	} // addStudent
 	
+	// find a particular node by it's name
 	public Node getNode(String name){
 		Node current = root;
 		
@@ -31,6 +32,31 @@ public class studentList{
 		
 		return current;
 	} // getNode
+	
+	// remove a particular node by it's name
+	public Node removeNode(String name){		
+		Node current = root;
+		
+		if(root.getName() == name)
+			root = root.getNext();
+		else{
+			Node prev = root;
+			try{
+				while(current.getName() != name){
+					if(current != null){
+						prev = current;
+						current = current.getNext();
+					}
+					else
+						return null;
+				}
+				
+				prev.setNext(current.getNext());
+			} catch( NullPointerException e ){ return null; }
+		}
+		
+		return current;
+	} // removeNode
 	
 	private String listAll(){
 		Node current = root;

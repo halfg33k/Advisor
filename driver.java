@@ -7,6 +7,6 @@ public class driver{
 		list.addStudent("Daniel", 24, 3);
 		
 		System.out.println(list);
-		System.out.println(list.getNode("Lionel"));
+		System.out.println(list.removeNode("Lionel"));
 	} // main
 } // class driver
