@@ -15,18 +15,39 @@ public class studentList{
 		}
 	} // addStudent
 	
-	public String listAll(){
+	public Node getNode(String name){
 		Node current = root;
-		String temp = current.toString();
+		
+		while(current.getName() != name){
+			current = current.getNext();
+			
+			if(current == null)
+				return null;
+			else if(current.getName() == name)
+				break;
+			else
+				continue;
+		}
+		
+		return current;
+	} // getNode
+	
+	private String listAll(){
+		Node current = root;
+		String studentInfo = current.toString();
 		
 		while(current.getNext() != null){
 			current = current.getNext();
 			
-			temp += current.toString();
+			studentInfo += current.toString();
 		}
 		
-		return temp;
+		return studentInfo;
 	} // listAll
+	
+	public String toString(){
+		return listAll();
+	} // toString
 } // class studentList
 
 class Node{
@@ -56,6 +77,10 @@ class Node{
 	public void setNext(Node next){
 		this.next = next;
 	} // setNext
+	
+	public String getName(){
+		return name;
+	}
 	
 	// return the student's information
 	public String toString(){

@@ -6,6 +6,7 @@ public class driver{
 		list.addStudent("Kate", 18, 0);
 		list.addStudent("Daniel", 24, 3);
 		
-		System.out.println(list.listAll());
+		System.out.println(list);
+		System.out.println(list.getNode("Lionel"));
 	} // main
 } // class driver
