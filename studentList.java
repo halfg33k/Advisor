@@ -15,7 +15,18 @@ public class studentList{
 		}
 	} // addStudent
 	
-	//test
+	public String listAll(){
+		Node current = root;
+		String temp = current.toString();
+		
+		while(current.getNext() != null){
+			current = current.getNext();
+			
+			temp += current.toString();
+		}
+		
+		return temp;
+	} // listAll
 } // class studentList
 
 class Node{
@@ -48,6 +59,6 @@ class Node{
 	
 	// return the student's information
 	public String toString(){
-		return "Name: " + name + "\nID: " + id + "\nGrade: " + grade;
+		return "Name: " + name + "\nID: " + id + "\nGrade: " + grade + "\n\n";
 	} // toString
 } // class Node

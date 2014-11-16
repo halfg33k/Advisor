@@ -6,6 +6,6 @@ public class driver{
 		list.addStudent("Kate", 18, 0);
 		list.addStudent("Daniel", 24, 3);
 		
-		System.out.println("placeholder");
+		System.out.println(list.listAll());
 	} // main
 } // class driver
