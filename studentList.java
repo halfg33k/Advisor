@@ -5,12 +5,38 @@ public class studentList{
 	Node head;
 	File file = new File("studentList.txt"); // file to store the queue information
 	BufferedWriter writer; // to write to a file
+	BufferedReader reader; // to read from a file
 	
 	public studentList(){
 		try{
 			file.createNewFile();
 		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
+	
+	// import students from a given file
+    public void importStudents(String fileName){
+        File studFile = new File(fileName);
+
+        if(!studFile.isFile())
+            System.out.println("Error: Not a valid file.");
+
+        try{
+            studFile.createNewFile();
+            writer = new BufferedWriter(new FileWriter(file, true));
+            reader = new BufferedReader(new FileReader(studFile));
+            
+            String currentLine;
+            
+            while((currentLine = reader.readLine()) != null){
+                writer.write(currentLine);
+                writer.newLine();
+            }
+        } catch(IOException e){ System.out.println("IOException: importStudents"); }
+        finally{try{
+            writer.close();
+            reader.close();
+        }catch(Exception e){}}
+    } // importStudents
 	
 	// add a node to the studentList
 	public void addNode(String name, int id, int grade){
@@ -83,14 +109,15 @@ public class studentList{
 		return current;
 	} // removeNode
 	
+	// list all nodes in the queue
 	private String listAll(){
 		Node current = root;
-		String studentInfo = current.toString();
+		String studentInfo = current.toString() + "\n";
 		
 		while(current.getNext() != null){
 			current = current.getNext();
 			
-			studentInfo += current.toString();
+			studentInfo += current.toString() + "\n";
 		}
 		
 		return studentInfo;
@@ -135,6 +162,6 @@ class Node{
 	
 	// return the student's information
 	public String toString(){
-		return "Name: " + name + " \nID: " + id + " \nGrade: " + grade + "\n\n";
+		return "Name: " + name + " ID: " + id + " Grade: " + grade;
 	} // toString
 } // class Node
