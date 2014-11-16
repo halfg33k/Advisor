@@ -1,17 +1,42 @@
+import java.io.*;
+
 public class studentList{
 	Node root;
 	Node head;
+	File file = new File("studentList.txt"); // file to store the queue information
+	BufferedWriter writer; // to write to the file
 	
+	public studentList(){
+		try{
+			file.createNewFile();
+		} catch(IOException e){ System.out.println("IOException: trace 1"); }
+	} // studentList constructor
+	
+	// add a node to the studentList
 	public void addNode(String name, int id, int grade){
 		Node node = new Node(name, id, grade);
 		
 		if (root == null){
 			root = node;
 			head = root;
+			
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(node.toString());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: trace 2"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		else{
 			head.setNext(node);
 			head = node;
+			
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(node.toString());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: trace 3"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 	} // addNode
 	
@@ -110,6 +135,6 @@ class Node{
 	
 	// return the student's information
 	public String toString(){
-		return "Name: " + name + "\nID: " + id + "\nGrade: " + grade + "\n\n";
+		return "Name: " + name + " \nID: " + id + " \nGrade: " + grade + "\n\n";
 	} // toString
 } // class Node
