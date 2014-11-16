@@ -14,10 +14,6 @@ public class studentList{
 			head = node;
 		}
 	} // addStudent
-	
-	/* Insert a method that will return a list containing all
-	 * nodes in the queue.
-	 */
 } // class studentList
 
 class Node{
