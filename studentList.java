@@ -4,12 +4,12 @@ public class studentList{
 	Node root;
 	Node head;
 	File file = new File("studentList.txt"); // file to store the queue information
-	BufferedWriter writer; // to write to the file
+	BufferedWriter writer; // to write to a file
 	
 	public studentList(){
 		try{
 			file.createNewFile();
-		} catch(IOException e){ System.out.println("IOException: trace 1"); }
+		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
 	
 	// add a node to the studentList
@@ -24,7 +24,7 @@ public class studentList{
 				writer = new BufferedWriter(new FileWriter(file, true));
 				writer.write(node.toString());
 				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: trace 2"); }
+			} catch(IOException e){ System.out.println("IOException: addNode 1"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		else{
@@ -35,10 +35,10 @@ public class studentList{
 				writer = new BufferedWriter(new FileWriter(file, true));
 				writer.write(node.toString());
 				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: trace 3"); }
+			} catch(IOException e){ System.out.println("IOException: addNode 2"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
-	} // addNode
+	} // addNode(info)
 	
 	// find a particular node by it's name
 	public Node getNode(String name){
