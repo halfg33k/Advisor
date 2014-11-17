@@ -126,6 +126,7 @@ public class studentList{
 		return studentInfo;
 	} // listAll
 		
+	// delete the temp file and transfer its info to studentList.txt
 	public void close(){
 		File file = new File("studentList.txt");
 		
