@@ -124,7 +124,17 @@ public class studentList{
 		
 		removeNode(id);
 		addNode(node);
-	} // editNode
+	} // editNode(id, name)
+	
+	// edit the grade of a given node
+	public void editNode(int id, int grade){
+		Node node = getNode(id);
+		
+		node.setGrade(grade);
+		
+		removeNode(id);
+		addNode(node);
+	} // editNode(id, grade)
 	
 	// remove a particular node by it's name
 	public Node removeNode(String name){		
@@ -289,7 +299,7 @@ class Node{
 		return grade;
 	} // getGrade
     
-    public void setGrade(int Grade){
+    public void setGrade(int grade){
         this.grade = grade;
     } // setGrade
 	
