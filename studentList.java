@@ -1,41 +1,44 @@
 import java.io.*;
+import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 
 public class studentList{
 	Node root;
 	Node head;
-	File file = new File("studentList.txt"); // file to store the queue information
+	File tempFile = new File("temp.txt"); // file to store the queue information
 	BufferedWriter writer; // to write to a file
 	BufferedReader reader; // to read from a file
 	
 	public studentList(){
 		try{
-			file.createNewFile();
+			tempFile.createNewFile();
 		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
 	
 	// import students from a given file
     public void importStudents(String fileName){
         File studFile = new File(fileName);
-
-        if(!studFile.isFile())
-            System.out.println("Error: Not a valid file.");
-
+        Scanner scan;
+        
+        if(!studFile.isFile()){
+            try{
+                studFile.createNewFile();
+            } catch(Exception e){ System.out.println("Exception: importStudents"); }
+        }
+        
         try{
-            studFile.createNewFile();
-            writer = new BufferedWriter(new FileWriter(file, true));
-            reader = new BufferedReader(new FileReader(studFile));
+            scan = new Scanner(studFile);
+            scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
             
-            String currentLine;
-            
-            while((currentLine = reader.readLine()) != null){
-                writer.write(currentLine);
-                writer.newLine();
+            while(scan.hasNextLine()){
+                addNode(scan.next(), scan.nextInt(), scan.nextInt());
+                //System.out.println(scan.next() + " " + scan.nextInt() + " " + scan.nextInt());
+                scan.nextLine();
             }
-        } catch(IOException e){ System.out.println("IOException: importStudents"); }
-        finally{try{
-            writer.close();
-            reader.close();
-        }catch(Exception e){}}
+        }catch(IOException e){ System.out.println("IOException: importStudents"); }
+         catch(InputMismatchException e){ System.out.println("InputMismatchException: importStudents"); }
+         catch(NoSuchElementException e){}
     } // importStudents
 	
 	// add a node to the studentList
@@ -47,7 +50,7 @@ public class studentList{
 			head = root;
 			
 			try{
-				writer = new BufferedWriter(new FileWriter(file, true));
+				writer = new BufferedWriter(new FileWriter(tempFile, true));
 				writer.write(node.toString());
 				writer.newLine();
 			} catch(IOException e){ System.out.println("IOException: addNode 1"); }
@@ -58,7 +61,7 @@ public class studentList{
 			head = node;
 			
 			try{
-				writer = new BufferedWriter(new FileWriter(file, true));
+				writer = new BufferedWriter(new FileWriter(tempFile, true));
 				writer.write(node.toString());
 				writer.newLine();
 			} catch(IOException e){ System.out.println("IOException: addNode 2"); }
@@ -122,7 +125,31 @@ public class studentList{
 		
 		return studentInfo;
 	} // listAll
-	
+		
+	public void close(){
+		File file = new File("studentList.txt");
+		
+		if(!file.delete())
+			System.out.println("Error: Unable to delete file " + file);
+		
+		try{
+			file.createNewFile();
+			
+			writer = new BufferedWriter(new FileWriter(file));
+			reader = new BufferedReader(new FileReader(tempFile));
+			
+			String currentLine;
+			
+			while((currentLine = reader.readLine()) != null){
+				writer.write(currentLine);
+				writer.newLine();
+			}
+		} catch(Exception e){ System.out.println("Exception: close"); }
+		finally{try{writer.close(); reader.close();}catch(Exception e){}}
+		
+		tempFile.delete();
+	} // close
+		
 	public String toString(){
 		return listAll();
 	} // toString
@@ -158,10 +185,30 @@ class Node{
 	
 	public String getName(){
 		return name;
-	}
+	} // getName
+    
+    public void setName(String name){
+        this.name = name;
+    } // setName
+    
+    public int getID(){
+		return id;
+	} // getID
+    
+    public void setID(int id){
+        this.id = id;;
+    } // setID
+    
+    public int getGrade(){
+		return grade;
+	} // getGrade
+    
+    public void setGrade(int Grade){
+        this.grade = grade;
+    } // setGrade
 	
 	// return the student's information
 	public String toString(){
-		return "Name: " + name + " ID: " + id + " Grade: " + grade;
+		return "Name:" + name + " ID:" + id + " Grade:" + grade;
 	} // toString
 } // class Node
