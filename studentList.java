@@ -71,6 +71,15 @@ public class studentList{
 		}
 	} // addNode(info)
 	
+	// insert a given node into the studentList
+	public void addNode(Node node){
+		String name = node.getName();
+		int id = node.getID();
+		int grade = node.getGrade();
+		
+		addNode(name, id, grade);
+	} // addNode(node)
+	
 	// find a particular node by it's name
 	public Node getNode(String name){
 		Node current = root;
@@ -112,6 +121,9 @@ public class studentList{
 		Node node = getNode(id);
 		
 		node.setName(name);
+		
+		removeNode(id);
+		addNode(node);
 	} // editNode
 	
 	// remove a particular node by it's name
@@ -135,6 +147,55 @@ public class studentList{
 				prev.setNext(current.getNext());
 			} catch( NullPointerException e ){ return null; }
 		}
+		
+		return current;
+	} // removeNode
+	
+	// remove a particular node by it's id
+	public Node removeNode(int id){		
+		Node current = root;
+		
+		if(root.getID() == id)
+			root = root.getNext();
+		else{
+			Node prev = root;
+			try{
+				while(current.getID() != id){
+					if(current != null){
+						prev = current;
+						current = current.getNext();
+					}
+					else
+						return null;
+				}
+				
+				prev.setNext(current.getNext());
+			} catch( NullPointerException e ){ return null; }
+		}
+		
+		File file = new File("temp2.txt");
+		
+		try{
+			file.createNewFile();
+			
+			reader = new BufferedReader(new FileReader(tempFile));
+			writer = new BufferedWriter(new FileWriter(file));
+			
+			String currentLine;
+			
+			while((currentLine = reader.readLine()) != null){
+				if(currentLine.contains(id + ""))
+					continue;
+					
+				writer.write(currentLine);
+				writer.newLine();
+			}
+		} catch(Exception e){ System.out.println("Exception: removeNode(id)"); }
+		finally{try{writer.close(); reader.close();}catch(Exception e){}}
+		
+		tempFile.delete();
+		if(!(file.renameTo(tempFile)))
+				System.out.println("Failed to rename file.");
 		
 		return current;
 	} // removeNode
