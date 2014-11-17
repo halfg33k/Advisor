@@ -136,6 +136,17 @@ public class studentList{
 		addNode(node);
 	} // editNode(id, grade)
 	
+	// edit both the name and grade of a given node
+	public void editNode(int id, String name, int grade){
+		Node node = getNode(id);
+		
+		node.setName(name);
+		node.setGrade(grade);
+		
+		removeNode(id);
+		addNode(node);
+	} // editNode(id, name, grade)
+	
 	// remove a particular node by it's name
 	public Node removeNode(String name){		
 		Node current = root;

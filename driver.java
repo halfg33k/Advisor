@@ -12,7 +12,7 @@ public class driver{
 		list.editNode(20, "Mark Williams");
 		list.editNode(21, 7);
 		
-		list.removeNode(20);
+		//list.removeNode(20);
 		
 		System.out.println(list);
 		
