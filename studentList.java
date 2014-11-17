@@ -89,6 +89,31 @@ public class studentList{
 		return current;
 	} // getNode
 	
+	// find a particular node by it's id
+	public Node getNode(int id){
+		Node current = root;
+		
+		while(current.getID() != id){
+			current = current.getNext();
+			
+			if(current == null)
+				return null;
+			else if(current.getID() == id)
+				break;
+			else
+				continue;
+		}
+		
+		return current;
+	} // getNode
+	
+	// edit the name of a given node
+	public void editNode(int id, String name){
+		Node node = getNode(id);
+		
+		node.setName(name);
+	} // editNode
+	
 	// remove a particular node by it's name
 	public Node removeNode(String name){		
 		Node current = root;
