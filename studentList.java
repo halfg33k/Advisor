@@ -5,13 +5,15 @@ import java.util.NoSuchElementException;
 
 public class studentList{
 	Node root;
-	Node head;
-	File tempFile = new File("temp.txt"); // file to store the queue information
+	Node head; // where to insert new nodes
+	File tempFile = new File("temp.txt"); // file to temporarily store the queue information
 	BufferedWriter writer; // to write to a file
 	BufferedReader reader; // to read from a file
 	
 	public studentList(){
 		try{
+			// this file only exists while the program is running
+			// think of it like RAM
 			tempFile.createNewFile();
 		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
@@ -21,11 +23,11 @@ public class studentList{
         File studFile = new File(fileName);
         Scanner scan;
         
-        if(!studFile.isFile()){
+        /*if(!studFile.isFile()){
             try{
                 studFile.createNewFile();
             } catch(Exception e){ System.out.println("Exception: importStudents"); }
-        }
+        }*/
         
         try{
             scan = new Scanner(studFile);
@@ -129,9 +131,6 @@ public class studentList{
 	// delete the temp file and transfer its info to studentList.txt
 	public void close(){
 		File file = new File("studentList.txt");
-		
-		if(!file.delete())
-			System.out.println("Error: Unable to delete file " + file);
 		
 		try{
 			file.createNewFile();
