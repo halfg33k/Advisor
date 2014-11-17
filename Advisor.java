@@ -21,7 +21,6 @@ class Advisor{
 	
 	public static void main(String[] args){
 		Advisor advisor = new Advisor();
-		advisor.menu(); // add the buttons
 	} // main
 	
 	// setup the GUI
@@ -137,15 +136,6 @@ class Advisor{
 		submissions.addActionListener(new ButtonClickListener());
 		mainFrame.setVisible(true);	// show the mainFrame
 	} // prepareGUI
-	
-	// add the buttons
-	/*changed to public as this caused an issue with other classes
-	 * 
-	 */
-	 void menu(){
-		
-		mainFrame.setVisible(true); // redraw mainFrame
-	} // menu
 	
 	// listen for the buttons being pressed
 	private class ButtonClickListener implements ActionListener{
