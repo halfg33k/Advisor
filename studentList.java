@@ -23,12 +23,6 @@ public class studentList{
         File studFile = new File(fileName);
         Scanner scan;
         
-        /*if(!studFile.isFile()){
-            try{
-                studFile.createNewFile();
-            } catch(Exception e){ System.out.println("Exception: importStudents"); }
-        }*/
-        
         try{
             scan = new Scanner(studFile);
             scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
