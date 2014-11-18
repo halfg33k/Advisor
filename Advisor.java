@@ -11,46 +11,55 @@ public class Advisor {
 
 	static JFrame frame;
 	static JPanel panel;
-	static JButton students, records, Graduation, Edit,View,Delete;
+	// various menu buttons
+	static JButton students, records, Graduation, Edit, View, Delete, Logout;
 	static boolean isClicked = false;
-	static String temp="test";
+	static String temp = "test";
 
+	// label declaring what button was clicked
 	static JLabel selected = new JLabel("None Selected");
 	private static JButton reset;
+	
+	private static studentList studs; // queue containing students and their info
 
 	public static void main(String args[]){
 		Advisor();
+		
+		studs = new studentList();
+		studs.importStudents("studentList.txt");
+		//studs.importStudents("newStudents.txt");
 	}
+	
 	public static void Advisor(){	
 		
 		frame = new JFrame("Advisor");
 		frame.setSize(800, 600);
 		
-		 students = new JButton("Students");
-		 
+		// students button
+		students = new JButton("Students");
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				isClicked = true;
-				if(isClicked ==true){
-					records.setVisible(false);
-					Graduation.setVisible(false);
-					Edit.setVisible(true);
-					View.setVisible(true);
-					Delete.setVisible(true);
-				}
+				records.setVisible(false);
+				Graduation.setVisible(false);
+				Edit.setVisible(true);
+				View.setVisible(true);
+				Delete.setVisible(true);
+				
 				selected.setText("students selected");
 				
 			}
 		});
 		
+		// records button
 		records = new JButton("Records");
 		records.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			selected.setText("records selected");
+				selected.setText("records selected");
 			}
 		});
 		
-		 Graduation = new JButton("Graduation");
+		// graduation button
+		Graduation = new JButton("Graduation");
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("graduation selected");
@@ -59,15 +68,18 @@ public class Advisor {
 		
 		JList list = new JList();
 		
-		JButton Logout = new JButton("Logout");
+		// logout button
+		Logout = new JButton("Logout");
 		Logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
-				Login.Login();
+				studs.close(); // close the student information queue
+				
+				Login.Login(); // return to the login screen
 				
 			}
 		});
 		
+		// edit students button
 		Edit = new JButton("Edit");
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -75,13 +87,15 @@ public class Advisor {
 			}
 		});
 		
-		 View = new JButton("View");
-		 View.addActionListener(new ActionListener() {
+		// view students button
+		View = new JButton("View");
+		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("View Selected");
 			}
-		 });
+		});
 		
+		// delete button
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -92,6 +106,7 @@ public class Advisor {
 		View.setVisible(false);
 		Delete.setVisible(false);
 		
+		// reset button
 		reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -103,6 +118,7 @@ public class Advisor {
 			}
 		});
 		
+		// arrange menu
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
