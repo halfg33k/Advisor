@@ -29,7 +29,6 @@ public class studentList{
             
             while(scan.hasNextLine()){
                 addNode(scan.next(), scan.nextInt(), scan.nextInt());
-                //System.out.println(scan.next() + " " + scan.nextInt() + " " + scan.nextInt());
                 scan.nextLine();
             }
         }catch(IOException e){ System.out.println("IOException: importStudents"); }
@@ -37,32 +36,27 @@ public class studentList{
          catch(NoSuchElementException e){}
     } // importStudents
 	
-	// add a node to the studentList
+	// create a node and add it to the studentList
 	public void addNode(String name, int id, int grade){
 		Node node = new Node(name, id, grade);
 		
+		// add node to the end of the queue
 		if (root == null){
 			root = node;
 			head = root;
-			
-			try{
-				writer = new BufferedWriter(new FileWriter(tempFile, true));
-				writer.write(node.toString());
-				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: addNode 1"); }
-			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		else{
 			head.setNext(node);
 			head = node;
-			
-			try{
-				writer = new BufferedWriter(new FileWriter(tempFile, true));
-				writer.write(node.toString());
-				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: addNode 2"); }
-			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
+		
+		// write the node to the tempFile
+		try{
+			writer = new BufferedWriter(new FileWriter(tempFile, true));
+			writer.write(node.toString());
+			writer.newLine();
+		} catch(IOException e){ System.out.println("IOException: addNode"); }
+		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 	} // addNode(info)
 	
 	// insert a given node into the studentList
@@ -114,36 +108,39 @@ public class studentList{
 	public void editNode(int id, String name){
 		Node node = getNode(id);
 		
+		// change the name of the node
 		node.setName(name);
 		
-		removeNode(id);
-		addNode(node);
+		removeNode(id); // remove the node with the original name
+		addNode(node); // add the node with the new name
 	} // editNode(id, name)
 	
 	// edit the grade of a given node
 	public void editNode(int id, int grade){
 		Node node = getNode(id);
 		
+		// change the grade of the node
 		node.setGrade(grade);
 		
-		removeNode(id);
-		addNode(node);
+		removeNode(id); // remove the node with the original grade
+		addNode(node); // add the node with the new grade
 	} // editNode(id, grade)
 	
 	// edit both the name and grade of a given node
 	public void editNode(int id, String name, int grade){
 		Node node = getNode(id);
 		
-		node.setName(name);
-		node.setGrade(grade);
+		node.setName(name); // change the name of the node
+		node.setGrade(grade); // change the grade of the node
 		
-		removeNode(id);
-		addNode(node);
+		removeNode(id); // remove the node with the original data
+		addNode(node); // add the node with the new data
 	} // editNode(id, name, grade)
 		
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
 		Node current = root;
+		File file = new File("temp2.txt");
 		
 		if(root.getID() == id)
 			root = root.getNext();
@@ -163,8 +160,7 @@ public class studentList{
 			} catch( NullPointerException e ){ return null; }
 		}
 		
-		File file = new File("temp2.txt");
-		
+		// rewrite the tempFile without the old data and including the new data
 		try{
 			file.createNewFile();
 			
@@ -183,9 +179,10 @@ public class studentList{
 		} catch(Exception e){ System.out.println("Exception: removeNode(id)"); }
 		finally{try{writer.close(); reader.close();}catch(Exception e){}}
 		
-		tempFile.delete();
+		tempFile.delete(); // delete tempFile to free up the name for the new tempFile
+		// rename the new tempFile to temp.txt
 		if(!(file.renameTo(tempFile)))
-				System.out.println("Failed to rename file.");
+			System.out.println("Failed to rename file.");
 		
 		return current;
 	} // removeNode
@@ -204,7 +201,7 @@ public class studentList{
 		return studentInfo;
 	} // listAll
 		
-	// delete the temp file and transfer its info to studentList.txt
+	// delete the tempFile and transfer its info to studentList.txt
 	public void close(){
 		File file = new File("studentList.txt");
 		
@@ -235,8 +232,9 @@ class Node{
 	private String name;
 	private int id;
 	private int grade;
-	private Node next;
+	private Node next; // next node in the queue
 	
+	// initialize this Node with default values
 	public Node(){
 		name = "John Doe";
 		id = -1;
@@ -244,6 +242,7 @@ class Node{
 		next = null;
 	} // Node constructor
 	
+	// initialize this Node with given values
 	public Node(String name, int id, int grade){
 		this.name = name;
 		this.id = id;
