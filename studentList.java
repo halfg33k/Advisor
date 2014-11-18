@@ -146,32 +146,7 @@ public class studentList{
 		removeNode(id);
 		addNode(node);
 	} // editNode(id, name, grade)
-	
-	// remove a particular node by it's name
-	public Node removeNode(String name){		
-		Node current = root;
 		
-		if(root.getName() == name)
-			root = root.getNext();
-		else{
-			Node prev = root;
-			try{
-				while(current.getName() != name){
-					if(current != null){
-						prev = current;
-						current = current.getNext();
-					}
-					else
-						return null;
-				}
-				
-				prev.setNext(current.getNext());
-			} catch( NullPointerException e ){ return null; }
-		}
-		
-		return current;
-	} // removeNode
-	
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
 		Node current = root;
