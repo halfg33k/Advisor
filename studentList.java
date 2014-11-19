@@ -131,8 +131,8 @@ public class studentList{
 		// change the name of the node
 		node.setName(name);
 		
-		//removeNode(id); // remove the node with the original name
-		//addNode(node); // add the node with the new name
+		removeNode(id); // remove the node with the original name
+		addNode(node); // add the node with the new name
 	} // editNode(id, name)
 	
 	// edit the id of a given node
@@ -185,9 +185,9 @@ public class studentList{
 					else
 						return null;
 				}
-				
-				prev.setNext(current.getNext());
 			} catch( NullPointerException e ){ return null; }
+			
+			prev.setNext(current.getNext());
 		}
 		
 		// rewrite the tempFile without the old data and including the new data
@@ -214,6 +214,7 @@ public class studentList{
 		if(!(file.renameTo(tempFile)))
 			System.out.println("Failed to rename file.");
 		
+		size--;
 		return current;
 	} // removeNode
 	

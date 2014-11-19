@@ -69,15 +69,15 @@ public class Advisor {
 		students = new JButton("Students");
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				isClicked = true;
-				if(isClicked ==true){
-					records.setVisible(false);
-					Graduation.setVisible(false);
-					Add.setVisible(true);
-					View.setVisible(true);
-					Delete.setVisible(true);
-					Edit.setVisible(true);
-				}
+				records.setVisible(false);
+				Graduation.setVisible(false);
+				Add.setVisible(true);
+				View.setVisible(true);
+				Delete.setVisible(true);
+				Edit.setVisible(true);
+				
+				redrawList();
+				
 				selected.setText("students selected");
 				
 			}
@@ -225,7 +225,7 @@ public class Advisor {
 				
 					
 				if(adding){
-					if(!studs.contains(newID))
+					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
 						studs.addNode(newName, newID, newGrade);
 				}
 				else{
@@ -237,10 +237,10 @@ public class Advisor {
 					
 						if(newName != null && newName.length() > 0)
 							studs.editNode(id, newName);
-						//if(ID_textField.getText() != null && newID > 0)
-						//	studs.editNode(id, newID);
-						//if(newGrade != null && newGrade.length() != 0)
-						//	studs.editNode(id, newGrade, 0);
+						if(ID_textField.getText() != null && newID > 0)
+							studs.editNode(id, newID);
+						if(newGrade != null && newGrade.length() != 0)
+							studs.editNode(id, newGrade, 0);
 					} catch(NullPointerException npe){}
 				}
 				
