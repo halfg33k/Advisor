@@ -16,28 +16,37 @@ import java.util.*;
 
 
 public class Advisor {
+	// main frame and panel of the menu
 	static JFrame frame;
 	static JPanel panel;
-	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;
+	
+	// all of the buttons in the menu
+	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes, Logout, reset;
 	static boolean isClicked = false;
-	static String temp="test";
-	static File user_cred;
-	static Scanner scan;
+	
+	static File user_cred; // user credentials file
+	
+	// reading and writing variables
+	static Scanner scan; // scanner for misc use
 	static BufferedReader reader;
 	static FileWriter file_writer;
+	
+	// label declaring which button has been pressed (for testing purposes)
 	static JLabel selected = new JLabel("None Selected");
-	private static JButton reset;
+	
+	// list containing the student information
 	static DefaultListModel<String> model = new DefaultListModel<>();
 	static JList list = new JList<String>(model);
+	
+	// text fields used for input to add/edit students
 	private static JTextField name_textField;
 	private static JTextField ID_textField;
 	private static JTextField grade_textField;;
-	static JScrollBar scrollBar = new JScrollBar(); ////sets up a scroll bar to srcoll through all the students
-	static int grade_parser;// to parse the grade from String to int to do calculations with
-	static int ID_parser;// to parse the ID value
-	private static JLabel name;
 	
-	static studentList studs;
+	static JScrollBar scrollBar = new JScrollBar(); //sets up a scroll bar to scroll through all the students
+	static boolean adding = false; // whether to take the input as adding or editing a student
+	
+	static studentList studs; // queue containing students and their information
 	
 	public static void main(String[] args) throws FileNotFoundException{
 		Advisor();
@@ -56,8 +65,8 @@ public class Advisor {
 			}
 		});
 		
+		// students menu button
 		students = new JButton("Students");
-		 
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isClicked = true;
@@ -74,6 +83,7 @@ public class Advisor {
 			}
 		});
 		
+		// records menu button
 		records = new JButton("Records");
 		records.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -81,6 +91,7 @@ public class Advisor {
 			}
 		});
 		
+		// graduation menu button
 		Graduation = new JButton("Graduation");
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -88,8 +99,8 @@ public class Advisor {
 			}
 		});
 		
-		
-		JButton Logout = new JButton("Logout");
+		// logout button
+		Logout = new JButton("Logout");
 		Logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
@@ -105,6 +116,7 @@ public class Advisor {
 		
 		});
 		
+		// reset menu button
 		reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -123,15 +135,31 @@ public class Advisor {
 			}
 		});
 		
+		// add students button
+		Add = new JButton("Add");
+		Add.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				submit_changes.setText("Add Student");
+				
+				adding = true;
+			
+				selected.setText("Add Selected");
+			}
+		});
+		
+		// edit students button
 		Edit = new JButton("Edit");
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				submit_changes.setText("Submit Changes");
+				submit_changes.setText("Edit Student");
+				
+				adding = false;
 			
 				selected.setText("Edit Selected");
 			}
 		});
 		
+		// view button (may remove)
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -141,6 +169,7 @@ public class Advisor {
 			}
 		});
 		
+		// delete students button
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -156,49 +185,72 @@ public class Advisor {
 			}
 		}); 
 		
-		Add = new JButton("Add");
-		Add.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				submit_changes.setText("Add Student");
-			
-				selected.setText("Add Selected");
-			}
-		});
 		//set Add, View, Delete, Edit, to invisible upon start
 		Add.setVisible(false);
 		View.setVisible(false);
 		Delete.setVisible(false);
 		Edit.setVisible(false);		
 	    
-		grade_textField = new JTextField();
-		grade_textField.setColumns(10);
+		// input field for name
+		name_textField = new JTextField();
+		name_textField.setColumns(10);
 		
+		// input field for id
 		ID_textField = new JTextField();
 		ID_textField.setColumns(10);
 		
+		// input field for grade
+		grade_textField = new JTextField();
+		grade_textField.setColumns(10);
+		
+		// labels above the input fields
 		JLabel ID_Label = new JLabel("ID");
-		
 		JLabel grade_Label = new JLabel("Grade");
+		JLabel name = new JLabel("Name");
 		
-		submit_changes = new JButton("Submit Changes");
+		// button to submit the information in the input fields
+		submit_changes = new JButton("Edit Student");
 		submit_changes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String name = name_textField.getText();
-				int id = Integer.parseInt(ID_textField.getText());
-				String grade = grade_textField.getText();
+				String newName = null;
+				int newID = -1;
+				String newGrade = null;
+				int id;
+					
+				try{
+					newName = name_textField.getText();
+					newID = Integer.parseInt(ID_textField.getText());
+					newGrade = grade_textField.getText();
+				} catch(NumberFormatException nfe){}
 				
-				if(!studs.contains(id))
-					studs.addNode(name, id, grade);
+					
+				if(adding){
+					if(!studs.contains(newID))
+						studs.addNode(newName, newID, newGrade);
+				}
+				else{
+					try{
+						scan = new Scanner(list.getSelectedValue().toString());
+						scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
+						scan.next();
+						id = scan.nextInt();
+					
+						if(newName != null && newName.length() > 0)
+							studs.editNode(id, newName);
+						//if(ID_textField.getText() != null && newID > 0)
+						//	studs.editNode(id, newID);
+						//if(newGrade != null && newGrade.length() != 0)
+						//	studs.editNode(id, newGrade, 0);
+					} catch(NullPointerException npe){}
+				}
+				
+				name_textField.setText("");
+				ID_textField.setText("");
+				grade_textField.setText("");
 				
 				redrawList();
 			}
 		});
-		
-		name = new JLabel("Name");
-		
-		name_textField = new JTextField();
-		name_textField.setColumns(10);
-		
 		
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
@@ -311,8 +363,9 @@ public class Advisor {
 	
 	// clear the list and rewrite the contents
 	private static void redrawList(){
-		model.clear();
+		model.clear(); // clear the list
 		
+		// add each element of the student queue to the list
 		for(int i = 0; i < studs.getSize(); i++){
 			try{
 				model.addElement(studs.getNode(i, 0).toString());
