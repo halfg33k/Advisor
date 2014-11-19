@@ -1,6 +1,7 @@
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -35,17 +36,22 @@ public class Advisor {
 	}
 
 	public static void Advisor() throws FileNotFoundException{	
-		frame = new JFrame();
+		frame = new JFrame("Advisor");
 		frame.setSize(800,600);
 		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 		
 		studs = new studentList();
 		
+		// close the studs list when the window closes
+		frame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				studs.close();
+			}
+		});
+		
 		students = new JButton("Students");
-		 
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//frame.setTitle("Test");
 				isClicked = true;
 				if(isClicked ==true){
 					records.setVisible(false);
@@ -81,7 +87,8 @@ public class Advisor {
 			
 				try {
 			
-					frame.setVisible(false);Login.Login();// close();
+					frame.setVisible(false);
+					Login.Login();// close();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -111,6 +118,8 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				model.clear();
+			
 				for(int i = 0; i < studs.getSize(); i++){
 					model.addElement(studs.getNode(i, 0).toString());
 				}
