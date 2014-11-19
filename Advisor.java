@@ -144,7 +144,7 @@ public class Advisor {
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selected.setText("Edit Selected");
+				selected.setText("Delete Selected");
 			}
 		}); 
 		
@@ -199,7 +199,6 @@ public class Advisor {
 		
 		
 		//Layout for all the button, labels, and other UI stuff
-		
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
