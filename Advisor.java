@@ -109,6 +109,10 @@ public class Advisor {
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				model.clear();
+				
+				name_textField.setText("");
+				ID_textField.setText("");
+				grade_textField.setText("");
 			
 				records.setVisible(true);
 				Graduation.setVisible(true);
@@ -183,7 +187,8 @@ public class Advisor {
 				int id = Integer.parseInt(ID_textField.getText());
 				String grade = grade_textField.getText();
 				
-				studs.addNode(name, id, grade);
+				if(!studs.contains(id))
+					studs.addNode(name, id, grade);
 				
 				redrawList();
 			}
@@ -309,7 +314,9 @@ public class Advisor {
 		model.clear();
 		
 		for(int i = 0; i < studs.getSize(); i++){
-			model.addElement(studs.getNode(i, 0).toString());
+			try{
+				model.addElement(studs.getNode(i, 0).toString());
+			}catch(NullPointerException e){}
 		}
 	} // redrawList
 }

@@ -243,6 +243,28 @@ public class studentList{
 		tempFile.delete();
 	} // close
 	
+	// whether the list contains a given id
+	public boolean contains(int id){
+		for(int i = 0; i < size; i++){
+			try{
+				if(getNode(i, 0).getID() == id)
+					return true;
+			} catch(NullPointerException e){ System.out.print("-trace" + i + "-"); }
+		}
+		
+		return false;
+	} // contains
+	
+	// whether the list contains a given name
+	public boolean contains(String name){
+		for(int i = 0; i < size; i++){
+			if(getNode(i).getName() == name)
+				return true;
+		}
+		
+		return false;
+	} // contains
+	
 	public int getSize(){
 		return size;
 	} // getSize
