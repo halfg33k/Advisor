@@ -1,6 +1,7 @@
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -93,7 +94,7 @@ public class Advisor {
 			public void actionPerformed(ActionEvent e) {
 			
 				try {
-			
+					studs.close();
 					frame.setVisible(false);
 					Login.Login();// close();
 				} catch (Exception e1) {
@@ -107,9 +108,12 @@ public class Advisor {
 		reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				model.clear();
+			
 				records.setVisible(true);
 				Graduation.setVisible(true);
 				Add.setVisible(false);
+				Edit.setVisible(false);
 				View.setVisible(false);
 				Delete.setVisible(false);
 			}
@@ -125,9 +129,11 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/*for(int i = 0; i < studs.getSize(); i++){
+				model.clear();
+				
+				for(int i = 0; i < studs.getSize(); i++){
 					model.addElement(studs.getNode(i, 0).toString());
-				}*/
+				}
 				
 				selected.setText("View Selected");
 			}
