@@ -17,7 +17,7 @@ import java.util.*;
 public class Advisor {
 	static JFrame frame;
 	static JPanel panel;
-	static JButton students, records, Graduation, Edit, View, Delete, Add;
+	static JButton students, records, Graduation, Edit, View, Delete, Add,submit_changes;
 	static boolean isClicked = false;
 	static String temp="test";
 	static File user_cred;
@@ -28,7 +28,14 @@ public class Advisor {
 	private static JButton reset;
 	static DefaultListModel<String> model = new DefaultListModel<>();
 	static JList list = new JList<String>(model);
-	static studentList studs;
+	private static JTextField ID_textField;
+	private static JTextField grade_textField;;
+	static JScrollBar scrollBar = new JScrollBar(); ////sets up a scroll bar to srcoll through all the students
+	static int grade_parser;// to parse the grade from String to int to do calculatinos with
+	static int ID_parser;// to parse the ID value
+	private static JLabel name;
+	private static JTextField name_textField;
+	//static studentList studs;
 	
 	public static void main(String[] args) throws FileNotFoundException{
 		Advisor();
@@ -39,7 +46,7 @@ public class Advisor {
 		frame.setSize(800,600);
 		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 		
-		studs = new studentList();
+		//studs = new studentList();
 		
 		students = new JButton("Students");
 		 
@@ -50,10 +57,10 @@ public class Advisor {
 				if(isClicked ==true){
 					records.setVisible(false);
 					Graduation.setVisible(false);
-					Edit.setVisible(true);
+					Add.setVisible(true);
 					View.setVisible(true);
 					Delete.setVisible(true);
-					Add.setVisible(true);
+					Edit.setVisible(true);
 				}
 				selected.setText("students selected");
 				
@@ -95,7 +102,7 @@ public class Advisor {
 			public void actionPerformed(ActionEvent e) {
 				records.setVisible(true);
 				Graduation.setVisible(true);
-				Edit.setVisible(false);
+				Add.setVisible(false);
 				View.setVisible(false);
 				Delete.setVisible(false);
 			}
@@ -111,9 +118,9 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for(int i = 0; i < studs.getSize(); i++){
+				/*for(int i = 0; i < studs.getSize(); i++){
 					model.addElement(studs.getNode(i, 0).toString());
-				}
+				}*/
 				
 				selected.setText("View Selected");
 			}
@@ -124,11 +131,47 @@ public class Advisor {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("Edit Selected");
 			}
-		});
+		}); 
 		
-		Edit.setVisible(false);
+		Add = new JButton("Add");
+		Add.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selected.setText("Add Selected");
+			}
+		});
+		//set Add, View, Delete, Edit, to invisible upon start
+		Add.setVisible(false);
 		View.setVisible(false);
 		Delete.setVisible(false);
+		Edit.setVisible(false);
+		
+	    
+		
+	    
+		grade_textField = new JTextField();
+		grade_textField.setColumns(10);
+		
+		ID_textField = new JTextField();
+		ID_textField.setColumns(10);
+		
+		JLabel ID_Label = new JLabel("ID");
+		
+		JLabel grade_Label = new JLabel("Grade");
+		
+		submit_changes = new JButton("Submit Changes");
+		submit_changes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//insert code for submit changes here
+			}
+		});
+		
+		name = new JLabel("Name");
+		
+		name_textField = new JTextField();
+		name_textField.setColumns(10);
+		
+		
+		//Layout for all the button, labels, and other UI stuff
 		
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
@@ -141,47 +184,96 @@ public class Advisor {
 								.addComponent(records, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(students, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 								.addComponent(Graduation, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addGap(26)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(Edit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(Edit, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+								.addComponent(Add, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+								.addComponent(View, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+								.addComponent(Delete, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(Logout)
 							.addGap(18)
 							.addComponent(reset)))
-					.addGap(18)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addComponent(selected)
-						.addComponent(list, GroupLayout.PREFERRED_SIZE, 384, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(122, Short.MAX_VALUE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(32)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(submit_changes, Alignment.TRAILING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(12)
+													.addComponent(name))
+												.addComponent(name_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+											.addPreferredGap(ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+											.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+												.addComponent(ID_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addGroup(groupLayout.createSequentialGroup()
+													.addGap(12)
+													.addComponent(ID_Label)))
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+												.addGroup(groupLayout.createSequentialGroup()
+													.addComponent(grade_Label)
+													.addGap(71))
+												.addComponent(grade_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+										.addComponent(list, GroupLayout.PREFERRED_SIZE, 384, GroupLayout.PREFERRED_SIZE))
+									.addGap(6)
+									.addComponent(scrollBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))))
+					.addGap(85))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(94)
+					.addContainerGap(93, Short.MAX_VALUE)
 					.addComponent(selected)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(records)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(students)
-								.addComponent(Edit))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(students)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(Graduation)
+										.addComponent(Edit)))
+								.addComponent(Add))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(Graduation)
-								.addComponent(View))
+							.addComponent(View)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Delete)
-							.addPreferredGap(ComponentPlacement.RELATED, 228, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 204, Short.MAX_VALUE)
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(Logout)
 								.addComponent(reset))
 							.addGap(80))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(list, GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollBar, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(list, GroupLayout.PREFERRED_SIZE, 222, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+										.addComponent(ID_Label)
+										.addComponent(grade_Label)
+										.addComponent(name))
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(9)
+											.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+												.addComponent(ID_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+												.addComponent(grade_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(name_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(submit_changes)
 							.addContainerGap())))
 		);
 		frame.getContentPane().setLayout(groupLayout);
