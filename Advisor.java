@@ -131,11 +131,7 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				model.clear();
-				
-				for(int i = 0; i < studs.getSize(); i++){
-					model.addElement(studs.getNode(i, 0).toString());
-				}
+				redrawList();
 				
 				selected.setText("View Selected");
 			}
@@ -144,6 +140,14 @@ public class Advisor {
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				scan = new Scanner(list.getSelectedValue().toString());
+				scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
+				
+				scan.next();
+				studs.removeNode(scan.nextInt());
+				
+				redrawList();
+				
 				selected.setText("Delete Selected");
 			}
 		}); 
@@ -160,10 +164,7 @@ public class Advisor {
 		Add.setVisible(false);
 		View.setVisible(false);
 		Delete.setVisible(false);
-		Edit.setVisible(false);
-		
-	    
-		
+		Edit.setVisible(false);		
 	    
 		grade_textField = new JTextField();
 		grade_textField.setColumns(10);
@@ -184,11 +185,7 @@ public class Advisor {
 				
 				studs.addNode(name, id, grade);
 				
-				model.clear();
-				
-				for(int i = 0; i < studs.getSize(); i++){
-					model.addElement(studs.getNode(i, 0).toString());
-				}
+				redrawList();
 			}
 		});
 		
@@ -306,5 +303,14 @@ public class Advisor {
 		frame.setVisible(true);
 		
 	}
+	
+	// clear the list and rewrite the contents
+	private static void redrawList(){
+		model.clear();
+		
+		for(int i = 0; i < studs.getSize(); i++){
+			model.addElement(studs.getNode(i, 0).toString());
+		}
+	} // redrawList
 }
 

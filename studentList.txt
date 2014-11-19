@@ -1,6 +1,3 @@
 Name:Adam Johnson ID:20 Grade:Junior
 Name:Yoda ID:21 Grade:Senior
 Name:Jackie Robinson ID:22 Grade:Freshman
-Name:Chuck Norris ID:54 Grade:Sophomore
-Name:J Jona Jameson Jr. ID:25 Grade:Junior
-Name:test ID:234 Grade:asd
