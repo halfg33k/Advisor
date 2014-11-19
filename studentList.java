@@ -308,6 +308,25 @@ class Node{
 	
 	// return the student's information
 	public String toString(){
-		return "Name:" + name + " ID:" + id + " Grade:" + grade;
+		String gradeStr;
+		switch(grade){
+			case 0:
+				gradeStr = "Freshman";
+				break;
+			case 1:
+				gradeStr = "Sophomore";
+				break;
+			case 2:
+				gradeStr = "Junior";
+				break;
+			case 3:
+				gradeStr = "Senior";
+				break;
+			default:
+				gradeStr = "Grade Not Set";
+				break;
+		}
+	
+		return "Name:" + name + " ID:" + id + " Grade:" + gradeStr;
 	} // toString
 } // class Node
