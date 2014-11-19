@@ -18,7 +18,7 @@ import java.util.*;
 public class Advisor {
 	static JFrame frame;
 	static JPanel panel;
-	static JButton students, records, Graduation, Edit, View, Delete, Add,submit_changes;
+	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;
 	static boolean isClicked = false;
 	static String temp="test";
 	static File user_cred;
@@ -122,6 +122,8 @@ public class Advisor {
 		Edit = new JButton("Edit");
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				submit_changes.setText("Submit Changes");
+			
 				selected.setText("Edit Selected");
 			}
 		});
@@ -149,6 +151,8 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				submit_changes.setText("Add Student");
+			
 				selected.setText("Add Selected");
 			}
 		});
@@ -174,7 +178,17 @@ public class Advisor {
 		submit_changes = new JButton("Submit Changes");
 		submit_changes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//insert code for submit changes here
+				String name = name_textField.getText();
+				int id = Integer.parseInt(ID_textField.getText());
+				String grade = grade_textField.getText();
+				
+				studs.addNode(name, id, grade);
+				
+				model.clear();
+				
+				for(int i = 0; i < studs.getSize(); i++){
+					model.addElement(studs.getNode(i, 0).toString());
+				}
 			}
 		});
 		

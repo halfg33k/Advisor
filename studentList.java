@@ -30,7 +30,7 @@ public class studentList{
             scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
             
             while(scan.hasNextLine()){
-                addNode(scan.next(), scan.nextInt(), scan.nextInt());
+                addNode(scan.next(), scan.nextInt(), scan.next());
                 scan.nextLine();
             }
         }catch(IOException e){ System.out.println("IOException: importStudents"); }
@@ -44,7 +44,7 @@ public class studentList{
 	} // getRoot
 	
 	// create a node and add it to the studentList
-	public void addNode(String name, int id, int grade){
+	public void addNode(String name, int id, String grade){
 		Node node = new Node(name, id, grade);
 		
 		// add node to the end of the queue
@@ -72,7 +72,7 @@ public class studentList{
 	public void addNode(Node node){
 		String name = node.getName();
 		int id = node.getID();
-		int grade = node.getGrade();
+		String grade = node.getGrade();
 		
 		addNode(name, id, grade);
 	} // addNode(node)
@@ -136,7 +136,7 @@ public class studentList{
 	} // editNode(id, name)
 	
 	// edit the grade of a given node
-	public void editNode(int id, int grade){
+	public void editNode(int id, String grade, int unused){
 		Node node = getNode(id);
 		
 		// change the grade of the node
@@ -147,7 +147,7 @@ public class studentList{
 	} // editNode(id, grade)
 	
 	// edit both the name and grade of a given node
-	public void editNode(int id, String name, int grade){
+	public void editNode(int id, String name, String grade){
 		Node node = getNode(id);
 		
 		node.setName(name); // change the name of the node
@@ -255,19 +255,19 @@ public class studentList{
 class Node{
 	private String name;
 	private int id;
-	private int grade;
+	private String grade;
 	private Node next; // next node in the queue
 	
 	// initialize this Node with default values
 	public Node(){
 		name = "John Doe";
 		id = -1;
-		grade = -1;
+		grade = null;
 		next = null;
 	} // Node constructor
 	
 	// initialize this Node with given values
-	public Node(String name, int id, int grade){
+	public Node(String name, int id, String grade){
 		this.name = name;
 		this.id = id;
 		this.grade = grade;
@@ -298,11 +298,11 @@ class Node{
         this.id = id;;
     } // setID
     
-    public int getGrade(){
+    public String getGrade(){
 		return grade;
 	} // getGrade
     
-    public void setGrade(int grade){
+    public void setGrade(String grade){
         this.grade = grade;
     } // setGrade
 	
