@@ -28,14 +28,15 @@ public class Advisor {
 	private static JButton reset;
 	static DefaultListModel<String> model = new DefaultListModel<>();
 	static JList list = new JList<String>(model);
+	private static JTextField name_textField;
 	private static JTextField ID_textField;
 	private static JTextField grade_textField;;
 	static JScrollBar scrollBar = new JScrollBar(); ////sets up a scroll bar to srcoll through all the students
-	static int grade_parser;// to parse the grade from String to int to do calculatinos with
+	static int grade_parser;// to parse the grade from String to int to do calculations with
 	static int ID_parser;// to parse the ID value
 	private static JLabel name;
-	private static JTextField name_textField;
-	//static studentList studs;
+	
+	static studentList studs;
 	
 	public static void main(String[] args) throws FileNotFoundException{
 		Advisor();
@@ -46,13 +47,18 @@ public class Advisor {
 		frame.setSize(800,600);
 		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 		
-		//studs = new studentList();
+		studs = new studentList();
+		
+		frame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				studs.close();
+			}
+		});
 		
 		students = new JButton("Students");
 		 
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//frame.setTitle("Test");
 				isClicked = true;
 				if(isClicked ==true){
 					records.setVisible(false);
@@ -88,7 +94,8 @@ public class Advisor {
 			
 				try {
 			
-					frame.setVisible(false);Login.Login();// close();
+					frame.setVisible(false);
+					Login.Login();// close();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
