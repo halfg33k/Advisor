@@ -1,64 +1,72 @@
 import javax.swing.*;
+
 import java.awt.*;
+
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.SwingUtilities;
+
+import java.io.*;
+import java.util.*;
 
 
 public class Advisor {
-
 	static JFrame frame;
 	static JPanel panel;
-	// various menu buttons
-	static JButton students, records, Graduation, Edit, View, Delete, Logout;
+	static JButton students, records, Graduation, Edit, View, Delete, Add;
 	static boolean isClicked = false;
-	static String temp = "test";
-
-	// label declaring what button was clicked
+	static String temp="test";
+	static File user_cred;
+	static Scanner scan;
+	static BufferedReader reader;
+	static FileWriter file_writer;
 	static JLabel selected = new JLabel("None Selected");
 	private static JButton reset;
+	static DefaultListModel<String> model = new DefaultListModel<>();
+	static JList list = new JList<String>(model);
+	static studentList studs;
 	
-	private static studentList studs; // queue containing students and their info
-
-	public static void main(String args[]){
+	public static void main(String[] args) throws FileNotFoundException{
 		Advisor();
+	}
+
+	public static void Advisor() throws FileNotFoundException{	
+		frame = new JFrame();
+		frame.setSize(800,600);
+		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 		
 		studs = new studentList();
-		studs.importStudents("studentList.txt");
-		//studs.importStudents("newStudents.txt");
-	}
-	
-	public static void Advisor(){	
 		
-		frame = new JFrame("Advisor");
-		frame.setSize(800, 600);
-		
-		// students button
 		students = new JButton("Students");
+		 
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				records.setVisible(false);
-				Graduation.setVisible(false);
-				Edit.setVisible(true);
-				View.setVisible(true);
-				Delete.setVisible(true);
-				
+				//frame.setTitle("Test");
+				isClicked = true;
+				if(isClicked ==true){
+					records.setVisible(false);
+					Graduation.setVisible(false);
+					Edit.setVisible(true);
+					View.setVisible(true);
+					Delete.setVisible(true);
+					Add.setVisible(true);
+				}
 				selected.setText("students selected");
 				
 			}
 		});
 		
-		// records button
 		records = new JButton("Records");
 		records.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selected.setText("records selected");
+			selected.setText("records selected");
 			}
 		});
 		
-		// graduation button
 		Graduation = new JButton("Graduation");
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -66,47 +74,22 @@ public class Advisor {
 			}
 		});
 		
-		JList list = new JList();
 		
-		// logout button
-		Logout = new JButton("Logout");
+		JButton Logout = new JButton("Logout");
 		Logout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				studs.close(); // close the student information queue
-				
-				Login.Login(); // return to the login screen
-				
-			}
+			
+				try {
+			
+					frame.setVisible(false);Login.Login();// close();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		}
+		
 		});
 		
-		// edit students button
-		Edit = new JButton("Edit");
-		Edit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selected.setText("Edit Selected");
-			}
-		});
-		
-		// view students button
-		View = new JButton("View");
-		View.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selected.setText("View Selected");
-			}
-		});
-		
-		// delete button
-		Delete = new JButton("Delete");
-		Delete.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			selected.setText("Delete Selected");
-			}
-		});
-		Edit.setVisible(false);
-		View.setVisible(false);
-		Delete.setVisible(false);
-		
-		// reset button
 		reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -118,7 +101,35 @@ public class Advisor {
 			}
 		});
 		
-		// arrange menu
+		Edit = new JButton("Edit");
+		Edit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selected.setText("Edit Selected");
+			}
+		});
+		
+		View = new JButton("View");
+		View.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				for(int i = 0; i < studs.getSize(); i++){
+					model.addElement(studs.getNode(i, 0).toString());
+				}
+				
+				selected.setText("View Selected");
+			}
+		});
+		
+		Delete = new JButton("Delete");
+		Delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				selected.setText("Edit Selected");
+			}
+		});
+		
+		Edit.setVisible(false);
+		View.setVisible(false);
+		Delete.setVisible(false);
+		
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)

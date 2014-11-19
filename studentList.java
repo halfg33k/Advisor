@@ -9,12 +9,14 @@ public class studentList{
 	File tempFile = new File("temp.txt"); // file to temporarily store the queue information
 	BufferedWriter writer; // to write to a file
 	BufferedReader reader; // to read from a file
+	int size = 0;
 	
 	public studentList(){
 		try{
 			// this file only exists while the program is running
 			// think of it like RAM
 			tempFile.createNewFile();
+			importStudents("studentList.txt");
 		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
 	
@@ -35,6 +37,11 @@ public class studentList{
          catch(InputMismatchException e){ System.out.println("InputMismatchException: importStudents"); }
          catch(NoSuchElementException e){}
     } // importStudents
+	
+	// return the root node
+	public Node getRoot(){
+		return root;
+	} // getRoot
 	
 	// create a node and add it to the studentList
 	public void addNode(String name, int id, int grade){
@@ -57,6 +64,8 @@ public class studentList{
 			writer.newLine();
 		} catch(IOException e){ System.out.println("IOException: addNode"); }
 		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		
+		size++;
 	} // addNode(info)
 	
 	// insert a given node into the studentList
@@ -99,6 +108,17 @@ public class studentList{
 				break;
 			else
 				continue;
+		}
+		
+		return current;
+	} // getNode
+	
+	// find a node by it's place in the queue
+	public Node getNode(int index, int unused){
+		Node current = root;
+		
+		for(int i = 0; i < index; i++){
+			current = current.getNext();
 		}
 		
 		return current;
@@ -222,6 +242,10 @@ public class studentList{
 		
 		tempFile.delete();
 	} // close
+	
+	public int getSize(){
+		return size;
+	} // getSize
 		
 	public String toString(){
 		return listAll();
