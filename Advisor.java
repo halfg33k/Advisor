@@ -216,14 +216,13 @@ public class Advisor {
 				int newID = -1;
 				String newGrade = null;
 				int id;
-					
+				
 				try{
 					newName = name_textField.getText();
 					newID = Integer.parseInt(ID_textField.getText());
 					newGrade = grade_textField.getText();
-				} catch(NumberFormatException nfe){}
+				} catch(NumberFormatException nfe){ System.out.println("trace0"); }
 				
-					
 				if(adding){
 					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
 						studs.addNode(newName, newID, newGrade);
@@ -239,8 +238,10 @@ public class Advisor {
 							studs.editNode(id, newName);
 						if(ID_textField.getText() != null && newID > 0)
 							studs.editNode(id, newID);
-						if(newGrade != null && newGrade.length() != 0)
+						if(newGrade != null && newGrade.length() > 0){
+							System.out.println("trace");
 							studs.editNode(id, newGrade, 0);
+						}
 					} catch(NullPointerException npe){}
 				}
 				

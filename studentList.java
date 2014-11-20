@@ -127,45 +127,70 @@ public class studentList{
 	// edit the name of a given node
 	public void editNode(int id, String name){
 		Node node = getNode(id);
+		File file = new File("temp2.txt");
 		
 		// change the name of the node
 		node.setName(name);
 		
-		removeNode(id); // remove the node with the original name
-		addNode(node); // add the node with the new name
+		// write the node to the tempFile
+		for(int i = 0; i < size; i++){
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(getNode(i, 0).toString());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: addNode"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		}
+		
+		tempFile.delete();
+		
+		file.renameTo(tempFile);
 	} // editNode(id, name)
 	
 	// edit the id of a given node
 	public void editNode(int id, int newID){
 		Node node = getNode(id);
+		File file = new File("temp2.txt");
 		
 		node.setID(newID); // change the id of the given node
 		
-		removeNode(id); // remove the node with the original id
-		addNode(node); // add the node with the new id
+		// write the node to the tempFile
+		for(int i = 0; i < size; i++){
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(getNode(i, 0).toString());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: addNode"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		}
+		
+		tempFile.delete();
+		
+		file.renameTo(tempFile);
 	}
 	
 	// edit the grade of a given node
 	public void editNode(int id, String grade, int unused){
 		Node node = getNode(id);
+		File file = new File("temp2.txt");
 		
 		// change the grade of the node
 		node.setGrade(grade);
 		
-		removeNode(id); // remove the node with the original grade
-		addNode(node); // add the node with the new grade
+		// write the node to the tempFile
+		for(int i = 0; i < size; i++){
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(getNode(i, 0).toString());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: addNode"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		}
+		
+		tempFile.delete();
+		
+		file.renameTo(tempFile);
 	} // editNode(id, grade)
-	
-	// edit both the name and grade of a given node
-	public void editNode(int id, String name, String grade){
-		Node node = getNode(id);
-		
-		node.setName(name); // change the name of the node
-		node.setGrade(grade); // change the grade of the node
-		
-		removeNode(id); // remove the node with the original data
-		addNode(node); // add the node with the new data
-	} // editNode(id, name, grade)
 	
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
