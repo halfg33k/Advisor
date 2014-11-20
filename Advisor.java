@@ -217,17 +217,22 @@ public class Advisor {
 				String newGrade = null;
 				int id;
 				
+				// set these variables using the input text fields
 				try{
 					newName = name_textField.getText();
+				} catch(Exception ex){ System.out.println("Exception: submit_changes button; newName"); }
+				try{
 					newID = Integer.parseInt(ID_textField.getText());
+				} catch(Exception ex){ System.out.println("Exception: submit_changes button; newID"); }
+				try{
 					newGrade = grade_textField.getText();
-				} catch(NumberFormatException nfe){ System.out.println("trace0"); }
+				} catch(Exception ex){ System.out.println("Exception: submit_changes button; newGrade"); }
 				
 				if(adding){
 					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
 						studs.addNode(newName, newID, newGrade);
 				}
-				else{
+				else{ // edit student information if a corresponding field is not blank
 					try{
 						scan = new Scanner(list.getSelectedValue().toString());
 						scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
@@ -238,10 +243,8 @@ public class Advisor {
 							studs.editNode(id, newName);
 						if(ID_textField.getText() != null && newID > 0)
 							studs.editNode(id, newID);
-						if(newGrade != null && newGrade.length() > 0){
-							System.out.println("trace");
+						if(newGrade != null && newGrade.length() > 0)
 							studs.editNode(id, newGrade, 0);
-						}
 					} catch(NullPointerException npe){}
 				}
 				
