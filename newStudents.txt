@@ -1,5 +1,5 @@
-Name:Adam Johnson ID:20 Grade:Junior
-Name:Yoda ID:21 Grade:Senior
-Name:Jackie Robinson ID:22 Grade:Freshman
-Name:Chuck Norris ID:54 Grade:Sophomore
-Name:J Jona Jameson Jr. ID:25 Grade:Junior
+Name:Adam Johnson ID:20 Grade:Junior Total GPA:3.79 Major GPA:4.0 Total Credits:90 Major Credits:25 Upper-Level Credits:34
+Name:Yoda ID:21 Grade:Senior Total GPA:3.79 Major GPA:4.0 Total Credits:0 Major Credits:0 Upper-Level Credits:0
+Name:Jackie Robinson ID:22 Grade:Freshman Total GPA:3.79 Major GPA:4.0 Total Credits:0 Major Credits:0 Upper-Level Credits:0
+Name:Chuck Norris ID:54 Grade:Sophomore Total GPA:3.79 Major GPA:4.0 Total Credits:0 Major Credits:0 Upper-Level Credits:0
+Name:J Jona Jameson Jr. ID:25 Grade:Junior Total GPA:3.79 Major GPA:4.0 Total Credits:78 Major Credits:20 Upper-Level Credits:18

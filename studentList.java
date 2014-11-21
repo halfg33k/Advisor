@@ -24,13 +24,38 @@ public class studentList{
     public void importStudents(String fileName){
         File studFile = new File(fileName);
         Scanner scan;
+		String name, grade;
+		int id, totalCreds, majorCreds, upperCreds;
+		double totalGPA, majorGPA;
         
         try{
             scan = new Scanner(studFile);
-            scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
+            scan.useDelimiter("Name:| ID:| Grade:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper-Level Credits:|\\n|\\r");
             
             while(scan.hasNextLine()){
-                addNode(scan.next(), scan.nextInt(), scan.next());
+				name = scan.next();
+				id = scan.nextInt();
+				grade = scan.next();
+				
+				if(scan.hasNextDouble()){
+					try{
+						totalGPA = scan.nextDouble();
+						majorGPA = scan.nextDouble();
+						
+						if(scan.hasNextInt()){
+								totalCreds = scan.nextInt();
+								majorCreds = scan.nextInt();
+								upperCreds = scan.nextInt();
+								
+								addNode(name, id, grade, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds);
+						}
+						else
+							addNode(name, id, grade, totalGPA, majorGPA);
+					} catch(InputMismatchException ime){ System.out.println("InputMismatchException: importStudents --> GPA"); }
+				}
+				else
+					addNode(name, id, grade);
+				
                 scan.nextLine();
             }
         }catch(IOException e){ System.out.println("IOException: importStudents"); }
@@ -43,9 +68,14 @@ public class studentList{
 		return root;
 	} // getRoot
 	
-	// create a node and add it to the studentList
-	public void addNode(String name, int id, String grade){
+	// create a node and add it to the list
+	public void addNode(String name, int id, String grade, double totalGPA, double majorGPA, int totalCreds, int majorCreds, int upperCreds){
 		Node node = new Node(name, id, grade);
+		node.setTotalGPA(totalGPA);
+		node.setMajorGPA(majorGPA);
+		node.setTotalCreds(totalCreds);
+		node.setMajorCreds(majorCreds);
+		node.setUpperCreds(upperCreds);
 		
 		// add node to the end of the queue
 		if (root == null){
@@ -66,7 +96,17 @@ public class studentList{
 		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		
 		size++;
-	} // addNode(info)
+	} // addNode(name, id, grade, totalGPA, majorGPA)
+	
+	// create a node and add it to the list
+	public void addNode(String name, int id, String grade, double totalGPA, double majorGPA){
+		addNode(name, id, grade, totalGPA, majorGPA, 0, 0, 0);
+	} // addNode(name, id, grade, totalGPA, majorGPA)
+	
+	// create a node and add it to the studentList
+	public void addNode(String name, int id, String grade){
+		addNode(name, id, grade, 0.0, 0.0);
+	} // addNode(name, id, grade)
 	
 	// insert a given node into the studentList
 	public void addNode(Node node){
@@ -125,72 +165,81 @@ public class studentList{
 	} // getNode
 	
 	// edit the name of a given node
-	public void editNode(int id, String name){
+	public void editName(int id, String name){
 		Node node = getNode(id);
-		File file = new File("temp2.txt");
 		
 		// change the name of the node
 		node.setName(name);
 		
-		// write the node to the tempFile
-		for(int i = 0; i < size; i++){
-			try{
-				writer = new BufferedWriter(new FileWriter(file, true));
-				writer.write(getNode(i, 0).toString());
-				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: addNode"); }
-			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
-		}
-		
-		tempFile.delete();
-		
-		file.renameTo(tempFile);
+		rewrite();
 	} // editNode(id, name)
 	
 	// edit the id of a given node
-	public void editNode(int id, int newID){
+	public void editID(int id, int newID){
 		Node node = getNode(id);
-		File file = new File("temp2.txt");
 		
 		node.setID(newID); // change the id of the given node
 		
-		// write the node to the tempFile
-		for(int i = 0; i < size; i++){
-			try{
-				writer = new BufferedWriter(new FileWriter(file, true));
-				writer.write(getNode(i, 0).toString());
-				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: addNode"); }
-			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
-		}
-		
-		tempFile.delete();
-		
-		file.renameTo(tempFile);
+		rewrite();
 	}
 	
 	// edit the grade of a given node
-	public void editNode(int id, String grade, int unused){
+	public void editGrade(int id, String grade){
 		Node node = getNode(id);
-		File file = new File("temp2.txt");
 		
 		// change the grade of the node
 		node.setGrade(grade);
 		
-		// write the node to the tempFile
-		for(int i = 0; i < size; i++){
-			try{
-				writer = new BufferedWriter(new FileWriter(file, true));
-				writer.write(getNode(i, 0).toString());
-				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: addNode"); }
-			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
-		}
-		
-		tempFile.delete();
-		
-		file.renameTo(tempFile);
+		rewrite();
 	} // editNode(id, grade)
+	
+	// edit the totalGPA of a given node
+	public void editTotalGPA(int id, double totalGPA){
+		Node node = getNode(id);
+		
+		node.setTotalGPA(totalGPA); // change the totalGPA of the given node
+		
+		rewrite();
+	} // editNode(id, totalGPA)
+	
+	// edit the majorGPA of a given node
+	public void editMajorGPA(int id, double majorGPA){
+		Node node = getNode(id);
+		
+		node.setMajorGPA(majorGPA); // change the totalGPA of the given node
+		
+		rewrite();
+	} // editNode(id, majoprGPA, int unused)
+	
+	// edit the totalCreds of a given node
+	public void editTotalCreds(int id, int totalCreds){
+		Node node = getNode(id);
+		
+		
+		node.setTotalCreds(totalCreds); // change the totalCreds of the given node
+		
+		rewrite();
+	} // editTotalCreds
+	
+	// edit the majorCreds of a given node
+	public void editMajorCreds(int id, int majorCreds){
+		Node node = getNode(id);
+		
+		
+		node.setMajorCreds(majorCreds); // change the totalGPA of the given node
+		
+		rewrite();
+	} // editMajorCreds
+	
+	// edit the upperCreds of a given node
+	public void editUpperCreds(int id, int upperCreds){
+		Node node = getNode(id);
+		
+		
+		node.setUpperCreds(upperCreds); // change the totalGPA of the given node
+		
+		rewrite();
+	} // editUpperCreds
 	
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
@@ -304,17 +353,36 @@ public class studentList{
 	public int getSize(){
 		return size;
 	} // getSize
+	
+	// rewrite the contents of the temp file
+	private void rewrite(){
+		File file = new File("temp2.txt");
 		
+		// write the node to the tempFile
+		for(int i = 0; i < size; i++){
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(getNode(i, 0).toString());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: addNode"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		}
+		
+		tempFile.delete();
+		
+		file.renameTo(tempFile);
+	} // rewrite	
+	
 	public String toString(){
 		return listAll();
 	} // toString
 } // class studentList
 
 class Node{
-	private String name;
-	private int id;
-	private String grade;
+	private String name, grade;
+	private int id, totalCreds, majorCreds, upperCreds;
 	private Node next; // next node in the queue
+	private double totalGPA, majorGPA;
 	
 	// initialize this Node with default values
 	public Node(){
@@ -322,6 +390,11 @@ class Node{
 		id = -1;
 		grade = null;
 		next = null;
+		totalGPA = 0.0;
+		majorGPA = 0.0;
+		totalCreds = 0;
+		majorCreds = 0;
+		upperCreds = 0;
 	} // Node constructor
 	
 	// initialize this Node with given values
@@ -330,42 +403,87 @@ class Node{
 		this.id = id;
 		this.grade = grade;
 		next = null;
+		totalGPA = 0.0;
+		majorGPA = 0.0;
+		totalCreds = 0;
+		majorCreds = 0;
+		upperCreds = 0;
 	} // Node constructor
 	
 	public Node getNext(){
 		return next;
 	} // getNext
 	
-	public void setNext(Node next){
-		this.next = next;
-	} // setNext
-	
 	public String getName(){
 		return name;
 	} // getName
-    
-    public void setName(String name){
-        this.name = name;
-    } // setName
-    
+	
     public int getID(){
 		return id;
 	} // getID
-    
-    public void setID(int id){
-        this.id = id;;
-    } // setID
     
     public String getGrade(){
 		return grade;
 	} // getGrade
     
+	public double getTotalGPA(){
+		return totalGPA;
+	} // getTotalGpa
+	
+	public double getMajorGPA(){
+		return majorGPA;
+	} // getMajorGPA
+	
+	public int getTotalCreds(){
+		return totalCreds;
+	} // getTotalCreds
+	
+	public int getMajorCreds(){
+		return majorCreds;
+	} // getTotalCreds
+	
+	public int getUpperCreds(){
+		return upperCreds;
+	} // getUpperCreds
+	
+	public void setNext(Node next){
+		this.next = next;
+	} // setNext
+	
+    public void setName(String name){
+        this.name = name;
+    } // setName
+    
+    public void setID(int id){
+        this.id = id;;
+    } // setID
+    
     public void setGrade(String grade){
         this.grade = grade;
     } // setGrade
 	
+	public void setTotalGPA(double totalGPA){
+		this.totalGPA = totalGPA;
+	} // setTotalGPA
+	
+	public void setMajorGPA(double majorGPA){
+		this.majorGPA = majorGPA;
+	} //setMajorGPA
+	
+	public void setTotalCreds(int totalCreds){
+		this.totalCreds = totalCreds;
+	} // setTotalCreds
+	
+	public void setMajorCreds(int majorCreds){
+		this.majorCreds = majorCreds;
+	} // setTotalCreds
+	
+	public void setUpperCreds(int upperCreds){
+		this.upperCreds = upperCreds;
+	} // setUpperCreds
+	
 	// return the student's information
 	public String toString(){
-		return "Name:" + name + " ID:" + id + " Grade:" + grade;
+		return "Name:" + name + " ID:" + id + " Grade:" + grade + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper-Level Credits:" + upperCreds;
 	} // toString
 } // class Node
