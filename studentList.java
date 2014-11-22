@@ -383,6 +383,7 @@ class Node{
 	private int id, totalCreds, majorCreds, upperCreds;
 	private Node next; // next node in the queue
 	private double totalGPA, majorGPA;
+	private boolean gradApp; // graduation application submitted
 	
 	// initialize this Node with default values
 	public Node(){
@@ -446,6 +447,10 @@ class Node{
 		return upperCreds;
 	} // getUpperCreds
 	
+	public boolean getGradApp(){
+		return gradApp;
+	} // getGradApp
+	
 	public void setNext(Node next){
 		this.next = next;
 	} // setNext
@@ -481,6 +486,10 @@ class Node{
 	public void setUpperCreds(int upperCreds){
 		this.upperCreds = upperCreds;
 	} // setUpperCreds
+	
+	public void setGradApp(boolean gradApp){
+		this.gradApp = gradApp;
+	} // setGradApp
 	
 	// return the student's information
 	public String toString(){
