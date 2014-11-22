@@ -7,6 +7,7 @@ public class studentList{
 	Node root;
 	Node head; // where to insert new nodes
 	File tempFile = new File("temp.txt"); // file to temporarily store the queue information
+	File tempGrad = new File("tempGrad.txt");
 	BufferedWriter writer; // to write to a file
 	BufferedReader reader; // to read from a file
 	int size = 0;
@@ -17,51 +18,79 @@ public class studentList{
 			// think of it like RAM
 			tempFile.createNewFile();
 			importStudents("studentList.txt");
+			importGradApps("gradApps.txt");
 		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
 	
 	// import students from a given file
     public void importStudents(String fileName){
-        File studFile = new File(fileName);
-        Scanner scan;
+        File file = new File(fileName);
+        Scanner scan = null;
 		String name, grade;
-		int id, totalCreds, majorCreds, upperCreds;
-		double totalGPA, majorGPA;
+		int id;
         
         try{
-            scan = new Scanner(studFile);
-            scan.useDelimiter("Name:| ID:| Grade:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper-Level Credits:|\\n|\\r");
-            
-            while(scan.hasNextLine()){
+            scan = new Scanner(file);
+            scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
+			
+			while(scan.hasNextLine()){
 				name = scan.next();
 				id = scan.nextInt();
 				grade = scan.next();
 				
-				if(scan.hasNextDouble()){
-					try{
-						totalGPA = scan.nextDouble();
-						majorGPA = scan.nextDouble();
-						
-						if(scan.hasNextInt()){
-								totalCreds = scan.nextInt();
-								majorCreds = scan.nextInt();
-								upperCreds = scan.nextInt();
-								
-								addNode(name, id, grade, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds);
-						}
-						else
-							addNode(name, id, grade, totalGPA, majorGPA);
-					} catch(InputMismatchException ime){ System.out.println("InputMismatchException: importStudents --> GPA"); }
-				}
-				else
-					addNode(name, id, grade);
+				addNode(name, id, grade);
 				
-                scan.nextLine();
-            }
+				scan.nextLine();
+			}
         }catch(IOException e){ System.out.println("IOException: importStudents"); }
-         catch(InputMismatchException e){ System.out.println("InputMismatchException: importStudents"); }
-         catch(NoSuchElementException e){}
+        catch(InputMismatchException e){ System.out.println("InputMismatchException: importStudents"); }
+        catch(NoSuchElementException nse){  }
+		finally{scan.close();}
     } // importStudents
+	
+	// import the information for students with graduation applications submitted
+	public void importGradApps(String fileName){
+		File file = new File(fileName);
+		Scanner scan = null;
+		int id, totalCreds, majorCreds, upperCreds;
+		double totalGPA, majorGPA;
+		Node node;
+		
+		try{
+			scan = new Scanner(file);
+			scan.useDelimiter("ID:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:|\\n|\\r");
+			
+			while(scan.hasNext()){
+				id = scan.nextInt();
+				totalGPA = scan.nextDouble();
+				majorGPA = scan.nextDouble();
+				totalCreds = scan.nextInt();
+				majorCreds = scan.nextInt();
+				upperCreds = scan.nextInt();
+				
+				node = getNode(id);
+				
+				node.setTotalGPA(totalGPA);
+				node.setMajorGPA(majorGPA);
+				node.setTotalCreds(totalCreds);
+				node.setMajorCreds(majorCreds);
+				node.setUpperCreds(upperCreds);
+				
+				// write the graduation info to tempGrad.txt
+				try{
+					writer = new BufferedWriter(new FileWriter(tempGrad, true));
+					writer.write(node.getGradInfo());
+					writer.newLine();
+				} catch(IOException e){ System.out.println("IOException: importGradApps --> file writing"); }
+				finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+				
+				scan.nextLine();
+			}
+		} catch(IOException ioe){ System.out.println("IOException: importGradApps --> try"); }
+		catch(InputMismatchException ime){ System.out.println("InputMismatchException: importGradApps"); }
+		catch(NoSuchElementException nse){ }
+		finally{scan.close();}
+	} // importGradApps
 	
 	// return the root node
 	public Node getRoot(){
@@ -94,9 +123,8 @@ public class studentList{
 			writer.newLine();
 		} catch(IOException e){ System.out.println("IOException: addNode"); }
 		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
-		
 		size++;
-	} // addNode(name, id, grade, totalGPA, majorGPA)
+	} // addNode(name, id, grade, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds)
 	
 	// create a node and add it to the list
 	public void addNode(String name, int id, String grade, double totalGPA, double majorGPA){
@@ -225,7 +253,6 @@ public class studentList{
 	public void editMajorCreds(int id, int majorCreds){
 		Node node = getNode(id);
 		
-		
 		node.setMajorCreds(majorCreds); // change the totalGPA of the given node
 		
 		rewrite();
@@ -322,10 +349,31 @@ public class studentList{
 				writer.write(currentLine);
 				writer.newLine();
 			}
-		} catch(Exception e){ System.out.println("Exception: close"); }
+		} catch(Exception e){ System.out.println("Exception: close --> studentList"); }
 		finally{try{writer.close(); reader.close();}catch(Exception e){}}
 		
 		tempFile.delete();
+		
+		// now close tempGrad2.txt
+		file = new File("gradApps.txt");
+		
+		try{
+			file.createNewFile();
+			
+			writer = new BufferedWriter(new FileWriter(file));
+			reader = new BufferedReader(new FileReader(tempGrad));
+			
+			String currentLine;
+			
+			while((currentLine = reader.readLine()) != null){
+				writer.write(currentLine);
+				writer.newLine();
+			}
+		} catch(Exception e){ System.out.println("Exception: close --> gradApps"); }
+		finally{try{writer.close(); reader.close();}catch(Exception e){}}
+		
+		if(!tempGrad.delete())
+			System.out.println("unable to delete " + tempGrad);
 	} // close
 	
 	// whether the list contains a given id
@@ -364,13 +412,27 @@ public class studentList{
 				writer = new BufferedWriter(new FileWriter(file, true));
 				writer.write(getNode(i, 0).toString());
 				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: addNode"); }
+			} catch(IOException e){ System.out.println("IOException: rewrite --> temp"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		
 		tempFile.delete();
-		
 		file.renameTo(tempFile);
+		
+		// now rewrite tempGrad
+		file = new File("tempGrad2.txt");
+		
+		for(int i = 0; i < size; i++){
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				writer.write(getNode(i, 0).getGradInfo());
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: rewrite --> tempGrad"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		}
+		
+		tempGrad.delete();
+		file.renameTo(tempGrad);
 	} // rewrite	
 	
 	public String toString(){
@@ -491,8 +553,12 @@ class Node{
 		this.gradApp = gradApp;
 	} // setGradApp
 	
+	public String getGradInfo(){
+		return "ID:" + id + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds;
+	} // getGradInfo
+	
 	// return the student's information
 	public String toString(){
-		return "Name:" + name + " ID:" + id + " Grade:" + grade + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper-Level Credits:" + upperCreds;
+		return "Name:" + name + " ID:" + id + " Grade:" + grade;
 	} // toString
 } // class Node
