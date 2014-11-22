@@ -19,10 +19,12 @@ public class Advisor {
 	// main frame and panel of the menu
 	static JFrame frame;
 	static JPanel panel;
+
 	
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;
-	static boolean isClicked = false;
+	
+	
 	
 	static File user_cred; // user credentials file
 	
