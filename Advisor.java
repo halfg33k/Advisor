@@ -18,31 +18,19 @@ import java.util.*;
 public class Advisor {
 	// main frame and panel of the menu
 	static JFrame frame;
-<<<<<<< HEAD
 	static JPanel panel;
-=======
-	static JPanel panel;
->>>>>>> d1d107a6e1bd3a33c04f5a6df16400013b735a43
 
-	
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;
-<<<<<<< HEAD
-	
-=======
-	
->>>>>>> d1d107a6e1bd3a33c04f5a6df16400013b735a43
-	
+	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;	
 	
 	static File user_cred; // user credentials file
 	
 	// reading and writing variables
-	static Scanner scan; // scanner for misc use
+	static Scanner scan; 
 	static BufferedReader reader;
 	static FileWriter file_writer;
 	
-	// label declaring which button has been pressed (for testing purposes)
-	static JLabel selected = new JLabel("None Selected");
+	static JLabel selected = new JLabel("None Selected"); // label declaring which button has been pressed (for testing purposes)
 	static JLabel label_Name = new JLabel("Name");
 	static JLabel label_ID = new JLabel("ID");
 	static JLabel label_Grade = new JLabel("Grade");
@@ -50,8 +38,10 @@ public class Advisor {
 	// list containing the student information
 	static DefaultListModel<String> nameModel = new DefaultListModel<>();
 	static DefaultListModel<Integer> idModel = new DefaultListModel<>();
+	static DefaultListModel<String> gradeModel = new DefaultListModel<>();
 	static JList list_name = new JList<String>(nameModel);
 	static JList list_id = new JList<Integer>(idModel);
+	static JList list_grade = new JList<String>(gradeModel);
 	
 	// text fields used for input to add/edit students
 	private static JTextField name_textField;
@@ -63,7 +53,7 @@ public class Advisor {
 	static boolean adding = false; // whether to take the input as adding or editing a student
 	
 	static studentList studs; // queue containing students and their information
-	private static JList list_grade;
+	
 	private static JScrollBar scrollBar_2;
 	private static JTextField Name_textField;
 	private static JTextField textField_ID;
@@ -124,9 +114,47 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				submit_changes.setText("Add Student");
+				String newName = null;
+				int newID = -1;
+				String newGrade = null;
+				int id;
 				
-				adding = true;
+				// set these variables using the input text fields
+				try{
+					newName = name_textField.getText();
+				} catch(Exception ex){ System.out.println("Exception: Add button --> newName"); }
+				try{
+					newID = Integer.parseInt(ID_textField.getText());
+				} catch(Exception ex){ System.out.println("Exception: Add button --> newID"); }
+				try{
+					newGrade = grade_textField.getText();
+				} catch(Exception ex){ System.out.println("Exception: Add button --> newGrade"); }
+				
+				if(adding){
+					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
+						studs.addNode(newName, newID, newGrade);
+				}
+				else{ // edit student information if a corresponding field is not blank
+					try{
+						scan = new Scanner(list_name.getSelectedValue().toString());
+						scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
+						scan.next();
+						id = scan.nextInt();
+					
+						if(newName != null && newName.length() > 0)
+							studs.editName(id, newName);
+						if(ID_textField.getText() != null && newID > 0)
+							studs.editID(id, newID);
+						if(newGrade != null && newGrade.length() > 0)
+							studs.editGrade(id, newGrade);
+					} catch(NullPointerException npe){}
+				}
+				
+				name_textField.setText("");
+				ID_textField.setText("");
+				grade_textField.setText("");
+				
+				redrawList();
 			
 				selected.setText("Add Selected");
 			}
