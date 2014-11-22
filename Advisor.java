@@ -38,9 +38,10 @@ public class Advisor {
 	static JLabel label_Grade = new JLabel("Grade");
 	
 	// list containing the student information
-	static DefaultListModel<String> model = new DefaultListModel<>();
-	static JList list_name = new JList<String>(model);
-	static JList list_id = new JList();
+	static DefaultListModel<String> nameModel = new DefaultListModel<>();
+	static DefaultListModel<Integer> idModel = new DefaultListModel<>();
+	static JList list_name = new JList<String>(nameModel);
+	static JList list_id = new JList<Integer>(idModel);
 	
 	// text fields used for input to add/edit students
 	private static JTextField name_textField;
@@ -175,7 +176,7 @@ public class Advisor {
 		// labels above the input fields
 		JLabel ID_Label = new JLabel("ID");
 		JLabel grade_Label = new JLabel("Grade");
-		JLabel name = new JLabel("Name");
+		JLabel name_Label = new JLabel("Name");
 		
 		// button to submit the information in the input fields
 		submit_changes = new JButton("Edit Student");
@@ -209,11 +210,11 @@ public class Advisor {
 						id = scan.nextInt();
 					
 						if(newName != null && newName.length() > 0)
-							studs.editNode(id, newName);
+							studs.editName(id, newName);
 						if(ID_textField.getText() != null && newID > 0)
-							studs.editNode(id, newID);
+							studs.editID(id, newID);
 						if(newGrade != null && newGrade.length() > 0)
-							studs.editNode(id, newGrade, 0);
+							studs.editGrade(id, newGrade);
 					} catch(NullPointerException npe){}
 				}
 				
@@ -284,7 +285,7 @@ public class Advisor {
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 										.addGroup(groupLayout.createSequentialGroup()
 											.addGap(12)
-											.addComponent(name))
+											.addComponent(name_Label))
 										.addComponent(name_textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -351,7 +352,7 @@ public class Advisor {
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(ID_Label)
 						.addComponent(grade_Label)
-						.addComponent(name))
+						.addComponent(name_Label))
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(9)
@@ -371,12 +372,14 @@ public class Advisor {
 	
 	// clear the list and rewrite the contents
 	private static void redrawList(){
-		model.clear(); // clear the list
+		nameModel.clear(); // clear the name list
+		idModel.clear(); // clear the id list
 		
 		// add each element of the student queue to the list
 		for(int i = 0; i < studs.getSize(); i++){
 			try{
-				model.addElement(studs.getNode(i, 0).toString());
+				nameModel.addElement(studs.getNode(i, 0).getName());
+				idModel.addElement(studs.getNode(i, 0).getID());
 			}catch(NullPointerException e){}
 		}
 	} // redrawList
