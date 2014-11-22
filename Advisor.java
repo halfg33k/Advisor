@@ -18,12 +18,20 @@ import java.util.*;
 public class Advisor {
 	// main frame and panel of the menu
 	static JFrame frame;
+<<<<<<< HEAD
 	static JPanel panel;
+=======
+	static JPanel panel;
+>>>>>>> d1d107a6e1bd3a33c04f5a6df16400013b735a43
 
 	
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;
+<<<<<<< HEAD
 	
+=======
+	
+>>>>>>> d1d107a6e1bd3a33c04f5a6df16400013b735a43
 	
 	
 	static File user_cred; // user credentials file
