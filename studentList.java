@@ -7,7 +7,8 @@ public class studentList{
 	Node root;
 	Node head; // where to insert new nodes
 	File tempFile = new File("temp.txt"); // file to temporarily store the queue information
-	File tempGrad = new File("tempGrad.txt");
+	File tempGrad = new File("tempGrad.txt"); // temporary storage of graduation info
+	File tempAdv = new File("tempAdv.txt"); // temporary storage of advising info
 	BufferedWriter writer; // to write to a file
 	BufferedReader reader; // to read from a file
 	int size = 0;
@@ -19,6 +20,7 @@ public class studentList{
 			tempFile.createNewFile();
 			importStudents("studentList.txt");
 			importGradApps("gradApps.txt");
+			importAdvising("advising.txt");
 		} catch(IOException e){ System.out.println("IOException: studentList constructor"); }
 	} // studentList constructor
 	
@@ -102,6 +104,56 @@ public class studentList{
 		catch(NoSuchElementException nse){ }
 		finally{scan.close();}
 	} // importGradApps
+	
+	// import the advising information for all students
+	public void importAdvising(String fileName){
+		File file = new File(fileName);
+		Scanner scan = null;
+		int id, month, day, year;
+		boolean advised;
+		Node node;
+		
+		try{
+			scan = new Scanner(file);
+			scan.useDelimiter("ID:| Advised:| Date:|/|\\n|\\r");
+			
+			while(scan.hasNext()){
+				id = scan.nextInt();
+				advised = scan.nextBoolean();
+				
+				node = getNode(id);
+				
+				if(advised){
+					month = scan.nextInt();
+					day = scan.nextInt();
+					year = scan.nextInt();
+					
+					node.setAdvised(advised);
+					node.setMonth(month);
+					node.setDay(day);
+					node.setYear(year);
+				}
+				
+				// write the graduation info to tempAdv.txt
+				try{
+					writer = new BufferedWriter(new FileWriter(tempAdv, true));
+					
+					if(advised)
+						writer.write(node.getAdvisingInfo());
+					else
+						writer.write("ID:" + node.getID() + " Advised:" + false);
+					
+					writer.newLine();
+				} catch(IOException e){ System.out.println("IOException: importAdvising--> file writing"); }
+				finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+				
+				scan.nextLine();
+			}
+		} catch(IOException ioe){ System.out.println("IOException: importAdvising --> try"); }
+		catch(InputMismatchException ime){ System.out.println("InputMismatchException: importAdvising"); }
+		catch(NoSuchElementException nse){ }
+		finally{scan.close();}
+	} // importAdvising
 	
 	// return the root node
 	public Node getRoot(){
@@ -266,6 +318,22 @@ public class studentList{
 		rewrite();
 	} // editSubmitted
 	
+	// edit whether the student has been advised
+	public void editAdvised(int id, boolean advised){
+		getNode(id).setAdvised(advised);
+		
+		rewrite();
+	} // editAdvised
+	
+	// edit the date of advising for the given student
+	public void editDate(int id, int month, int day, int year){
+		getNode(id).setMonth(month);
+		getNode(id).setDay(day);
+		getNode(id).setYear(year);
+		
+		rewrite();
+	} // editDate
+	
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
 		Node current = root;
@@ -352,7 +420,7 @@ public class studentList{
 		
 		tempFile.delete();
 		
-		// now close tempGrad2.txt
+		// now close tempGrad.txt
 		file = new File("gradApps.txt");
 		
 		try{
@@ -370,8 +438,27 @@ public class studentList{
 		} catch(Exception e){ System.out.println("Exception: close --> gradApps"); }
 		finally{try{writer.close(); reader.close();}catch(Exception e){}}
 		
-		if(!tempGrad.delete())
-			System.out.println("unable to delete " + tempGrad);
+		tempGrad.delete();
+		
+		// now close tempAdv.txt
+		file = new File("advising.txt");
+		
+		try{
+			file.createNewFile();
+			
+			writer = new BufferedWriter(new FileWriter(file));
+			reader = new BufferedReader(new FileReader(tempAdv));
+			
+			String currentLine;
+			
+			while((currentLine = reader.readLine()) != null){
+				writer.write(currentLine);
+				writer.newLine();
+			}
+		} catch(Exception e){ System.out.println("Exception: close --> gradApps"); }
+		finally{try{writer.close(); reader.close();}catch(Exception e){}}
+		
+		tempAdv.delete();
 	} // close
 	
 	// whether the list contains a given id
@@ -438,6 +525,27 @@ public class studentList{
 		
 		tempGrad.delete();
 		file.renameTo(tempGrad);
+		
+		// now rewrite tempAdv
+		file = new File("tempAdv2.txt");
+		
+		for(int i = 0; i < size; i++){
+			try{
+				writer = new BufferedWriter(new FileWriter(file, true));
+				node = getNode(i, 0);
+				
+				if(node.getAdvised())
+					writer.write(node.getAdvisingInfo());
+				else
+					writer.write("ID:" + node.getID() + " Advised:" + false);
+				
+				writer.newLine();
+			} catch(IOException e){ System.out.println("IOException: rewrite --> tempAdv"); }
+			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		}
+		
+		tempAdv.delete();
+		file.renameTo(tempAdv);
 	} // rewrite	
 	
 	public String toString(){
@@ -451,6 +559,8 @@ class Node{
 	private Node next; // next node in the queue
 	private double totalGPA, majorGPA;
 	private boolean submitted; // graduation application submitted
+	private boolean advised; // student has received academic advising
+	private int month, day, year; // date advising last took place
 	
 	// initialize this Node with default values
 	public Node(){
@@ -520,6 +630,22 @@ class Node{
 		return submitted;
 	} // getsubmitted
 	
+	public boolean getAdvised(){
+		return advised;
+	} // getAdvised
+	
+	public int getMonth(){
+		return month;
+	} // getMonth
+	
+	public int getDay(){
+		return day;
+	} // getDay
+	
+	public int getYear(){
+		return year;
+	} // getYear
+	
 	public void setNext(Node next){
 		this.next = next;
 	} // setNext
@@ -560,6 +686,28 @@ class Node{
 		this.submitted = submitted;
 	} // setsubmitted
 	
+	public void setAdvised(boolean advised){
+		this.advised = advised;
+	} // setAdvised
+	
+	public void setMonth(int month){
+		this.month = month;
+	} // setMonth
+	
+	public void setDay(int day){
+		this.day = day;
+	} // setDay
+	
+	public void setYear(int year){
+		this.year = year;
+	} // setYear
+	
+	// return the student's advising information
+	public String getAdvisingInfo(){
+		return "ID:" + id + " Advised:" + advised + " Date:" + month + "/" + day + "/" + year;
+	} // getAdvisingInfo
+	
+	// return the student's graduation application information
 	public String getGradInfo(){
 		return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds;
 	} // getGradInfo
