@@ -60,13 +60,10 @@ public class Advisor {
 	private static JTextField textField_ID = new JTextField();
 	private static JTextField textField_Grade = new JTextField();
 	
-	
-	
 	//scroll bars for JLIst--> Name, ID, Grade
 	private static JScrollBar scrollBar_name = new JScrollBar(); //sets up a scroll bar to scroll through all the students
 	private static JScrollBar scrollBar_grade = new JScrollBar();
 	private static JScrollBar scrollBar_id = new JScrollBar();
-	static boolean adding = false; // whether to take the input as adding or editing a student
 	
 	static studentList studs; // queue containing students and their information
 	
@@ -79,13 +76,13 @@ public class Advisor {
 		// relevant components
 		Advisor();
 	}
-	//laods Advisor GUI
+	//loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{	
 		/**
 		 * 				 
 		 *
 		 *				Setup Working Frame
-		 *			To Impliment: --> individual Panels for each respective button category
+		 *			To Implement: --> individual Panels for each respective button category
 		 *
 		 */
 		frame = new JFrame();
@@ -172,25 +169,10 @@ public class Advisor {
 					newGrade = textField_Grade.getText();
 				} catch(Exception ex){ System.out.println("Exception: Add button --> newGrade"); }
 				
-				if(adding){
-					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
-						studs.addNode(newName, newID, newGrade);
-				}
-				else{ // edit student information if a corresponding field is not blank
-					try{
-						scan = new Scanner(list_name.getSelectedValue().toString());
-						scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
-						scan.next();
-						id = scan.nextInt();
-					
-						if(newName != null && newName.length() > 0)
-							studs.editName(id, newName);
-						if(textField_ID.getText() != null && newID > 0)
-							studs.editID(id, newID);
-						if(newGrade != null && newGrade.length() > 0)
-							studs.editGrade(id, newGrade);
-					} catch(NullPointerException npe){}
-				}
+				
+				if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
+					studs.addNode(newName, newID, newGrade);
+				
 				
 				textField_Name.setText("");
 				textField_ID.setText("");
@@ -207,8 +189,6 @@ public class Advisor {
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				submit_changes.setText("Edit Student");
-				
-				adding = false;
 			
 				selected.setText("Edit Selected");
 			}
@@ -250,7 +230,7 @@ public class Advisor {
 		JLabel name_Label = new JLabel("Name");  
 		
 		// button to submit the information in the input fields
-		submit_changes = new JButton("Edit Student");
+		/*submit_changes = new JButton("Edit Student");
 		submit_changes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String newName = null;
@@ -296,6 +276,7 @@ public class Advisor {
 				redrawList();
 			}
 		});// button to submit the information in the input fields
+		*/
 		
 	
 		/**
@@ -303,7 +284,7 @@ public class Advisor {
 		 * 
 		 * 		Layout Section:
 		 * 					Defines a GroupLayout for each UI Component including:
-		 * 						Labels, Button, TextFields, JList, and any other relvant UI component
+		 * 						Labels, Button, TextFields, JList, and any other relevant UI component
 		 * 
 		 * 
 		 */
