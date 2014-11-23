@@ -238,15 +238,7 @@ public class Advisor {
 				
 				selected.setText("Delete Selected");
 			}
-		}); //delete students button
-		
-	    
-		
-		
-		// input field for name
-		// labels above the input fields
-		JLabel ID_Label = new JLabel("ID");
-		JLabel grade_Label = new JLabel("Grade");
+		});
 		JLabel name_Label = new JLabel("Name");  
 		
 		// button to submit the information in the input fields
@@ -352,17 +344,11 @@ public class Advisor {
 							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(submit_changes, Alignment.TRAILING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addGap(12)
-											.addComponent(name_Label))
-										.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-									.addComponent(ID_Label)
-									.addGap(100)
-									.addComponent(grade_Label)
-									.addGap(94))))
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+									.addGroup(groupLayout.createSequentialGroup()
+										.addGap(12)
+										.addComponent(name_Label))
+									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
 						.addComponent(label_Grade)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
@@ -388,32 +374,28 @@ public class Advisor {
 						.addComponent(selected)
 						.addComponent(label_Grade))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(list_name, GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)
-						.addGroup(Alignment.TRAILING, groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(Add)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(Edit)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(View)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(Delete))
-							.addComponent(scrollBar_id, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-							.addComponent(scrollBar_grade, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-							.addComponent(list_grade, GroupLayout.PREFERRED_SIZE, 373, GroupLayout.PREFERRED_SIZE)
-							.addComponent(scrollBar_name, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-							.addComponent(list_id, GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE)))
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(list_name, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addComponent(Add)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(Edit)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(View)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(Delete))
+						.addComponent(scrollBar_id, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+						.addComponent(scrollBar_grade, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+						.addComponent(list_grade, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 373, GroupLayout.PREFERRED_SIZE)
+						.addComponent(scrollBar_name, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+						.addComponent(list_id, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(113)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(ID_Label)
-						.addComponent(grade_Label)
-						.addComponent(name_Label))
+					.addComponent(name_Label)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
