@@ -412,12 +412,14 @@ public class Advisor {
 	private static void redrawList(){
 		nameModel.clear(); // clear the name list
 		idModel.clear(); // clear the id list
+		gradeModel.clear(); // clear the grade list
 		
 		// add each element of the student queue to the list
 		for(int i = 0; i < studs.getSize(); i++){
 			try{
 				nameModel.addElement(studs.getNode(i, 0).getName());
 				idModel.addElement(studs.getNode(i, 0).getID());
+				gradeModel.addElement(studs.getNode(i, 0).getGrade());
 			}catch(NullPointerException e){}
 		}
 	} // redrawList
