@@ -54,14 +54,14 @@ public class studentList{
 	public void importGradApps(String fileName){
 		File file = new File(fileName);
 		Scanner scan = null;
-		int id, totalCreds, majorCreds, upperCreds;
+		int id, totalCreds, majorCreds, upperCreds, month, day, year;
 		double totalGPA, majorGPA;
 		boolean submitted;
 		Node node;
 		
 		try{
 			scan = new Scanner(file);
-			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:|\\n|\\r");
+			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:| Date:|/|\\n|\\r");
 			
 			while(scan.hasNext()){
 				id = scan.nextInt();
@@ -75,6 +75,9 @@ public class studentList{
 					totalCreds = scan.nextInt();
 					majorCreds = scan.nextInt();
 					upperCreds = scan.nextInt();
+					month = scan.nextInt();
+					day = scan.nextInt();
+					year = scan.nextInt();
 					
 					node.setSubmitted(submitted);
 					node.setTotalGPA(totalGPA);
@@ -82,6 +85,9 @@ public class studentList{
 					node.setTotalCreds(totalCreds);
 					node.setMajorCreds(majorCreds);
 					node.setUpperCreds(upperCreds);
+					node.setGradMonth(month);
+					node.setGradDay(day);
+					node.setGradYear(year);
 				}
 				
 				// write the graduation info to tempGrad.txt
@@ -129,9 +135,9 @@ public class studentList{
 					year = scan.nextInt();
 					
 					node.setAdvised(advised);
-					node.setMonth(month);
-					node.setDay(day);
-					node.setYear(year);
+					node.setAdvMonth(month);
+					node.setAdvDay(day);
+					node.setAdvYear(year);
 				}
 				
 				// write the graduation info to tempAdv.txt
@@ -318,6 +324,15 @@ public class studentList{
 		rewrite();
 	} // editSubmitted
 	
+	// edit the date of submission for a student's graduation application
+	public void editGradDate(int id, int month, int day, int year){
+		getNode(id).setGradMonth(month);
+		getNode(id).setGradDay(day);
+		getNode(id).setGradYear(year);
+		
+		rewrite();
+	} // editGradDate
+	
 	// edit whether the student has been advised
 	public void editAdvised(int id, boolean advised){
 		getNode(id).setAdvised(advised);
@@ -326,13 +341,13 @@ public class studentList{
 	} // editAdvised
 	
 	// edit the date of advising for the given student
-	public void editDate(int id, int month, int day, int year){
-		getNode(id).setMonth(month);
-		getNode(id).setDay(day);
-		getNode(id).setYear(year);
+	public void editAdvDate(int id, int month, int day, int year){
+		getNode(id).setAdvMonth(month);
+		getNode(id).setAdvDay(day);
+		getNode(id).setAdvYear(year);
 		
 		rewrite();
-	} // editDate
+	} // editAdvDate
 	
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
@@ -559,8 +574,9 @@ class Node{
 	private Node next; // next node in the queue
 	private double totalGPA, majorGPA;
 	private boolean submitted; // graduation application submitted
+	private int gradMonth, gradDay, gradYear; // date graduation application was submitted
 	private boolean advised; // student has received academic advising
-	private int month, day, year; // date advising last took place
+	private int advMonth, advDay, advYear; // date advising last took place
 	
 	// initialize this Node with default values
 	public Node(){
@@ -630,21 +646,33 @@ class Node{
 		return submitted;
 	} // getsubmitted
 	
+	public int getGradMonth(){
+		return gradMonth;
+	} // getGradMonth
+	
+	public int getGradDay(){
+		return gradDay;
+	} // getGradDay
+	
+	public int getGradYear(){
+		return gradYear;
+	} // getGradYear
+	
 	public boolean getAdvised(){
 		return advised;
 	} // getAdvised
 	
-	public int getMonth(){
-		return month;
-	} // getMonth
+	public int getAdvMonth(){
+		return advMonth;
+	} // getAdvMonth
 	
-	public int getDay(){
-		return day;
-	} // getDay
+	public int getAdvDay(){
+		return advDay;
+	} // getAdvDay
 	
-	public int getYear(){
-		return year;
-	} // getYear
+	public int getAdvYear(){
+		return advYear;
+	} // getAdvYear
 	
 	public void setNext(Node next){
 		this.next = next;
@@ -686,30 +714,44 @@ class Node{
 		this.submitted = submitted;
 	} // setsubmitted
 	
+	public void setGradMonth(int gradMonth){
+		this.gradMonth = gradMonth;
+	} // setGradMonth
+	
+	public void setGradDay(int gradDay){
+		this.gradDay = gradDay;
+	} // setGradDay
+	
+	public void setGradYear(int gradYear){
+		this.gradYear = gradYear;
+	} // setGradYear
+	
 	public void setAdvised(boolean advised){
 		this.advised = advised;
 	} // setAdvised
 	
-	public void setMonth(int month){
-		this.month = month;
-	} // setMonth
+	public void setAdvMonth(int advMonth){
+		this.advMonth = advMonth;
+	} // setAdvMonth
 	
-	public void setDay(int day){
-		this.day = day;
-	} // setDay
+	public void setAdvDay(int advDay){
+		this.advDay = advDay;
+	} // setAdvDay
 	
-	public void setYear(int year){
-		this.year = year;
-	} // setYear
+	public void setAdvYear(int advYear){
+		this.advYear = advYear;
+	} // setAdvYear
 	
 	// return the student's advising information
 	public String getAdvisingInfo(){
-		return "ID:" + id + " Advised:" + advised + " Date:" + month + "/" + day + "/" + year;
+		return "ID:" + id + " Advised:" + advised + " Date:" + advMonth + "/" + advDay + "/" + advYear;
 	} // getAdvisingInfo
 	
 	// return the student's graduation application information
 	public String getGradInfo(){
-		return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds;
+		return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA 
+			+ " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds 
+			+ " Date:" + gradMonth + "/" + gradDay + "/" + gradYear;
 	} // getGradInfo
 	
 	// return the student's information
