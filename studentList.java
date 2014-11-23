@@ -54,32 +54,43 @@ public class studentList{
 		Scanner scan = null;
 		int id, totalCreds, majorCreds, upperCreds;
 		double totalGPA, majorGPA;
+		boolean submitted;
 		Node node;
 		
 		try{
 			scan = new Scanner(file);
-			scan.useDelimiter("ID:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:|\\n|\\r");
+			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:|\\n|\\r");
 			
 			while(scan.hasNext()){
 				id = scan.nextInt();
-				totalGPA = scan.nextDouble();
-				majorGPA = scan.nextDouble();
-				totalCreds = scan.nextInt();
-				majorCreds = scan.nextInt();
-				upperCreds = scan.nextInt();
+				submitted = scan.nextBoolean();
 				
 				node = getNode(id);
 				
-				node.setTotalGPA(totalGPA);
-				node.setMajorGPA(majorGPA);
-				node.setTotalCreds(totalCreds);
-				node.setMajorCreds(majorCreds);
-				node.setUpperCreds(upperCreds);
+				if(submitted){
+					totalGPA = scan.nextDouble();
+					majorGPA = scan.nextDouble();
+					totalCreds = scan.nextInt();
+					majorCreds = scan.nextInt();
+					upperCreds = scan.nextInt();
+					
+					node.setSubmitted(submitted);
+					node.setTotalGPA(totalGPA);
+					node.setMajorGPA(majorGPA);
+					node.setTotalCreds(totalCreds);
+					node.setMajorCreds(majorCreds);
+					node.setUpperCreds(upperCreds);
+				}
 				
 				// write the graduation info to tempGrad.txt
 				try{
 					writer = new BufferedWriter(new FileWriter(tempGrad, true));
-					writer.write(node.getGradInfo());
+					
+					if(submitted)
+						writer.write(node.getGradInfo());
+					else
+						writer.write("ID:" + node.getID() + " Submitted:" + false);
+					
 					writer.newLine();
 				} catch(IOException e){ System.out.println("IOException: importGradApps --> file writing"); }
 				finally{try{ writer.close(); }catch(Exception e){}} // close the writer
@@ -194,79 +205,66 @@ public class studentList{
 	
 	// edit the name of a given node
 	public void editName(int id, String name){
-		Node node = getNode(id);
-		
-		// change the name of the node
-		node.setName(name);
+		getNode(id).setName(name);
 		
 		rewrite();
 	} // editNode(id, name)
 	
 	// edit the id of a given node
 	public void editID(int id, int newID){
-		Node node = getNode(id);
-		
-		node.setID(newID); // change the id of the given node
+		getNode(id).setID(newID); // change the id of the given node
 		
 		rewrite();
 	}
 	
 	// edit the grade of a given node
 	public void editGrade(int id, String grade){
-		Node node = getNode(id);
-		
-		// change the grade of the node
-		node.setGrade(grade);
+		getNode(id).setGrade(grade);
 		
 		rewrite();
 	} // editNode(id, grade)
 	
 	// edit the totalGPA of a given node
 	public void editTotalGPA(int id, double totalGPA){
-		Node node = getNode(id);
-		
-		node.setTotalGPA(totalGPA); // change the totalGPA of the given node
+		getNode(id).setTotalGPA(totalGPA); // change the totalGPA of the given node
 		
 		rewrite();
 	} // editNode(id, totalGPA)
 	
 	// edit the majorGPA of a given node
 	public void editMajorGPA(int id, double majorGPA){
-		Node node = getNode(id);
-		
-		node.setMajorGPA(majorGPA); // change the totalGPA of the given node
+		getNode(id).setMajorGPA(majorGPA); // change the totalGPA of the given node
 		
 		rewrite();
 	} // editNode(id, majoprGPA, int unused)
 	
 	// edit the totalCreds of a given node
 	public void editTotalCreds(int id, int totalCreds){
-		Node node = getNode(id);
-		
-		
-		node.setTotalCreds(totalCreds); // change the totalCreds of the given node
+		getNode(id).setTotalCreds(totalCreds); // change the totalCreds of the given node
 		
 		rewrite();
 	} // editTotalCreds
 	
 	// edit the majorCreds of a given node
 	public void editMajorCreds(int id, int majorCreds){
-		Node node = getNode(id);
-		
-		node.setMajorCreds(majorCreds); // change the totalGPA of the given node
+		getNode(id).setMajorCreds(majorCreds); // change the totalGPA of the given node
 		
 		rewrite();
 	} // editMajorCreds
 	
 	// edit the upperCreds of a given node
 	public void editUpperCreds(int id, int upperCreds){
-		Node node = getNode(id);
-		
-		
-		node.setUpperCreds(upperCreds); // change the totalGPA of the given node
+		getNode(id).setUpperCreds(upperCreds); // change the totalGPA of the given node
 		
 		rewrite();
 	} // editUpperCreds
+	
+	// edit whether a graduation application has been submitted
+	public void editSubmitted(int id, boolean submitted){
+		getNode(id).setSubmitted(submitted);
+		
+		rewrite();
+	} // editSubmitted
 	
 	// remove a particular node by it's id
 	public Node removeNode(int id){		
@@ -405,6 +403,7 @@ public class studentList{
 	// rewrite the contents of the temp file
 	private void rewrite(){
 		File file = new File("temp2.txt");
+		Node node;
 		
 		// write the node to the tempFile
 		for(int i = 0; i < size; i++){
@@ -425,7 +424,13 @@ public class studentList{
 		for(int i = 0; i < size; i++){
 			try{
 				writer = new BufferedWriter(new FileWriter(file, true));
-				writer.write(getNode(i, 0).getGradInfo());
+				node = getNode(i, 0);
+				
+				if(node.getSubmitted())
+					writer.write(node.getGradInfo());
+				else
+					writer.write("ID:" + node.getID() + " Submitted:" + false);
+				
 				writer.newLine();
 			} catch(IOException e){ System.out.println("IOException: rewrite --> tempGrad"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
@@ -445,7 +450,7 @@ class Node{
 	private int id, totalCreds, majorCreds, upperCreds;
 	private Node next; // next node in the queue
 	private double totalGPA, majorGPA;
-	private boolean gradApp; // graduation application submitted
+	private boolean submitted; // graduation application submitted
 	
 	// initialize this Node with default values
 	public Node(){
@@ -458,6 +463,7 @@ class Node{
 		totalCreds = 0;
 		majorCreds = 0;
 		upperCreds = 0;
+		submitted = false;
 	} // Node constructor
 	
 	// initialize this Node with given values
@@ -471,6 +477,7 @@ class Node{
 		totalCreds = 0;
 		majorCreds = 0;
 		upperCreds = 0;
+		submitted = false;
 	} // Node constructor
 	
 	public Node getNext(){
@@ -509,9 +516,9 @@ class Node{
 		return upperCreds;
 	} // getUpperCreds
 	
-	public boolean getGradApp(){
-		return gradApp;
-	} // getGradApp
+	public boolean getSubmitted(){
+		return submitted;
+	} // getsubmitted
 	
 	public void setNext(Node next){
 		this.next = next;
@@ -549,12 +556,12 @@ class Node{
 		this.upperCreds = upperCreds;
 	} // setUpperCreds
 	
-	public void setGradApp(boolean gradApp){
-		this.gradApp = gradApp;
-	} // setGradApp
+	public void setSubmitted(boolean submitted){
+		this.submitted = submitted;
+	} // setsubmitted
 	
 	public String getGradInfo(){
-		return "ID:" + id + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds;
+		return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA + " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds;
 	} // getGradInfo
 	
 	// return the student's information
