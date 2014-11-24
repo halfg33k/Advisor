@@ -235,25 +235,9 @@ public class Advisor {
 					newGrade = textField_Grade.getText();
 				} catch(Exception ex){ System.out.println("Exception: Add button --> newGrade"); }
 				
-				if(adding){
-					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
-						studs.addNode(newName, newID, newGrade);
-				}
-				else{ // edit student information if a corresponding field is not blank
-					try{
-						scan = new Scanner(list_name.getSelectedValue().toString());
-						scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
-						scan.next();
-						id = scan.nextInt();
-					
-						if(newName != null && newName.length() > 0)
-							studs.editName(id, newName);
-						if(textField_ID.getText() != null && newID > 0)
-							studs.editID(id, newID);
-						if(newGrade != null && newGrade.length() > 0)
-							studs.editGrade(id, newGrade);
-					} catch(NullPointerException npe){}
-				}
+				
+				if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
+					studs.addNode(newName, newID, newGrade);
 				
 				textField_Name.setText("");
 				textField_ID.setText("");
