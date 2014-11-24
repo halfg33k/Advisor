@@ -31,7 +31,7 @@ public class Advisor {
 	static JPanel panel;
 
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, Edit, View, Delete, Add, submit_changes;	
+	static JButton students, records, Graduation, Edit, View, Delete, Add;	
 	
 	static File user_cred; // user credentials file
 	
@@ -47,28 +47,70 @@ public class Advisor {
 	static JLabel label_ID = new JLabel("ID");
 	static JLabel label_Grade = new JLabel("Grade");
 	
+	static JLabel lblMajorGpa = new JLabel("Major GPA");
+	
+	static JLabel lblTotalGpa = new JLabel("Total GPA");
+	
+	
+	private static  JLabel lblNewLabel = new JLabel("");
+	private static  JLabel label_Upp_Lev_Credits = new JLabel("Upper Level Credits");
+	private static  JLabel label_Major_Credits = new JLabel("Major Credits");
+	private static  JLabel label_Total_Credits = new JLabel("Total Credits");
+	
+	//labels used for positioning and allignment purposes:
+	//think of it like a measurement guide to position certain components in relative to others
+	//these are basically reference components to get the spacing for certain components correct
+	//there are set to invisible so they dont show, but still take up space...and the space was what I needed
+	private static  JLabel lblNewLabel_8 = new JLabel("");
+	private static  JLabel lblNewLabel_9 = new JLabel("");
+	private static  JLabel label_1 = new JLabel("");
+	private static  JLabel label_2 = new JLabel("");
+	
 	// list containing the student information
 	static DefaultListModel<String> nameModel = new DefaultListModel<>();
 	static DefaultListModel<Integer> idModel = new DefaultListModel<>();
 	static DefaultListModel<String> gradeModel = new DefaultListModel<>();
+	static DefaultListModel<Integer> majorGPAModel = new DefaultListModel<>();
+	static DefaultListModel<Integer> totGPAModel = new DefaultListModel<>();
+	static DefaultListModel<Integer> MajorCredModel = new DefaultListModel<>();
+	static DefaultListModel<Integer> UPPLevModel = new DefaultListModel<>();
+	static DefaultListModel<Integer> totCredModel = new DefaultListModel<>();
 	static JList list_name = new JList<String>(nameModel);
 	static JList list_id = new JList<Integer>(idModel);
 	static JList list_grade = new JList<String>(gradeModel);
 	
+	/*
+	 * 	Below are the listModels already Set up for you
+	 * 
+	 */
+	static  JList list_major_gpa = new JList<Integer>(majorGPAModel);
+	static  JList list_tot_gpa = new JList<Integer>(totGPAModel);
+	static  JList list_Major_Credits = new JList<Integer>(MajorCredModel);
+	static  JList list_UPP_Lev_Cred = new JList<Integer>(UPPLevModel);
+	static 	JList list_tot_Credits = new JList<Integer>(totCredModel);
+
+	
 	// text fields used for input to add/edit students
-	private static JTextField textField_Name = new JTextField();
-	private static JTextField textField_ID = new JTextField();
-	private static JTextField textField_Grade = new JTextField();
-	
-	
-	
-	//scroll bars for JLIst--> Name, ID, Grade
-	private static JScrollBar scrollBar_name = new JScrollBar(); //sets up a scroll bar to scroll through all the students
-	private static JScrollBar scrollBar_grade = new JScrollBar();
-	private static JScrollBar scrollBar_id = new JScrollBar();
+	private static  JTextField textField_Name = new JTextField();
+	private static  JTextField textField_ID = new JTextField();
+	private static  JTextField textField_Grade = new JTextField();
+	private static  JTextField textField_total_gpa = new JTextField();
+	private static  JTextField textField_2 = new JTextField();
+	private static  JTextField textField_total_Credits = new JTextField();
+	private static  JTextField textField_Major_GPA = new JTextField();
+	private static  JTextField textField_Major_Credits = new JTextField();
+	private static  JTextField textField_UPP_Credits = new JTextField();
 	static boolean adding = false; // whether to take the input as adding or editing a student
 	
 	static studentList studs; // queue containing students and their information
+	
+	//temporary fix to close the application as the setDefaultClose opertion is not working for some reason.....
+	private static JButton close = new JButton("Close");
+	
+	
+	
+	
+	
 	
 	
 
@@ -80,19 +122,33 @@ public class Advisor {
 		Advisor();
 	}
 	//laods Advisor GUI
-	public static void Advisor() throws FileNotFoundException{	
+	public static void Advisor() throws FileNotFoundException{
+		close.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		textField_UPP_Credits.setColumns(10);
+		textField_Major_Credits.setColumns(10);
+		textField_Major_GPA.setColumns(10);
+		textField_total_Credits.setColumns(10);
+		textField_2.setColumns(10);
+		textField_total_gpa.setColumns(10);
+		
+		 
 		/**
 		 * 				 
 		 *
 		 *				Setup Working Frame
-		 *			To Impliment: --> individual Panels for each respective button category
+		 *			To Implement: --> individual Panels for each respective button category
 		 *
 		 */
 		frame = new JFrame();
-		frame.setSize(800,600);
-		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+		frame.setSize(1080,780);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setInVisible();
 		
-		studs = new studentList();
+		//studs = new studentList();
 		
 		frame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
@@ -128,10 +184,11 @@ public class Advisor {
 		students = new JButton("Students");
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				setInVisible();
 				redrawList();
 				
 				selected.setText("students selected");
+				
 				
 			}
 		});//student menu button
@@ -140,7 +197,9 @@ public class Advisor {
 		records = new JButton("Records");
 		records.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+			setInVisible();
 			selected.setText("records selected");
+			redrawList();
 			}
 		});//records menu button
 		
@@ -149,6 +208,9 @@ public class Advisor {
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("graduation selected");
+				setVisible();
+				
+				
 			}
 		}); //graduation menu button
 		
@@ -156,6 +218,7 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setInVisible();
 				String newName = null;
 				int newID = -1;
 				String newGrade = null;
@@ -206,7 +269,7 @@ public class Advisor {
 		Edit = new JButton("Edit");
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				submit_changes.setText("Edit Student");
+				setInVisible();
 				
 				adding = false;
 			
@@ -218,6 +281,7 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setInVisible();
 				redrawList();
 				
 				selected.setText("View Selected");
@@ -228,6 +292,7 @@ public class Advisor {
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setInVisible();
 			/*	scan = new Scanner(list_name.getSelectedValue().toString());
 				scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
 				
@@ -239,69 +304,16 @@ public class Advisor {
 				selected.setText("Delete Selected");
 			}
 		});
-		JLabel name_Label = new JLabel("Name");  
 		
-		// button to submit the information in the input fields
-		submit_changes = new JButton("Edit Student");
-		submit_changes.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String newName = null;
-				int newID = -1;
-				String newGrade = null;
-				int id;
-				
-				// set these variables using the input text fields
-				try{
-					newName = textField_Name.getText();
-				} catch(Exception ex){ System.out.println("Exception: submit_changes button; newName"); }
-				try{
-					newID = Integer.parseInt(textField_ID.getText());
-				} catch(Exception ex){ System.out.println("Exception: submit_changes button; newID"); }
-				try{
-					newGrade = textField_Grade.getText();
-				} catch(Exception ex){ System.out.println("Exception: submit_changes button; newGrade"); }
-				
-				if(adding){
-					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
-						studs.addNode(newName, newID, newGrade);
-				}
-				else{ // edit student information if a corresponding field is not blank
-					try{
-						scan = new Scanner(list_name.getSelectedValue().toString());
-						scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
-						scan.next();
-						id = scan.nextInt();
-					
-						if(newName != null && newName.length() > 0)
-							studs.editName(id, newName);
-						if(textField_ID.getText() != null && newID > 0)
-							studs.editID(id, newID);
-						if(newGrade != null && newGrade.length() > 0)
-							studs.editGrade(id, newGrade);
-					} catch(NullPointerException npe){}
-				}
-				
-				textField_Name.setText("");
-				textField_ID.setText("");
-				textField_Grade.setText("");
-				
-				redrawList();
-			}
-		});// button to submit the information in the input fields
 		
-	
 		/**
 		 * 
 		 * 
-		 * 		Layout Section:
-		 * 					Defines a GroupLayout for each UI Component including:
-		 * 						Labels, Button, TextFields, JList, and any other relvant UI component
+		 * Layout Section:
+		 * 	Defines the Position within the Layout of all the Components
 		 * 
 		 * 
 		 */
-		
-		
-		
 		
 		
 		
@@ -313,70 +325,123 @@ public class Advisor {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(55)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-							.addComponent(Add, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(Edit, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-							.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addComponent(selected))
-					.addGap(26)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(label_Name)
-						.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(records, GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-						.addComponent(list_name, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollBar_name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(list_id, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollBar_id, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addComponent(label_ID)
-						.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(students, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+							.addGap(55)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(submit_changes, Alignment.TRAILING)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addGap(12)
-										.addComponent(name_Label))
-									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-						.addComponent(label_Grade)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(Graduation, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(list_grade, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
+								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+									.addComponent(Add, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(Edit, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addComponent(selected))
+							.addGap(26)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(label_Name)
+								.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(list_name, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(lblNewLabel_8))
+							.addGap(41)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addComponent(lblNewLabel_9)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(label_1))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(label_ID)
+										.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+											.addComponent(textField_ID, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+											.addComponent(list_id, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)))
+									.addGap(41)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(textField_Grade, 0, 0, Short.MAX_VALUE)
+										.addComponent(list_grade, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+										.addComponent(label_Grade, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollBar_grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(label_2)
+								.addComponent(lblMajorGpa, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(list_major_gpa, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
+							.addGap(36)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(lblTotalGpa, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(lblNewLabel)
+								.addComponent(list_tot_gpa, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE)))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(21)
+							.addComponent(close)
+							.addGap(27)
+							.addComponent(records)
+							.addGap(32)
+							.addComponent(students, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
+							.addGap(21)
+							.addComponent(Graduation)))
+					.addGap(19)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(textField_total_Credits, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 274, Short.MAX_VALUE)
+							.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
+							.addGap(8))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(label_Major_Credits)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(6)
+									.addComponent(list_Major_Credits, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(label_Upp_Lev_Credits, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(list_UPP_Lev_Cred, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+								.addComponent(textField_Major_Credits, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(label_Total_Credits, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(12)
+									.addComponent(textField_UPP_Credits, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE))
+								.addComponent(list_tot_Credits, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addGap(4)))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(782))
 		);
 		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(35)
+					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(records)
 						.addComponent(students)
-						.addComponent(Graduation))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(label_ID)
-						.addComponent(label_Name)
-						.addComponent(selected)
-						.addComponent(label_Grade))
-					.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(Graduation)
+						.addComponent(close))
+					.addGap(43)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(list_name, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(label_ID)
+							.addComponent(label_Name)
+							.addComponent(selected))
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(label_Grade)
+							.addComponent(lblMajorGpa)
+							.addComponent(lblTotalGpa)
+							.addComponent(label_Major_Credits)
+							.addComponent(label_Total_Credits)
+							.addComponent(label_Upp_Lev_Credits)))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(list_major_gpa, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(list_grade, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+							.addComponent(list_tot_gpa, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+							.addComponent(list_Major_Credits, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE))
+						.addComponent(list_id, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+						.addComponent(list_name, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(Add)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Edit)
@@ -384,28 +449,84 @@ public class Advisor {
 							.addComponent(View)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Delete))
-						.addComponent(scrollBar_id, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-						.addComponent(scrollBar_grade, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-						.addComponent(list_grade, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 373, GroupLayout.PREFERRED_SIZE)
-						.addComponent(scrollBar_name, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-						.addComponent(list_id, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE))
+						.addComponent(list_UPP_Lev_Cred, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
+						.addComponent(list_tot_Credits, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(textField_total_gpa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(textField_Major_GPA, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(textField_Major_Credits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(textField_UPP_Credits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(18)
+							.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(textField_total_Credits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(151))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(49)
+					.addComponent(lblNewLabel_8)
+					.addContainerGap(703, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(49)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(113)
-					.addComponent(name_Label)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(submit_changes))
+						.addComponent(lblNewLabel_9)
+						.addComponent(label_1)
+						.addComponent(label_2)
+						.addComponent(lblNewLabel))
+					.addContainerGap(703, Short.MAX_VALUE))
 		);
 		
 		///grabs the current panes content and adds it to the Frame, then makes the frame visible
 		frame.getContentPane().setLayout(groupLayout);
 		frame.setVisible(true);
 		
+	}
+	//sets certain components visible when need or in use
+	public static void setVisible(){
+
+		label_Upp_Lev_Credits.setVisible(true);
+		label_Major_Credits.setVisible(true); 
+		label_Total_Credits.setVisible(true);
+		textField_UPP_Credits.setVisible(true);
+		textField_Major_Credits.setVisible(true);
+		textField_Major_GPA.setVisible(true);
+		textField_total_Credits.setVisible(true);
+		textField_total_gpa.setVisible(true);
+		list_major_gpa.setVisible(true);
+		list_tot_gpa.setVisible(true);
+		list_Major_Credits.setVisible(true);
+		list_UPP_Lev_Cred.setVisible(true);
+		list_tot_Credits.setVisible(true);
+		lblMajorGpa.setVisible(true);	
+		lblTotalGpa.setVisible(true);
+	}
+	//set certain components to invisible when not in use or needed
+	public static void setInVisible(){
+		label_Upp_Lev_Credits.setVisible(false);
+		label_Major_Credits.setVisible(false); 
+		label_Total_Credits.setVisible(false);
+		textField_UPP_Credits.setVisible(false);
+		textField_Major_Credits.setVisible(false);
+		textField_Major_GPA.setVisible(false);
+		textField_total_Credits.setVisible(false);
+		textField_total_gpa.setVisible(false);
+		list_major_gpa.setVisible(false);
+		list_tot_gpa.setVisible(false);
+		list_Major_Credits.setVisible(false);
+		list_UPP_Lev_Cred.setVisible(false);
+		list_tot_Credits.setVisible(false);
+		lblMajorGpa.setVisible(false);	
+		lblTotalGpa.setVisible(false);
+	
 	}
 	
 	// clear the list and rewrite the contents
