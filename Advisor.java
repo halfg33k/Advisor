@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,7 +22,7 @@ public class Advisor {
 	/**
 	 * 
 	 * 		Component Section:
-	 * 		Declares and Instantiates all relevant UI Componnets:
+	 * 		Declares and Instantiates all relevant UI Components:
 	 * 		Labels, Button, textFields, JList, and any other Relevant UI components
 	 * 
 	 * 
@@ -29,14 +30,8 @@ public class Advisor {
 	// main frame and panel of the menu
 	static JFrame frame;
 	static JPanel panel;
-	static JTable table;
 	static JPanel panel_1;
 	
-	/*************************
-	 * 	ScrollPane for Table
-	 * 
-	 ************************/
-	static JScrollPane scrollPane;
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, Edit, View, Delete, Add;	
 	
@@ -47,13 +42,10 @@ public class Advisor {
 	static BufferedReader reader;
 	static FileWriter file_writer;
 	
-	/**************************************
-	 * 
-	 * String arrays for table
-	 * 
-	 * 
-	 ****************************************/
-	
+	// table variables
+	static JTable table;
+	static DefaultTableModel tableModel;
+	static JScrollPane scrollPane; // scrollPane for table
 	
 	//String for Table
 	static String[][] data = new String[][]{
@@ -122,7 +114,7 @@ public class Advisor {
 		// relevant components
 		Advisor();
 	}
-	//laods Advisor GUI
+	//loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,24 +150,25 @@ public class Advisor {
 		
 		
 		/**********************************************
-		 * 
-		 * 
-		 * Table
-		 * 
-		 ***********************************************/
-		 table = new JTable( data, title );
-		 scrollPane = new JScrollPane(table);
-		 
+		* 
+		* 
+		* Table
+		* 
+		***********************************************/
+		tableModel = new DefaultTableModel();
+		table = new JTable( tableModel );
+		scrollPane = new JScrollPane(table);
+		initTableStuds();
 		
 		
 		/**
-		 * 
-		 * 			Component Modification Section:
-		 * 			Any modification or change to a UI component will be put and located in
-		 * 			the following section
-		 * 		
-		 * 
-		 */
+		* 
+		* 			Component Modification Section:
+		* 			Any modification or change to a UI component will be put and located in
+		* 			the following section
+		* 		
+		* 
+		*/
 		
 		
 		
@@ -201,7 +194,7 @@ public class Advisor {
 				
 				selected.setText("students selected");
 				
-				
+				initTableStuds();
 			}
 		});//student menu button
 		
@@ -209,9 +202,9 @@ public class Advisor {
 		records = new JButton("Records");
 		records.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			//setInVisible();
+			initTableRecords();
+
 			selected.setText("records selected");
-			//redrawList();
 			}
 		});//records menu button
 		
@@ -220,9 +213,8 @@ public class Advisor {
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("graduation selected");
-				//setVisible();
 				
-				
+				initTableGrad();
 			}
 		}); //graduation menu button
 		
@@ -230,7 +222,9 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setInVisible();
+				tableModel.addRow(new Object[]{"1", "12", "123", "1234"});
+				
+				/*//setInVisible();
 				String newName = null;
 				int newID = -1;
 				String newGrade = null;
@@ -247,32 +241,17 @@ public class Advisor {
 					newGrade = textField_Grade.getText();
 				} catch(Exception ex){ System.out.println("Exception: Add button --> newGrade"); }
 				
-				if(adding){
-					if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
-						studs.addNode(newName, newID, newGrade);
-				}
-				else{ // edit student information if a corresponding field is not blank
-					try{
-						//scan = new Scanner(list_name.getSelectedValue().toString());
-						//scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
-						//scan.next();
-						//id = scan.nextInt();
-					
-						/*if(newName != null && newName.length() > 0)
-							studs.editName(id, newName);
-						if(textField_ID.getText() != null && newID > 0)
-							studs.editID(id, newID);
-						if(newGrade != null && newGrade.length() > 0)
-							studs.editGrade(id, newGrade);*/
-					} catch(NullPointerException npe){}
-				}
+				
+				if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
+					studs.addNode(newName, newID, newGrade);
+				
 				
 				textField_Name.setText("");
 				textField_ID.setText("");
 				textField_Grade.setText("");
 				
-				//edrawList();
-			
+				//redrawList();
+				*/
 				selected.setText("Add Selected");
 			}
 		});//add students button 
@@ -469,5 +448,38 @@ public class Advisor {
 		frame.setVisible(true);
 		
 	}
+	
+	private static void initTableRecords(){
+		tableModel.setColumnCount(0);
+	
+		tableModel.addColumn("Name");
+		tableModel.addColumn("ID");
+		tableModel.addColumn("Grade");
+		tableModel.addColumn("Advised");
+		tableModel.addColumn("Date");
+		
+		
+	} // initTableStuds
+	
+	private static void initTableStuds(){
+		tableModel.setColumnCount(0);
+		
+		tableModel.addColumn("Name");
+		tableModel.addColumn("ID");
+		tableModel.addColumn("Grade");
+	} // initTableStuds
+	
+	private static void initTableGrad(){
+		tableModel.setColumnCount(0);
+	
+		tableModel.addColumn("Name");
+		tableModel.addColumn("ID");
+		tableModel.addColumn("Grade");
+		tableModel.addColumn("Total GPA");
+		tableModel.addColumn("Major GPA");
+		tableModel.addColumn("Total Credits");
+		tableModel.addColumn("Major Credits");
+		tableModel.addColumn("Upper-Level Credits");
+	} // initTableStuds
 }
 
