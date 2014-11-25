@@ -153,6 +153,8 @@ public class Advisor {
 		scrollPane = new JScrollPane(table);
 		initTableStuds();
 		
+		table.setFillsViewportHeight(true); // fills out the JScrollPane
+		
 		
 		/**
 		* 
@@ -434,15 +436,25 @@ public class Advisor {
 					name = (String)tableModel.getValueAt(i, 0);
 					id = (String)tableModel.getValueAt(i, 1);
 					grade = (String)tableModel.getValueAt(i, 2);
+					boolean add = true; // whether to add or edit
 					
+					for(int j = 0; j < tableModel.getRowCount(); j++){
+						if(tableModel.getValueAt(i, 1).equals(id) && j != i)
+							add = false;
+						
+						System.out.println(i + " " + j + " " + add);
+					}
 					
-					//if(!studs.contains(id))
-					//	studs.addNode(name, id, grade);
-					//else{
+					System.out.println(add);
+					/*
+					if(add)
+						studs.addNode(name, id, grade);
+					else{
 						studs.getNode(i, 0).setName(name);
 						studs.getNode(i, 0).setID(id);
 						studs.getNode(i, 0).setGrade(grade);
-					//}
+					}
+					*/
 				}
 				
 				studs.rewrite();
