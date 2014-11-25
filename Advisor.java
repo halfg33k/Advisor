@@ -1,16 +1,11 @@
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingUtilities;
 
 import java.awt.*;
 import java.awt.event.*;
-
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import javax.swing.SwingUtilities;
 
 import java.io.*;
 import java.util.*;
@@ -111,6 +106,7 @@ public class Advisor {
 				System.exit(0);
 			}
 		});
+		
 		textField_Major_Credits.setColumns(10);
 		textField_Major_GPA.setColumns(10);
 		textField_2.setColumns(10);
@@ -257,7 +253,6 @@ public class Advisor {
 		 * 
 		 * 
 		 */
-		//p
 		
 		
 		/*********************************
