@@ -180,9 +180,6 @@ public class Advisor {
 		students = new JButton("Students");
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setInVisible();
-				//redrawList();
-				
 				selected.setText("students selected");
 				
 				initTableStuds();
@@ -213,36 +210,8 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableModel.addRow(new Object[]{"1", "12", "123", "1234"});
+				tableModel.addRow(new Object[]{});
 				
-				/*//setInVisible();
-				String newName = null;
-				int newID = -1;
-				String newGrade = null;
-				int id;
-				
-				// set these variables using the input text fields
-				try{
-					newName = textField_Name.getText();
-				} catch(Exception ex){ System.out.println("Exception: Add button --> newName"); }
-				try{
-					newID = Integer.parseInt(textField_ID.getText());
-				} catch(Exception ex){ System.out.println("Exception: Add button --> newID"); }
-				try{
-					newGrade = textField_Grade.getText();
-				} catch(Exception ex){ System.out.println("Exception: Add button --> newGrade"); }
-				
-				
-				if(!studs.contains(newID) && newName.length() > 0 && newGrade.length() > 0 && newID > 0)
-					studs.addNode(newName, newID, newGrade);
-				
-				
-				textField_Name.setText("");
-				textField_ID.setText("");
-				textField_Grade.setText("");
-				
-				//redrawList();
-				*/
 				selected.setText("Add Selected");
 			}
 		});//add students button 
@@ -259,9 +228,6 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setInVisible();
-				//redrawList();
-				
 				selected.setText("View Selected");
 			}
 		}); //view button
@@ -270,15 +236,14 @@ public class Advisor {
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setInVisible();
-				//scan = new Scanner(list_name.getSelectedValue().toString());
-				//scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
+				int row = table.getSelectedRow();
+				int id = (int)tableModel.getValueAt(row, 1);
+				Node node;
 				
-				//scan.next();
-				//studs.removeNode(scan.nextInt());
+				tableModel.removeRow(row);
 				
-				//redrawList();
-				
+				studs.removeNode(id);
+			
 				selected.setText("Delete Selected");
 			}
 		});

@@ -372,6 +372,7 @@ public class studentList{
 			prev.setNext(current.getNext());
 		}
 		
+		/*
 		// rewrite the tempFile without the old data and including the new data
 		try{
 			file.createNewFile();
@@ -395,8 +396,12 @@ public class studentList{
 		// rename the new tempFile to temp.txt
 		if(!(file.renameTo(tempFile)))
 			System.out.println("Failed to rename file.");
+		*/
 		
 		size--;
+		
+		rewrite();
+		
 		return current;
 	} // removeNode
 	
