@@ -60,8 +60,10 @@ public class studentList{
 		try{
 			scan = new Scanner(file);
 			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:| Date:|\\n|\\r");
+		} catch(IOException ioe){ System.out.println("IOException: importGradApps --> try"); }
 			
-			while(scan.hasNext()){
+		while(scan.hasNext()){
+			try{
 				id = scan.next();
 				submitted = scan.nextBoolean();
 				
@@ -84,25 +86,15 @@ public class studentList{
 					node.setGradDate(gradDate);
 				}
 				
-				// write the graduation info to tempGrad.txt
-				try{
-					writer = new BufferedWriter(new FileWriter(tempGrad, true));
-					
-					if(submitted)
-						writer.write(node.getGradInfo());
-					else
-						writer.write("ID:" + node.getID() + " Submitted:" + false);
-					
-					writer.newLine();
-				} catch(IOException e){ System.out.println("IOException: importGradApps --> file writing"); }
-				finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+				
 				
 				scan.nextLine();
-			}
-		} catch(IOException ioe){ System.out.println("IOException: importGradApps --> try"); }
-		catch(InputMismatchException ime){ System.out.println("InputMismatchException: importGradApps"); }
-		catch(NoSuchElementException nse){ }
-		finally{scan.close();}
+			}catch(InputMismatchException ime){ System.out.println("InputMismatchException: importGradApps"); }
+			catch(NoSuchElementException nse){ }
+		}
+		
+		rewrite();
+		
 	} // importGradApps
 	
 	// import the advising information for all students
@@ -116,8 +108,10 @@ public class studentList{
 		try{
 			scan = new Scanner(file);
 			scan.useDelimiter("ID:| Advised:| Date:|\\n|\\r");
+		} catch(IOException ioe){ System.out.println("IOException: importAdvising --> try"); }
 			
-			while(scan.hasNext()){
+		while(scan.hasNext()){
+			try{
 				id = scan.next();
 				advised = scan.nextBoolean();
 				
@@ -130,25 +124,12 @@ public class studentList{
 					node.setAdvDate(advDate);
 				}
 				
-				// write the graduation info to tempAdv.txt
-				try{
-					writer = new BufferedWriter(new FileWriter(tempAdv, true));
-					
-					if(advised)
-						writer.write(node.getAdvisingInfo());
-					else
-						writer.write("ID:" + node.getID() + " Advised:" + false);
-					
-					writer.newLine();
-				} catch(IOException e){ System.out.println("IOException: importAdvising--> file writing"); }
-				finally{try{ writer.close(); }catch(Exception e){}} // close the writer
-				
 				scan.nextLine();
-			}
-		} catch(IOException ioe){ System.out.println("IOException: importAdvising --> try"); }
-		catch(InputMismatchException ime){ System.out.println("InputMismatchException: importAdvising"); }
-		catch(NoSuchElementException nse){ }
-		finally{scan.close();}
+			}catch(InputMismatchException ime){ System.out.println("InputMismatchException: importAdvising"); }
+			catch(NoSuchElementException nse){ }
+		}
+		
+		rewrite();
 	} // importAdvising
 	
 	// return the root node
@@ -156,43 +137,8 @@ public class studentList{
 		return root;
 	} // getRoot
 	
-	// create a node and add it to the list
-	public void addNode(String name, String id, String grade, String totalGPA, String majorGPA, String totalCreds, String majorCreds, String upperCreds){
-		Node node = new Node(name, id, grade);
-		node.setTotalGPA(totalGPA);
-		node.setMajorGPA(majorGPA);
-		node.setTotalCreds(totalCreds);
-		node.setMajorCreds(majorCreds);
-		node.setUpperCreds(upperCreds);
-		
-		// add node to the end of the queue
-		if (root == null){
-			root = node;
-			head = root;
-		}
-		else{
-			head.setNext(node);
-			head = node;
-		}
-		
-		// write the node to the tempFile
-		try{
-			writer = new BufferedWriter(new FileWriter(tempFile, true));
-			writer.write(node.toString());
-			writer.newLine();
-		} catch(IOException e){ System.out.println("IOException: addNode"); }
-		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
-		size++;
-	} // addNode(name, id, grade, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds)
-	
-	// create a node and add it to the list
-	public void addNode(String name, String id, String grade, String totalGPA, String majorGPA){
-		//addNode(name, id, grade, totalGPA, majorGPA, 0, 0, 0);
-	} // addNode(name, id, grade, totalGPA, majorGPA)
-	
 	// create a node and add it to the studentList
 	public void addNode(String name, String id, String grade){
-		//addNode(name, id, grade, 0.0, 0.0);
 		Node node = new Node(name, id, grade);
 		
 		// add node to the end of the queue
@@ -205,13 +151,30 @@ public class studentList{
 			head = node;
 		}
 		
-		// write the node to the tempFile
+		// write the node to tempFile
 		try{
 			writer = new BufferedWriter(new FileWriter(tempFile, true));
 			writer.write(node.toString());
 			writer.newLine();
 		} catch(IOException e){ System.out.println("IOException: addNode"); }
 		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		
+		// write the node to tempGrad
+		try{
+			writer = new BufferedWriter(new FileWriter(tempGrad, true));
+			writer.write(node.getGradInfo());
+			writer.newLine();
+		} catch(IOException e){ System.out.println("IOException: addNode"); }
+		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		
+		// write the node to tempAdv
+		try{
+			writer = new BufferedWriter(new FileWriter(tempAdv, true));
+			writer.write(node.getGradInfo());
+			writer.newLine();
+		} catch(IOException e){ System.out.println("IOException: addNode"); }
+		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		
 		size++;
 	} // addNode(name, id, grade)
 	
@@ -653,7 +616,7 @@ class Node{
 	
 	public void setSubmitted(boolean submitted){
 		this.submitted = submitted;
-	} // setsubmitted
+	} // set submitted
 	
 	public void setGradDate(String gradDate){
 		this.gradDate = gradDate;
@@ -669,14 +632,20 @@ class Node{
 	
 	// return the student's advising information
 	public String getAdvisingInfo(){
-		return "ID:" + id + " Advised:" + advised + " Date:" + advDate;
+		if(advised)
+			return "ID:" + id + " Advised:" + advised + " Date:" + advDate;
+		else
+			return "ID:" + id + "Advised:" + advised;
 	} // getAdvisingInfo
 	
 	// return the student's graduation application information
 	public String getGradInfo(){
-		return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA 
-			+ " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds 
-			+ " Date:" + gradDate;
+		if(submitted)
+			return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA 
+				+ " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds 
+				+ " Date:" + gradDate;
+		else
+			return "ID:" + id + " Submitted:" + submitted;
 	} // getGradInfo
 	
 	// return the student's information

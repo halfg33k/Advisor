@@ -213,11 +213,11 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableModel.addRow(new Object[]{});
+				tableModel.addRow(new Object[]{"", "", ""});
 				
 				selected.setText("Add Selected");
 			}
-		});//add students button 
+		});//add students button
 		
 		// edit students button
 		Edit = new JButton("Edit");
