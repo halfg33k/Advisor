@@ -80,8 +80,17 @@ public class Advisor {
 	
 	static studentList studs; // queue containing students and their information
 	
-	//temporary fix to close the application as the setDefaultClose opertion is not working for some reason.....
+	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
 	private static JButton close = new JButton("Close");
+	
+	/*
+	 * The purpose of this variable is to keep track of which tab was just left.
+	 * e.g. If I am on the "Students" tab and I click on "Graduation," then I just left "Students"
+	 * 0 = Records
+	 * 1 = Students
+	 * 2 = Graduation
+	 */
+	private static int lastTab = 1;
 	
 	
 	
@@ -124,17 +133,8 @@ public class Advisor {
 		frame = new JFrame();
 		frame.setSize(1080,780);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setInVisible();
 		
 		studs = new studentList();
-		
-		/*
-		frame.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent e){
-				studs.close();
-			}
-		});
-		*/
 		
 		/**********************************************
 		* 
@@ -170,33 +170,40 @@ public class Advisor {
 		
 		
 		
-		
+		// records menu button
+		records = new JButton("Records");
+		records.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveTable();
+				lastTab = 0;
+				
+				initTableRecords();
+
+				selected.setText("records selected");
+			}
+		});//records menu button
 		
 		// students menu button
 		students = new JButton("Students");
 		students.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				saveTable();
+				lastTab = 1;
+				
 				selected.setText("students selected");
 				
 				initTableStuds();
 			}
 		});//student menu button
 		
-		// records menu button
-		records = new JButton("Records");
-		records.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			initTableRecords();
-
-			selected.setText("records selected");
-			}
-		});//records menu button
-		
 		// graduation menu button
 		Graduation = new JButton("Graduation");
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("graduation selected");
+				
+				saveTable();
+				lastTab = 2;
 				
 				initTableGrad();
 			}
@@ -255,13 +262,7 @@ public class Advisor {
 		 */
 		
 		
-		/*********************************
-		 * 
-		 * 
-		 * 		Adds Table to panel
-		 * 
-		 * 
-		 ***********************************/
+		// Adds table to panel
 		panel_1 = new JPanel();
 		panel_1.add(scrollPane);
 		
@@ -395,6 +396,33 @@ public class Advisor {
 		frame.setVisible(true);
 		
 	}
+	
+	// save the contents of the table before switching tabs
+	private static void saveTable(){
+		int id;
+		String name, grade;
+	
+		switch(lastTab){
+			case 0:
+				break;
+			case 1:
+				for(int i = 0; i < tableModel.getRowCount(); i++){
+					name = (String)tableModel.getValueAt(i, 0);
+					id = (int)tableModel.getValueAt(i, 1);
+					grade = (String)tableModel.getValueAt(i, 2);
+					
+					
+					if(!studs.contains(id)){
+						studs.addNode(name, id, grade);
+					}
+				}
+				break;
+			case 2:
+				break;
+			default:
+				System.out.println("ERROR: saveTable");
+		}
+	} // saveTable
 	
 	private static void initTableRecords(){
 		Node node;
