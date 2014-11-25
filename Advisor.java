@@ -240,7 +240,7 @@ public class Advisor {
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
-				int id = (int)tableModel.getValueAt(row, 1);
+				String id = (String)tableModel.getValueAt(row, 1);
 				Node node;
 				
 				tableModel.removeRow(row);
@@ -399,8 +399,7 @@ public class Advisor {
 	
 	// save the contents of the table before switching tabs
 	private static void saveTable(){
-		int id;
-		String name, grade;
+		String name, id, grade;
 	
 		switch(lastTab){
 			case 0:
@@ -408,7 +407,7 @@ public class Advisor {
 			case 1:
 				for(int i = 0; i < tableModel.getRowCount(); i++){
 					name = (String)tableModel.getValueAt(i, 0);
-					id = (int)tableModel.getValueAt(i, 1);
+					id = (String)tableModel.getValueAt(i, 1);
 					grade = (String)tableModel.getValueAt(i, 2);
 					
 					

@@ -28,8 +28,7 @@ public class studentList{
     public void importStudents(String fileName){
         File file = new File(fileName);
         Scanner scan = null;
-		String name, grade;
-		int id;
+		String name, grade, id;
         
         try{
             scan = new Scanner(file);
@@ -37,7 +36,7 @@ public class studentList{
 			
 			while(scan.hasNextLine()){
 				name = scan.next();
-				id = scan.nextInt();
+				id = scan.next();
 				grade = scan.next();
 				
 				addNode(name, id, grade);
@@ -54,30 +53,27 @@ public class studentList{
 	public void importGradApps(String fileName){
 		File file = new File(fileName);
 		Scanner scan = null;
-		int id, totalCreds, majorCreds, upperCreds, month, day, year;
-		double totalGPA, majorGPA;
+		String id, totalCreds, majorCreds, upperCreds, gradDate, totalGPA, majorGPA;
 		boolean submitted;
 		Node node;
 		
 		try{
 			scan = new Scanner(file);
-			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:| Date:|/|\\n|\\r");
+			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:| Date:|\\n|\\r");
 			
 			while(scan.hasNext()){
-				id = scan.nextInt();
+				id = scan.next();
 				submitted = scan.nextBoolean();
 				
 				node = getNode(id);
 				
 				if(submitted){
-					totalGPA = scan.nextDouble();
-					majorGPA = scan.nextDouble();
-					totalCreds = scan.nextInt();
-					majorCreds = scan.nextInt();
-					upperCreds = scan.nextInt();
-					month = scan.nextInt();
-					day = scan.nextInt();
-					year = scan.nextInt();
+					totalGPA = scan.next();
+					majorGPA = scan.next();
+					totalCreds = scan.next();
+					majorCreds = scan.next();
+					upperCreds = scan.next();
+					gradDate = scan.next();
 					
 					node.setSubmitted(submitted);
 					node.setTotalGPA(totalGPA);
@@ -85,9 +81,7 @@ public class studentList{
 					node.setTotalCreds(totalCreds);
 					node.setMajorCreds(majorCreds);
 					node.setUpperCreds(upperCreds);
-					node.setGradMonth(month);
-					node.setGradDay(day);
-					node.setGradYear(year);
+					node.setGradDate(gradDate);
 				}
 				
 				// write the graduation info to tempGrad.txt
@@ -115,29 +109,25 @@ public class studentList{
 	public void importAdvising(String fileName){
 		File file = new File(fileName);
 		Scanner scan = null;
-		int id, month, day, year;
+		String id, advDate;
 		boolean advised;
 		Node node;
 		
 		try{
 			scan = new Scanner(file);
-			scan.useDelimiter("ID:| Advised:| Date:|/|\\n|\\r");
+			scan.useDelimiter("ID:| Advised:| Date:|\\n|\\r");
 			
 			while(scan.hasNext()){
-				id = scan.nextInt();
+				id = scan.next();
 				advised = scan.nextBoolean();
 				
 				node = getNode(id);
 				
 				if(advised){
-					month = scan.nextInt();
-					day = scan.nextInt();
-					year = scan.nextInt();
+					advDate = scan.next();
 					
 					node.setAdvised(advised);
-					node.setAdvMonth(month);
-					node.setAdvDay(day);
-					node.setAdvYear(year);
+					node.setAdvDate(advDate);
 				}
 				
 				// write the graduation info to tempAdv.txt
@@ -167,7 +157,7 @@ public class studentList{
 	} // getRoot
 	
 	// create a node and add it to the list
-	public void addNode(String name, int id, String grade, double totalGPA, double majorGPA, int totalCreds, int majorCreds, int upperCreds){
+	public void addNode(String name, String id, String grade, String totalGPA, String majorGPA, String totalCreds, String majorCreds, String upperCreds){
 		Node node = new Node(name, id, grade);
 		node.setTotalGPA(totalGPA);
 		node.setMajorGPA(majorGPA);
@@ -196,52 +186,54 @@ public class studentList{
 	} // addNode(name, id, grade, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds)
 	
 	// create a node and add it to the list
-	public void addNode(String name, int id, String grade, double totalGPA, double majorGPA){
-		addNode(name, id, grade, totalGPA, majorGPA, 0, 0, 0);
+	public void addNode(String name, String id, String grade, String totalGPA, String majorGPA){
+		//addNode(name, id, grade, totalGPA, majorGPA, 0, 0, 0);
 	} // addNode(name, id, grade, totalGPA, majorGPA)
 	
 	// create a node and add it to the studentList
-	public void addNode(String name, int id, String grade){
-		addNode(name, id, grade, 0.0, 0.0);
+	public void addNode(String name, String id, String grade){
+		//addNode(name, id, grade, 0.0, 0.0);
+		Node node = new Node(name, id, grade);
+		
+		// add node to the end of the queue
+		if (root == null){
+			root = node;
+			head = root;
+		}
+		else{
+			head.setNext(node);
+			head = node;
+		}
+		
+		// write the node to the tempFile
+		try{
+			writer = new BufferedWriter(new FileWriter(tempFile, true));
+			writer.write(node.toString());
+			writer.newLine();
+		} catch(IOException e){ System.out.println("IOException: addNode"); }
+		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
+		size++;
 	} // addNode(name, id, grade)
 	
 	// insert a given node into the studentList
 	public void addNode(Node node){
 		String name = node.getName();
-		int id = node.getID();
+		String id = node.getID();
 		String grade = node.getGrade();
 		
 		addNode(name, id, grade);
 	} // addNode(node)
 	
-	// find a particular node by it's name
-	public Node getNode(String name){
-		Node current = root;
-		
-		while(current.getName() != name){
-			current = current.getNext();
-			
-			if(current == null)
-				return null;
-			else if(current.getName() == name)
-				break;
-			else
-				continue;
-		}
-		
-		return current;
-	} // getNode
-	
 	// find a particular node by it's id
-	public Node getNode(int id){
+	public Node getNode(String id){
 		Node current = root;
 		
-		while(current.getID() != id){
+		while(!current.getID().equals(id)){
 			current = current.getNext();
 			
 			if(current == null)
 				return null;
-			else if(current.getID() == id)
+			else if(current.getID().equals(id))
 				break;
 			else
 				continue;
@@ -262,104 +254,100 @@ public class studentList{
 	} // getNode
 	
 	// edit the name of a given node
-	public void editName(int id, String name){
+	public void editName(String id, String name){
 		getNode(id).setName(name);
 		
 		rewrite();
-	} // editNode(id, name)
+	} // editName
 	
 	// edit the id of a given node
-	public void editID(int id, int newID){
-		getNode(id).setID(newID); // change the id of the given node
+	public void editID(String id, String newID){
+		getNode(id).setID(newID);
 		
 		rewrite();
-	}
+	} // editID
 	
 	// edit the grade of a given node
-	public void editGrade(int id, String grade){
+	public void editGrade(String id, String grade){
 		getNode(id).setGrade(grade);
 		
 		rewrite();
-	} // editNode(id, grade)
+	} // editGrade
 	
 	// edit the totalGPA of a given node
-	public void editTotalGPA(int id, double totalGPA){
-		getNode(id).setTotalGPA(totalGPA); // change the totalGPA of the given node
+	public void editTotalGPA(String id, String totalGPA){
+		getNode(id).setTotalGPA(totalGPA); 
 		
 		rewrite();
-	} // editNode(id, totalGPA)
+	} // editTotalGPA
 	
 	// edit the majorGPA of a given node
-	public void editMajorGPA(int id, double majorGPA){
-		getNode(id).setMajorGPA(majorGPA); // change the totalGPA of the given node
+	public void editMajorGPA(String id, String majorGPA){
+		getNode(id).setMajorGPA(majorGPA); 
 		
 		rewrite();
-	} // editNode(id, majoprGPA, int unused)
+	} // editMajorGPA
 	
 	// edit the totalCreds of a given node
-	public void editTotalCreds(int id, int totalCreds){
-		getNode(id).setTotalCreds(totalCreds); // change the totalCreds of the given node
+	public void editTotalCreds(String id, String totalCreds){
+		getNode(id).setTotalCreds(totalCreds);
 		
 		rewrite();
 	} // editTotalCreds
 	
 	// edit the majorCreds of a given node
-	public void editMajorCreds(int id, int majorCreds){
-		getNode(id).setMajorCreds(majorCreds); // change the totalGPA of the given node
+	public void editMajorCreds(String id, String majorCreds){
+		getNode(id).setMajorCreds(majorCreds);
 		
 		rewrite();
 	} // editMajorCreds
 	
 	// edit the upperCreds of a given node
-	public void editUpperCreds(int id, int upperCreds){
-		getNode(id).setUpperCreds(upperCreds); // change the totalGPA of the given node
+	public void editUpperCreds(String id, String upperCreds){
+		getNode(id).setUpperCreds(upperCreds);
 		
 		rewrite();
 	} // editUpperCreds
 	
 	// edit whether a graduation application has been submitted
-	public void editSubmitted(int id, boolean submitted){
+	public void editSubmitted(String id, boolean submitted){
 		getNode(id).setSubmitted(submitted);
 		
 		rewrite();
 	} // editSubmitted
 	
 	// edit the date of submission for a student's graduation application
-	public void editGradDate(int id, int month, int day, int year){
-		getNode(id).setGradMonth(month);
-		getNode(id).setGradDay(day);
-		getNode(id).setGradYear(year);
+	public void editGradDate(String id, String gradDate){
+		getNode(id).setGradDate(gradDate);
 		
 		rewrite();
 	} // editGradDate
 	
 	// edit whether the student has been advised
-	public void editAdvised(int id, boolean advised){
+	public void editAdvised(String id, boolean advised){
 		getNode(id).setAdvised(advised);
 		
 		rewrite();
 	} // editAdvised
 	
 	// edit the date of advising for the given student
-	public void editAdvDate(int id, int month, int day, int year){
-		getNode(id).setAdvMonth(month);
-		getNode(id).setAdvDay(day);
-		getNode(id).setAdvYear(year);
+	public void editAdvDate(String id, String advDate){
+		getNode(id).setAdvDate(advDate);
 		
 		rewrite();
 	} // editAdvDate
 	
 	// remove a particular node by it's id
-	public Node removeNode(int id){		
+	public Node removeNode(String id){		
 		Node current = root;
 		File file = new File("temp2.txt");
 		
-		if(root.getID() == id)
+		if(root.getID().equals(id))
 			root = root.getNext();
 		else{
 			Node prev = root;
 			try{
-				while(current.getID() != id){
+				while(!current.getID().equals(id)){
 					if(current != null){
 						prev = current;
 						current = current.getNext();
@@ -371,32 +359,6 @@ public class studentList{
 			
 			prev.setNext(current.getNext());
 		}
-		
-		/*
-		// rewrite the tempFile without the old data and including the new data
-		try{
-			file.createNewFile();
-			
-			reader = new BufferedReader(new FileReader(tempFile));
-			writer = new BufferedWriter(new FileWriter(file));
-			
-			String currentLine;
-			
-			while((currentLine = reader.readLine()) != null){
-				if(currentLine.contains(id + ""))
-					continue;
-					
-				writer.write(currentLine);
-				writer.newLine();
-			}
-		} catch(Exception e){ System.out.println("Exception: removeNode(id)"); }
-		finally{try{writer.close(); reader.close();}catch(Exception e){}}
-		
-		tempFile.delete(); // delete tempFile to free up the name for the new tempFile
-		// rename the new tempFile to temp.txt
-		if(!(file.renameTo(tempFile)))
-			System.out.println("Failed to rename file.");
-		*/
 		
 		size--;
 		
@@ -482,22 +444,12 @@ public class studentList{
 	} // close
 	
 	// whether the list contains a given id
-	public boolean contains(int id){
+	public boolean contains(String id){
 		for(int i = 0; i < size; i++){
 			try{
-				if(getNode(i, 0).getID() == id)
+				if(getNode(i, 0).getID().equals(id))
 					return true;
-			} catch(NullPointerException e){ System.out.print("-trace" + i + "-"); }
-		}
-		
-		return false;
-	} // contains
-	
-	// whether the list contains a given name
-	public boolean contains(String name){
-		for(int i = 0; i < size; i++){
-			if(getNode(i).getName() == name)
-				return true;
+			} catch(NullPointerException e){ System.out.println("NullPointerException: contains"); }
 		}
 		
 		return false;
@@ -574,40 +526,40 @@ public class studentList{
 } // class studentList
 
 class Node{
-	private String name, grade;
-	private int id, totalCreds, majorCreds, upperCreds;
+	private String name, id, grade;
+	private String totalCreds, majorCreds, upperCreds;
 	private Node next; // next node in the queue
-	private double totalGPA, majorGPA;
+	private String totalGPA, majorGPA;
 	private boolean submitted; // graduation application submitted
-	private int gradMonth, gradDay, gradYear; // date graduation application was submitted
+	private String gradDate;
 	private boolean advised; // student has received academic advising
-	private int advMonth, advDay, advYear; // date advising last took place
+	private String advDate; // date advising last took place
 	
 	// initialize this Node with default values
 	public Node(){
 		name = "John Doe";
-		id = -1;
+		//id = -1;
 		grade = null;
 		next = null;
-		totalGPA = 0.0;
-		majorGPA = 0.0;
-		totalCreds = 0;
-		majorCreds = 0;
-		upperCreds = 0;
+		//totalGPA = 0.0;
+		//majorGPA = 0.0;
+		//totalCreds = 0;
+		//majorCreds = 0;
+		//upperCreds = 0;
 		submitted = false;
 	} // Node constructor
 	
 	// initialize this Node with given values
-	public Node(String name, int id, String grade){
+	public Node(String name, String id, String grade){
 		this.name = name;
 		this.id = id;
 		this.grade = grade;
 		next = null;
-		totalGPA = 0.0;
-		majorGPA = 0.0;
-		totalCreds = 0;
-		majorCreds = 0;
-		upperCreds = 0;
+		//totalGPA = 0.0;
+		//majorGPA = 0.0;
+		//totalCreds = 0;
+		//majorCreds = 0;
+		//upperCreds = 0;
 		submitted = false;
 	} // Node constructor
 	
@@ -619,7 +571,7 @@ class Node{
 		return name;
 	} // getName
 	
-    public int getID(){
+    public String getID(){
 		return id;
 	} // getID
     
@@ -627,23 +579,23 @@ class Node{
 		return grade;
 	} // getGrade
     
-	public double getTotalGPA(){
+	public String getTotalGPA(){
 		return totalGPA;
 	} // getTotalGpa
 	
-	public double getMajorGPA(){
+	public String getMajorGPA(){
 		return majorGPA;
 	} // getMajorGPA
 	
-	public int getTotalCreds(){
+	public String getTotalCreds(){
 		return totalCreds;
 	} // getTotalCreds
 	
-	public int getMajorCreds(){
+	public String getMajorCreds(){
 		return majorCreds;
 	} // getTotalCreds
 	
-	public int getUpperCreds(){
+	public String getUpperCreds(){
 		return upperCreds;
 	} // getUpperCreds
 	
@@ -651,40 +603,17 @@ class Node{
 		return submitted;
 	} // getsubmitted
 	
-	public int getGradMonth(){
-		return gradMonth;
-	} // getGradMonth
-	
-	public int getGradDay(){
-		return gradDay;
-	} // getGradDay
-	
-	public int getGradYear(){
-		return gradYear;
-	} // getGradYear
+	public String getGradDate(){
+		return gradDate;
+	} // getGradDate
 	
 	public boolean getAdvised(){
 		return advised;
 	} // getAdvised
 	
 	public String getAdvDate(){
-		if(advised)
-			return advMonth + "/" + advDay + "/" + advYear;
-		else
-			return "";
+		return advDate;
 	} // getAdvDate
-	
-	public int getAdvMonth(){
-		return advMonth;
-	} // getAdvMonth
-	
-	public int getAdvDay(){
-		return advDay;
-	} // getAdvDay
-	
-	public int getAdvYear(){
-		return advYear;
-	} // getAdvYear
 	
 	public void setNext(Node next){
 		this.next = next;
@@ -694,31 +623,31 @@ class Node{
         this.name = name;
     } // setName
     
-    public void setID(int id){
-        this.id = id;;
+    public void setID(String id){
+        this.id = id;
     } // setID
     
     public void setGrade(String grade){
         this.grade = grade;
     } // setGrade
 	
-	public void setTotalGPA(double totalGPA){
+	public void setTotalGPA(String totalGPA){
 		this.totalGPA = totalGPA;
 	} // setTotalGPA
 	
-	public void setMajorGPA(double majorGPA){
+	public void setMajorGPA(String majorGPA){
 		this.majorGPA = majorGPA;
 	} //setMajorGPA
 	
-	public void setTotalCreds(int totalCreds){
+	public void setTotalCreds(String totalCreds){
 		this.totalCreds = totalCreds;
 	} // setTotalCreds
 	
-	public void setMajorCreds(int majorCreds){
+	public void setMajorCreds(String majorCreds){
 		this.majorCreds = majorCreds;
 	} // setTotalCreds
 	
-	public void setUpperCreds(int upperCreds){
+	public void setUpperCreds(String upperCreds){
 		this.upperCreds = upperCreds;
 	} // setUpperCreds
 	
@@ -726,44 +655,28 @@ class Node{
 		this.submitted = submitted;
 	} // setsubmitted
 	
-	public void setGradMonth(int gradMonth){
-		this.gradMonth = gradMonth;
-	} // setGradMonth
-	
-	public void setGradDay(int gradDay){
-		this.gradDay = gradDay;
-	} // setGradDay
-	
-	public void setGradYear(int gradYear){
-		this.gradYear = gradYear;
-	} // setGradYear
+	public void setGradDate(String gradDate){
+		this.gradDate = gradDate;
+	} // setGradDate
 	
 	public void setAdvised(boolean advised){
 		this.advised = advised;
 	} // setAdvised
 	
-	public void setAdvMonth(int advMonth){
-		this.advMonth = advMonth;
-	} // setAdvMonth
-	
-	public void setAdvDay(int advDay){
-		this.advDay = advDay;
-	} // setAdvDay
-	
-	public void setAdvYear(int advYear){
-		this.advYear = advYear;
-	} // setAdvYear
+	public void setAdvDate(String advDate){
+		this.advDate = advDate;
+	} // setAdvDate
 	
 	// return the student's advising information
 	public String getAdvisingInfo(){
-		return "ID:" + id + " Advised:" + advised + " Date:" + advMonth + "/" + advDay + "/" + advYear;
+		return "ID:" + id + " Advised:" + advised + " Date:" + advDate;
 	} // getAdvisingInfo
 	
 	// return the student's graduation application information
 	public String getGradInfo(){
 		return "ID:" + id + " Submitted:" + submitted + " Total GPA:" + totalGPA + " Major GPA:" + majorGPA 
 			+ " Total Credits:" + totalCreds + " Major Credits:" + majorCreds + " Upper Credits:" + upperCreds 
-			+ " Date:" + gradMonth + "/" + gradDay + "/" + gradYear;
+			+ " Date:" + gradDate;
 	} // getGradInfo
 	
 	// return the student's information
