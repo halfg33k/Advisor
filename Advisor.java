@@ -39,7 +39,7 @@ public class Advisor {
 	
 	// table variables
 	static JTable table;
-	static DefaultTableModel tableModel;
+	static MyTableModel tableModel;
 	static JScrollPane scrollPane; // scrollPane for table
 	
 	
@@ -97,7 +97,11 @@ public class Advisor {
 	
 	
 	
-	
+	private static class MyTableModel extends DefaultTableModel{
+		public Class<?> getColumnClass(int index){
+			return getValueAt(0, index).getClass();
+		}
+	} // class MyTableModel
 
 	//main method--> main entry to application
 	public static void main(String[] args) throws FileNotFoundException{
@@ -106,10 +110,12 @@ public class Advisor {
 		// relevant components
 		Advisor();
 	}
+	
 	//loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				saveTable();
 				studs.close();
 				
 				System.exit(0);
@@ -142,7 +148,7 @@ public class Advisor {
 		* Table
 		* 
 		***********************************************/
-		tableModel = new DefaultTableModel();
+		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
 		scrollPane = new JScrollPane(table);
 		initTableStuds();
@@ -400,23 +406,71 @@ public class Advisor {
 	// save the contents of the table before switching tabs
 	private static void saveTable(){
 		String name, id, grade;
+		boolean advised, submitted;
+		String advDate;
+		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
 		switch(lastTab){
-			case 0:
+			case 0: // Records tab
+				for(int i = 0; i < tableModel.getRowCount(); i++){
+					name = (String)tableModel.getValueAt(i, 0);
+					id = (String)tableModel.getValueAt(i, 1);
+					grade = (String)tableModel.getValueAt(i, 2);
+					advised = (boolean)tableModel.getValueAt(i, 3);
+					advDate = (String)tableModel.getValueAt(i, 4);
+					
+					
+					studs.getNode(i, 0).setName(name);
+					studs.getNode(i, 0).setID(id);
+					studs.getNode(i, 0).setGrade(grade);
+					studs.getNode(i, 0).setAdvised(advised);
+					studs.getNode(i, 0).setAdvDate(advDate);
+				}
+				
+				studs.rewrite();
 				break;
-			case 1:
+			case 1: // Students tab
 				for(int i = 0; i < tableModel.getRowCount(); i++){
 					name = (String)tableModel.getValueAt(i, 0);
 					id = (String)tableModel.getValueAt(i, 1);
 					grade = (String)tableModel.getValueAt(i, 2);
 					
 					
-					if(!studs.contains(id)){
-						studs.addNode(name, id, grade);
-					}
+					//if(!studs.contains(id))
+					//	studs.addNode(name, id, grade);
+					//else{
+						studs.getNode(i, 0).setName(name);
+						studs.getNode(i, 0).setID(id);
+						studs.getNode(i, 0).setGrade(grade);
+					//}
 				}
+				
+				studs.rewrite();
 				break;
-			case 2:
+			case 2: // Graduation tab
+				for(int i = 0; i < tableModel.getRowCount(); i++){
+					name = (String)tableModel.getValueAt(i, 0);
+					id = (String)tableModel.getValueAt(i, 1);
+					grade = (String)tableModel.getValueAt(i, 2);
+					submitted = (boolean)tableModel.getValueAt(i, 3);
+					totalGPA = (String)tableModel.getValueAt(i, 4);
+					majorGPA = (String)tableModel.getValueAt(i, 5);
+					totalCreds = (String)tableModel.getValueAt(i, 6);
+					majorCreds = (String)tableModel.getValueAt(i, 7);
+					upperCreds = (String)tableModel.getValueAt(i, 8);
+					
+					studs.getNode(i, 0).setName(name);
+					studs.getNode(i, 0).setID(id);
+					studs.getNode(i, 0).setGrade(grade);
+					studs.getNode(i, 0).setSubmitted(submitted);
+					studs.getNode(i, 0).setTotalGPA(totalGPA);
+					studs.getNode(i, 0).setMajorGPA(majorGPA);
+					studs.getNode(i, 0).setTotalCreds(totalCreds);
+					studs.getNode(i, 0).setMajorCreds(majorCreds);
+					studs.getNode(i, 0).setUpperCreds(upperCreds);
+				}
+				
+				studs.rewrite();
 				break;
 			default:
 				System.out.println("ERROR: saveTable");
@@ -459,12 +513,14 @@ public class Advisor {
 	
 	private static void initTableGrad(){
 		Node node;
+		boolean submitted;
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 	
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
+		tableModel.addColumn("Submitted");
 		tableModel.addColumn("Total GPA");
 		tableModel.addColumn("Major GPA");
 		tableModel.addColumn("Total Credits");
@@ -473,8 +529,12 @@ public class Advisor {
 		
 		for(int i = 0; i < studs.getSize(); i++){
 			node = studs.getNode(i, 0);
-		
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+			submitted = node.getSubmitted();
+			
+			if(submitted)
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), Boolean.TRUE, node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+			else
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), Boolean.FALSE, node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 		}
 	} // initTableStuds
 }

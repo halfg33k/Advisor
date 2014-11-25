@@ -417,13 +417,13 @@ public class studentList{
 		
 		return false;
 	} // contains
-	
+		
 	public int getSize(){
 		return size;
 	} // getSize
 	
 	// rewrite the contents of the temp file
-	private void rewrite(){
+	public void rewrite(){
 		File file = new File("temp2.txt");
 		Node node;
 		
@@ -504,11 +504,6 @@ class Node{
 		//id = -1;
 		grade = null;
 		next = null;
-		//totalGPA = 0.0;
-		//majorGPA = 0.0;
-		//totalCreds = 0;
-		//majorCreds = 0;
-		//upperCreds = 0;
 		submitted = false;
 	} // Node constructor
 	
@@ -518,11 +513,6 @@ class Node{
 		this.id = id;
 		this.grade = grade;
 		next = null;
-		//totalGPA = 0.0;
-		//majorGPA = 0.0;
-		//totalCreds = 0;
-		//majorCreds = 0;
-		//upperCreds = 0;
 		submitted = false;
 	} // Node constructor
 	
