@@ -47,17 +47,6 @@ public class Advisor {
 	static DefaultTableModel tableModel;
 	static JScrollPane scrollPane; // scrollPane for table
 	
-	//String for Table
-	static String[][] data = new String[][]{
-			{"a", "b", "c", "d"},
-			{"e", "f", "g", "h"},
-			{"i", "j", "k", "l"}
-	};
-
-	static String[] title = new String[]{
-			"A", "B", "C", "D"
-	};
-	
 	
 	//all labels for the components
 	static JLabel selected = new JLabel("None Selected"); // label declaring which button has been pressed (for testing purposes)
@@ -93,7 +82,6 @@ public class Advisor {
 	private static  JTextField textField_2 = new JTextField();
 	private static  JTextField textField_Major_GPA = new JTextField();
 	private static  JTextField textField_Major_Credits = new JTextField();
-	static boolean adding = false; // whether to take the input as adding or editing a student
 	
 	static studentList studs; // queue containing students and their information
 	
@@ -118,6 +106,8 @@ public class Advisor {
 	public static void Advisor() throws FileNotFoundException{
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				studs.close();
+				
 				System.exit(0);
 			}
 		});
@@ -140,14 +130,15 @@ public class Advisor {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setInVisible();
 		
-		//studs = new studentList();
+		studs = new studentList();
 		
+		/*
 		frame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				studs.close();
 			}
 		});
-		
+		*/
 		
 		/**********************************************
 		* 
@@ -260,10 +251,6 @@ public class Advisor {
 		Edit = new JButton("Edit");
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//setInVisible();
-				
-				adding = false;
-			
 				selected.setText("Edit Selected");
 			}
 		}); //edit students button
@@ -450,7 +437,9 @@ public class Advisor {
 	}
 	
 	private static void initTableRecords(){
+		Node node;
 		tableModel.setColumnCount(0);
+		tableModel.setRowCount(0);
 	
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
@@ -458,19 +447,33 @@ public class Advisor {
 		tableModel.addColumn("Advised");
 		tableModel.addColumn("Date");
 		
+		for(int i = 0; i < studs.getSize(); i++){
+			node = studs.getNode(i, 0);
 		
+			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
+		}
 	} // initTableStuds
 	
 	private static void initTableStuds(){
+		Node node;
 		tableModel.setColumnCount(0);
+		tableModel.setRowCount(0);
 		
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
+		
+		for(int i = 0; i < studs.getSize(); i++){
+			node = studs.getNode(i, 0);
+		
+			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
+		}
 	} // initTableStuds
 	
 	private static void initTableGrad(){
+		Node node;
 		tableModel.setColumnCount(0);
+		tableModel.setRowCount(0);
 	
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
@@ -480,6 +483,12 @@ public class Advisor {
 		tableModel.addColumn("Total Credits");
 		tableModel.addColumn("Major Credits");
 		tableModel.addColumn("Upper-Level Credits");
+		
+		for(int i = 0; i < studs.getSize(); i++){
+			node = studs.getNode(i, 0);
+		
+			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+		}
 	} // initTableStuds
 }
 

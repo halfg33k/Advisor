@@ -662,6 +662,13 @@ class Node{
 		return advised;
 	} // getAdvised
 	
+	public String getAdvDate(){
+		if(advised)
+			return advMonth + "/" + advDay + "/" + advYear;
+		else
+			return "";
+	} // getAdvDate
+	
 	public int getAdvMonth(){
 		return advMonth;
 	} // getAdvMonth
