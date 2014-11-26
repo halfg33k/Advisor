@@ -12,16 +12,6 @@ import java.util.*;
 
 
 public class Advisor {
-	
-	
-	/**
-	 * 
-	 * 		Component Section:
-	 * 		Declares and Instantiates all relevant UI Components:
-	 * 		Labels, Button, textFields, JList, and any other Relevant UI components
-	 * 
-	 * 
-	 */
 	// main frame and panel of the menu
 	static JFrame frame;
 	static JPanel panel;
@@ -30,7 +20,8 @@ public class Advisor {
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, View, Delete, Add;	
 	
-	static File user_cred; // user credentials file
+	// user credentials file (may remove)
+	static File user_cred; 
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -38,16 +29,15 @@ public class Advisor {
 	static FileWriter file_writer;
 	
 	// table variables
-	static JTable table;
 	static MyTableModel tableModel;
+	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
 	
-	
 	//all labels for the components
-	static JLabel selected = new JLabel("None Selected"); // label declaring which button has been pressed (for testing purposes)
+	static JLabel selected = new JLabel("Students"); // label declaring which button has been pressed (for testing purposes)
 	
 	
-	private static  JLabel lblNewLabel = new JLabel("");
+	//private static  JLabel lblNewLabel = new JLabel("");
 	
 	//labels used for positioning and allignment purposes:
 	//think of it like a measurement guide to position certain components in relative to others
@@ -107,16 +97,19 @@ public class Advisor {
 	//main method--> main entry to application
 	public static void main(String[] args) throws FileNotFoundException{
 		
-		//Call to Advisor--> the name of the GUI: once Advisor is called:: The UI loads and adds all 
+		//Call to Advisor--> the name of the GUI: once Advisor is called: The UI loads and adds all 
 		// relevant components
 		Advisor();
 	}
 	
-	//loads Advisor GUI
+	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		frame = new JFrame();
 		frame.setSize(1070,575);
 		
+		/*
+		 * This snippet may be removed. It setup a button that is no longer used.
+		 *
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveTable();
@@ -125,7 +118,9 @@ public class Advisor {
 				System.exit(0);
 			}
 		});
+		*/
 		
+		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
 				saveTable();
@@ -144,8 +139,6 @@ public class Advisor {
 		textField_Major_Credits.setVisible(false);
 		close.setVisible(false);
 		
-		//textField_Major_Credits.setVisible(false);
-		
 		
 		 
 		/**
@@ -155,8 +148,6 @@ public class Advisor {
 		 *			To Implement: --> individual Panels for each respective button category
 		 *
 		 */
-		
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		studs = new studentList();
 		
@@ -234,11 +225,14 @@ public class Advisor {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("Graduation Report");
 				
+				try{
 				saveTable();
+				
 				lastTab = 2;
 				
 				initTableGrad();
 				
+				// resize the columns to properly accommodate each header
 				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 				
 				table.getColumnModel().getColumn(0).setPreferredWidth(150);
@@ -251,7 +245,7 @@ public class Advisor {
 				table.getColumnModel().getColumn(7).setPreferredWidth(90);
 				table.getColumnModel().getColumn(8).setPreferredWidth(130);
 				
-				
+				} catch(NullPointerException npe){ System.out.println("trace"); }
 			}
 		}); //graduation menu button
 		
@@ -260,8 +254,6 @@ public class Advisor {
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tableModel.addRow(new Object[]{});
-				
-				
 			}
 		});
 		
@@ -269,23 +261,24 @@ public class Advisor {
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				// unused and invisible at the moment
 			}
 		}); //view button
 		View.setVisible(false);
+		
 		// delete students button
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int row = table.getSelectedRow();
-				String id = (String)tableModel.getValueAt(row, 1);
-				Node node;
-				
-				tableModel.removeRow(row);
-				
-				studs.removeNode(id);
-			
-				
+				try{
+					int row = table.getSelectedRow();
+					String id = (String)tableModel.getValueAt(row, 1);
+					Node node;
+					
+					tableModel.removeRow(row);
+					
+					studs.removeNode(id);
+				} catch(ArrayIndexOutOfBoundsException ex){}
 			}
 		});
 		
@@ -352,7 +345,7 @@ public class Advisor {
 										.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(lblNewLabel)
+										//.addComponent(lblNewLabel)
 										.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE))
 									.addGap(276)
 									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -387,8 +380,8 @@ public class Advisor {
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(lblNewLabel_9)
 								.addComponent(label_1)
-								.addComponent(label_2)
-								.addComponent(lblNewLabel)))
+								.addComponent(label_2)))
+								//.addComponent(lblNewLabel)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -441,6 +434,7 @@ public class Advisor {
 		String advDate;
 		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
+		
 		switch(lastTab){
 			case 0: // Records tab
 				for(int i = 0; i < tableModel.getRowCount(); i++){
@@ -451,9 +445,12 @@ public class Advisor {
 					advDate = (String)tableModel.getValueAt(i, 4);
 					
 					
-					studs.getNode(i, 0).setName(name);
-					studs.getNode(i, 0).setID(id);
-					studs.getNode(i, 0).setGrade(grade);
+					try{
+						studs.getNode(i, 0).setName(name);
+						studs.getNode(i, 0).setID(id);
+						studs.getNode(i, 0).setGrade(grade);
+					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+					
 					studs.getNode(i, 0).setAdvised(advised);
 					studs.getNode(i, 0).setAdvDate(advDate);
 				}
@@ -465,25 +462,13 @@ public class Advisor {
 					name = (String)tableModel.getValueAt(i, 0);
 					id = (String)tableModel.getValueAt(i, 1);
 					grade = (String)tableModel.getValueAt(i, 2);
-					boolean add = true; // whether to add or edit
 					
-					for(int j = 0; j < tableModel.getRowCount(); j++){
-						if(tableModel.getValueAt(i, 1).equals(id) && j != i)
-							add = false;
-						
-						System.out.println(i + " " + j + " " + add);
-					}
 					
-					System.out.println(add);
-					/*
-					if(add)
-						studs.addNode(name, id, grade);
-					else{
+					try{
 						studs.getNode(i, 0).setName(name);
 						studs.getNode(i, 0).setID(id);
 						studs.getNode(i, 0).setGrade(grade);
-					}
-					*/
+					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
 				}
 				
 				studs.rewrite();
@@ -500,9 +485,13 @@ public class Advisor {
 					majorCreds = (String)tableModel.getValueAt(i, 7);
 					upperCreds = (String)tableModel.getValueAt(i, 8);
 					
-					studs.getNode(i, 0).setName(name);
-					studs.getNode(i, 0).setID(id);
-					studs.getNode(i, 0).setGrade(grade);
+					
+					try{
+						studs.getNode(i, 0).setName(name);
+						studs.getNode(i, 0).setID(id);
+						studs.getNode(i, 0).setGrade(grade);
+					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+					
 					studs.getNode(i, 0).setSubmitted(submitted);
 					studs.getNode(i, 0).setTotalGPA(totalGPA);
 					studs.getNode(i, 0).setMajorGPA(majorGPA);
