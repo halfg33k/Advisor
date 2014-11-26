@@ -1,4 +1,6 @@
-ID:20 Advised:true Date:11.9.2014
-ID:23 Advised:true Date:10.26.14
-ID:22 Advised:true Date:11.5.2014
-ID:25 Advised:true Date:11.4.2014
+ID:20 Advised:true Date:11/08/2014
+ID:21 Advised:true Date:10/26/2014
+ID:22 Advised:true Date:10/30/2014
+ID:25 Advised:true Date:11/04/2014
+ID:14 Advised:false
+ID:76 Advised:false
