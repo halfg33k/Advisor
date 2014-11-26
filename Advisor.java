@@ -28,7 +28,7 @@ public class Advisor {
 	static JPanel panel_1;
 	
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, Edit, View, Delete, Add;	
+	static JButton students, records, Graduation, View, Delete, Add;	
 	
 	static File user_cred; // user credentials file
 	
@@ -83,6 +83,7 @@ public class Advisor {
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
 	private static JButton close = new JButton("Close");
 	
+	
 	/*
 	 * The purpose of this variable is to keep track of which tab was just left.
 	 * e.g. If I am on the "Students" tab and I click on "Graduation," then I just left "Students"
@@ -113,6 +114,9 @@ public class Advisor {
 	
 	//loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
+		frame = new JFrame();
+		frame.setSize(1070,575);
+		
 		close.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveTable();
@@ -122,11 +126,26 @@ public class Advisor {
 			}
 		});
 		
+		frame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				saveTable();
+				studs.close();
+				
+				System.exit(0);
+			}
+			
+		});
+		
 		textField_Major_Credits.setColumns(10);
 		textField_Major_GPA.setColumns(10);
 		textField_2.setColumns(10);
 		textField_total_gpa.setColumns(10);
 		textField_Name.setVisible(false);
+		textField_Major_Credits.setVisible(false);
+		close.setVisible(false);
+		
+		//textField_Major_Credits.setVisible(false);
+		
 		
 		 
 		/**
@@ -136,9 +155,8 @@ public class Advisor {
 		 *			To Implement: --> individual Panels for each respective button category
 		 *
 		 */
-		frame = new JFrame();
-		frame.setSize(1080,780);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		studs = new studentList();
 		
@@ -150,7 +168,9 @@ public class Advisor {
 		***********************************************/
 		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
+		
 		scrollPane = new JScrollPane(table);
+		scrollPane.setPreferredSize(new Dimension(808,400));
 		initTableStuds();
 		
 		table.setFillsViewportHeight(true); // fills out the JScrollPane
@@ -186,8 +206,10 @@ public class Advisor {
 				lastTab = 0;
 				
 				initTableRecords();
+				
+				table.setAutoResizeMode(1);
 
-				selected.setText("records selected");
+				selected.setText("Advising Report");
 			}
 		});//records menu button
 		
@@ -198,9 +220,11 @@ public class Advisor {
 				saveTable();
 				lastTab = 1;
 				
-				selected.setText("students selected");
+				selected.setText("Students");
 				
 				initTableStuds();
+				
+				table.setAutoResizeMode(1);
 			}
 		});//student menu button
 		
@@ -208,12 +232,26 @@ public class Advisor {
 		Graduation = new JButton("Graduation");
 		Graduation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selected.setText("graduation selected");
+				selected.setText("Graduation Report");
 				
 				saveTable();
 				lastTab = 2;
 				
 				initTableGrad();
+				
+				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+				
+				table.getColumnModel().getColumn(0).setPreferredWidth(150);
+				table.getColumnModel().getColumn(1).setPreferredWidth(50);
+				table.getColumnModel().getColumn(2).setPreferredWidth(75);
+				table.getColumnModel().getColumn(3).setPreferredWidth(75);
+				table.getColumnModel().getColumn(4).setPreferredWidth(70);
+				table.getColumnModel().getColumn(5).setPreferredWidth(75);
+				table.getColumnModel().getColumn(6).setPreferredWidth(90);
+				table.getColumnModel().getColumn(7).setPreferredWidth(90);
+				table.getColumnModel().getColumn(8).setPreferredWidth(130);
+				
+				
 			}
 		}); //graduation menu button
 		
@@ -221,28 +259,20 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tableModel.addRow(new Object[]{"", "", ""});
+				tableModel.addRow(new Object[]{});
 				
-				selected.setText("Add Selected");
+				
 			}
-		});//add students button
-		
-		// edit students button
-		Edit = new JButton("Edit");
-		Edit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selected.setText("Edit Selected");
-			}
-		}); //edit students button
+		});
 		
 		// view button (may remove)
 		View = new JButton("View");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selected.setText("View Selected");
+				
 			}
 		}); //view button
-		
+		View.setVisible(false);
 		// delete students button
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
@@ -255,7 +285,7 @@ public class Advisor {
 				
 				studs.removeNode(id);
 			
-				selected.setText("Delete Selected");
+				
 			}
 		});
 		
@@ -285,87 +315,88 @@ public class Advisor {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(55)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(Add, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(203)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(21)
-							.addComponent(close)
-							.addGap(27)
-							.addComponent(records))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(55)
+							.addComponent(records)
+							.addGap(26)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-									.addComponent(Add, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(Edit, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addComponent(selected))))
-					.addGap(32)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(students, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-							.addGap(21)
-							.addComponent(Graduation))
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addGroup(groupLayout.createSequentialGroup()
-								.addGap(26)
 								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 									.addComponent(lblNewLabel_8))
-								.addGap(41)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(lblNewLabel_9)
-										.addPreferredGap(ComponentPlacement.RELATED)
-										.addComponent(label_1))
-									.addGroup(groupLayout.createSequentialGroup()
-										.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
-										.addGap(55)
-										.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)))
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addComponent(label_2)
-									.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
-								.addGap(36)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addComponent(lblNewLabel)
-									.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE)))
-							.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 560, GroupLayout.PREFERRED_SIZE)))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(34)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
+											.addGap(55)
+											.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(lblNewLabel_9)
+											.addPreferredGap(ComponentPlacement.RELATED)
+											.addComponent(label_1)))
+									.addGap(83)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(label_2)
+										.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(lblNewLabel)
+										.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE))
+									.addGap(276)
+									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+										.addGroup(groupLayout.createSequentialGroup()
+											.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
+											.addGap(8))
+										.addGroup(groupLayout.createSequentialGroup()
+											.addGap(113)
+											.addComponent(textField_Major_Credits, GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
+											.addGap(107)))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addGap(782))
+								.addGroup(groupLayout.createSequentialGroup()
+									.addGap(26)
+									.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(close)
+									.addGap(1235))))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
-							.addGap(8))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(113)
-							.addComponent(textField_Major_Credits, GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
-							.addGap(107)))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(782))
+							.addComponent(selected)
+							.addContainerGap(764, Short.MAX_VALUE))))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(49)
-					.addComponent(lblNewLabel_8)
-					.addContainerGap(703, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(close)
+							.addGap(18)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblNewLabel_9)
+								.addComponent(label_1)
+								.addComponent(label_2)
+								.addComponent(lblNewLabel)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(records)
 								.addComponent(students)
-								.addComponent(Graduation)
-								.addComponent(close)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(49)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblNewLabel_9)
-								.addComponent(label_1)
-								.addComponent(label_2)
-								.addComponent(lblNewLabel))))
+								.addComponent(Graduation))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(lblNewLabel_8)))
 					.addGap(43)
 					.addComponent(selected)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -373,13 +404,11 @@ public class Advisor {
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(Add)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(Edit)
+							.addComponent(Delete)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(View)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(Delete))
+							.addComponent(View))
 						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
