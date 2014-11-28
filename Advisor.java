@@ -20,9 +20,6 @@ public class Advisor {
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, View, Delete, Add;	
 	
-	// user credentials file (may remove)
-	static File user_cred; 
-	
 	// reading and writing variables
 	static Scanner scan; 
 	static BufferedReader reader;
@@ -33,11 +30,7 @@ public class Advisor {
 	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
 	
-	//all labels for the components
-	static JLabel selected = new JLabel("Students"); // label declaring which button has been pressed (for testing purposes)
-	
-	
-	//private static  JLabel lblNewLabel = new JLabel("");
+	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
 	
 	//labels used for positioning and allignment purposes:
 	//think of it like a measurement guide to position certain components in relative to others
@@ -47,17 +40,6 @@ public class Advisor {
 	private static  JLabel lblNewLabel_9 = new JLabel("");
 	private static  JLabel label_1 = new JLabel("");
 	private static  JLabel label_2 = new JLabel("");
-	
-	// list containing the student information
-	static DefaultListModel<String> nameModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> idModel = new DefaultListModel<>();
-	static DefaultListModel<String> gradeModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> majorGPAModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> totGPAModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> MajorCredModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> UPPLevModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> totCredModel = new DefaultListModel<>();
-
 	
 	// text fields used for input to add/edit students
 	private static  JTextField textField_Name = new JTextField();
@@ -87,38 +69,28 @@ public class Advisor {
 	
 	
 	
-	
+	/*
+	 * This class was made to allow the use of certain variable types in the table.
+	 * In particular, this allows the use of booleans, because it forces the table to 
+	 * return variable classes rather than "Object." 
+	 */
 	private static class MyTableModel extends DefaultTableModel{
 		public Class<?> getColumnClass(int index){
 			return getValueAt(0, index).getClass();
 		}
 	} // class MyTableModel
 
-	//main method--> main entry to application
 	public static void main(String[] args) throws FileNotFoundException{
 		
 		//Call to Advisor--> the name of the GUI: once Advisor is called: The UI loads and adds all 
 		// relevant components
 		Advisor();
-	}
+	} // main
 	
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		frame = new JFrame();
 		frame.setSize(1070,575);
-		
-		/*
-		 * This snippet may be removed. It setup a button that is no longer used.
-		 *
-		close.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				saveTable();
-				studs.close();
-				
-				System.exit(0);
-			}
-		});
-		*/
 		
 		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
@@ -140,47 +112,23 @@ public class Advisor {
 		close.setVisible(false);
 		
 		
-		 
-		/**
-		 * 				 
-		 *
-		 *				Setup Working Frame
-		 *			To Implement: --> individual Panels for each respective button category
-		 *
-		 */
-		
+		// instantiate a new list of students
 		studs = new studentList();
 		
-		/**********************************************
-		* 
-		* 
-		* Table
-		* 
-		***********************************************/
+		/*******
+		* Table *
+		********/
 		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
 		
 		scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(808,400));
-		initTableStuds();
+		initTableStuds(); // initialize the table for the students tab
 		
-		table.setFillsViewportHeight(true); // fills out the JScrollPane
-		
-		
-		/**
-		* 
-		* 			Component Modification Section:
-		* 			Any modification or change to a UI component will be put and located in
-		* 			the following section
-		* 		
-		* 
-		*/
+		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
 		
 		
-		
-		
-		
-		//Text fields set parameters --> Must be here, it breaks otherwise--> Dont know why
+		//Text fields set parameters --> Must be here, it breaks otherwise--> Don't know why
 		textField_Name.setColumns(10);
 		textField_ID.setColumns(10);
 		textField_Grade.setColumns(10);
@@ -253,6 +201,7 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// add a blank row to the table
 				tableModel.addRow(new Object[]{});
 			}
 		});
@@ -345,7 +294,6 @@ public class Advisor {
 										.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										//.addComponent(lblNewLabel)
 										.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE))
 									.addGap(276)
 									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -381,7 +329,6 @@ public class Advisor {
 								.addComponent(lblNewLabel_9)
 								.addComponent(label_1)
 								.addComponent(label_2)))
-								//.addComponent(lblNewLabel)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -420,7 +367,7 @@ public class Advisor {
 					.addGap(151))
 		);
 		
-		///grabs the current panes content and adds it to the Frame, then makes the frame visible
+		// grabs the current panes content and adds it to the Frame, then makes the frame visible
 		frame.getContentPane().setLayout(groupLayout);
 	
 		frame.setVisible(true);
@@ -434,79 +381,84 @@ public class Advisor {
 		String advDate;
 		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
-		
-		switch(lastTab){
-			case 0: // Records tab
-				for(int i = 0; i < tableModel.getRowCount(); i++){
-					name = (String)tableModel.getValueAt(i, 0);
-					id = (String)tableModel.getValueAt(i, 1);
-					grade = (String)tableModel.getValueAt(i, 2);
-					advised = (boolean)tableModel.getValueAt(i, 3);
-					advDate = (String)tableModel.getValueAt(i, 4);
+		try{
+			switch(lastTab){
+				case 0: // Records tab
+					for(int i = 0; i < tableModel.getRowCount(); i++){
+						name = (String)tableModel.getValueAt(i, 0);
+						id = (String)tableModel.getValueAt(i, 1);
+						grade = (String)tableModel.getValueAt(i, 2);
+						advised = (boolean)tableModel.getValueAt(i, 3);
+						advDate = (String)tableModel.getValueAt(i, 4);
+						
+						
+						try{
+							studs.getNode(i, 0).setName(name);
+							studs.getNode(i, 0).setID(id);
+							studs.getNode(i, 0).setGrade(grade);
+						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						
+						studs.getNode(i, 0).setAdvised(advised);
+						studs.getNode(i, 0).setAdvDate(advDate);
+					}
 					
+					studs.rewrite();
+					break;
+				case 1: // Students tab
+					for(int i = 0; i < tableModel.getRowCount(); i++){
+						name = (String)tableModel.getValueAt(i, 0);
+						id = (String)tableModel.getValueAt(i, 1);
+						grade = (String)tableModel.getValueAt(i, 2);
+						
+						
+						try{
+							studs.getNode(i, 0).setName(name);
+							studs.getNode(i, 0).setID(id);
+							studs.getNode(i, 0).setGrade(grade);
+						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+					}
 					
-					try{
-						studs.getNode(i, 0).setName(name);
-						studs.getNode(i, 0).setID(id);
-						studs.getNode(i, 0).setGrade(grade);
-					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+					studs.rewrite();
+					break;
+				case 2: // Graduation tab
+					for(int i = 0; i < tableModel.getRowCount(); i++){
+						name = (String)tableModel.getValueAt(i, 0);
+						id = (String)tableModel.getValueAt(i, 1);
+						grade = (String)tableModel.getValueAt(i, 2);
+						submitted = (boolean)tableModel.getValueAt(i, 3);
+						totalGPA = (String)tableModel.getValueAt(i, 4);
+						majorGPA = (String)tableModel.getValueAt(i, 5);
+						totalCreds = (String)tableModel.getValueAt(i, 6);
+						majorCreds = (String)tableModel.getValueAt(i, 7);
+						upperCreds = (String)tableModel.getValueAt(i, 8);
+						
+						
+						try{
+							studs.getNode(i, 0).setName(name);
+							studs.getNode(i, 0).setID(id);
+							studs.getNode(i, 0).setGrade(grade);
+						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						
+						studs.getNode(i, 0).setSubmitted(submitted);
+						studs.getNode(i, 0).setTotalGPA(totalGPA);
+						studs.getNode(i, 0).setMajorGPA(majorGPA);
+						studs.getNode(i, 0).setTotalCreds(totalCreds);
+						studs.getNode(i, 0).setMajorCreds(majorCreds);
+						studs.getNode(i, 0).setUpperCreds(upperCreds);
+					}
 					
-					studs.getNode(i, 0).setAdvised(advised);
-					studs.getNode(i, 0).setAdvDate(advDate);
-				}
-				
-				studs.rewrite();
-				break;
-			case 1: // Students tab
-				for(int i = 0; i < tableModel.getRowCount(); i++){
-					name = (String)tableModel.getValueAt(i, 0);
-					id = (String)tableModel.getValueAt(i, 1);
-					grade = (String)tableModel.getValueAt(i, 2);
-					
-					
-					try{
-						studs.getNode(i, 0).setName(name);
-						studs.getNode(i, 0).setID(id);
-						studs.getNode(i, 0).setGrade(grade);
-					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-				}
-				
-				studs.rewrite();
-				break;
-			case 2: // Graduation tab
-				for(int i = 0; i < tableModel.getRowCount(); i++){
-					name = (String)tableModel.getValueAt(i, 0);
-					id = (String)tableModel.getValueAt(i, 1);
-					grade = (String)tableModel.getValueAt(i, 2);
-					submitted = (boolean)tableModel.getValueAt(i, 3);
-					totalGPA = (String)tableModel.getValueAt(i, 4);
-					majorGPA = (String)tableModel.getValueAt(i, 5);
-					totalCreds = (String)tableModel.getValueAt(i, 6);
-					majorCreds = (String)tableModel.getValueAt(i, 7);
-					upperCreds = (String)tableModel.getValueAt(i, 8);
-					
-					
-					try{
-						studs.getNode(i, 0).setName(name);
-						studs.getNode(i, 0).setID(id);
-						studs.getNode(i, 0).setGrade(grade);
-					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-					
-					studs.getNode(i, 0).setSubmitted(submitted);
-					studs.getNode(i, 0).setTotalGPA(totalGPA);
-					studs.getNode(i, 0).setMajorGPA(majorGPA);
-					studs.getNode(i, 0).setTotalCreds(totalCreds);
-					studs.getNode(i, 0).setMajorCreds(majorCreds);
-					studs.getNode(i, 0).setUpperCreds(upperCreds);
-				}
-				
-				studs.rewrite();
-				break;
-			default:
-				System.out.println("ERROR: saveTable");
-		}
+					studs.rewrite();
+					break;
+				default:
+					System.out.println("ERROR: saveTable");
+			}
+		} catch(NullPointerException e){}
 	} // saveTable
 	
+	/*
+	 * The following three methods will populate the table with the necessary
+	 * information depending on which tab the user switches to.
+	 */
 	private static void initTableRecords(){
 		Node node;
 		tableModel.setColumnCount(0);
