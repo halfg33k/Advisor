@@ -15,13 +15,9 @@ public class Advisor {
 	// main frame and panel of the menu
 	static JFrame frame;
 	static JPanel panel;
-	static JPanel panel_1;
 	
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, View, Delete, Add;	
-	
-	// user credentials file (may remove)
-	static File user_cred; 
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -33,40 +29,7 @@ public class Advisor {
 	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
 	
-	//all labels for the components
-	static JLabel selected = new JLabel("Students"); // label declaring which button has been pressed (for testing purposes)
-	
-	
-	//private static  JLabel lblNewLabel = new JLabel("");
-	
-	//labels used for positioning and allignment purposes:
-	//think of it like a measurement guide to position certain components in relative to others
-	//these are basically reference components to get the spacing for certain components correct
-	//there are set to invisible so they dont show, but still take up space...and the space was what I needed
-	private static  JLabel lblNewLabel_8 = new JLabel("");
-	private static  JLabel lblNewLabel_9 = new JLabel("");
-	private static  JLabel label_1 = new JLabel("");
-	private static  JLabel label_2 = new JLabel("");
-	
-	// list containing the student information
-	static DefaultListModel<String> nameModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> idModel = new DefaultListModel<>();
-	static DefaultListModel<String> gradeModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> majorGPAModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> totGPAModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> MajorCredModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> UPPLevModel = new DefaultListModel<>();
-	static DefaultListModel<Integer> totCredModel = new DefaultListModel<>();
-
-	
-	// text fields used for input to add/edit students
-	private static  JTextField textField_Name = new JTextField();
-	private static  JTextField textField_ID = new JTextField();
-	private static  JTextField textField_Grade = new JTextField();
-	private static  JTextField textField_total_gpa = new JTextField();
-	private static  JTextField textField_2 = new JTextField();
-	private static  JTextField textField_Major_GPA = new JTextField();
-	private static  JTextField textField_Major_Credits = new JTextField();
+	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
 	
 <<<<<<< HEAD
 	//scroll bars for JLIst--> Name, ID, Grade
@@ -94,42 +57,66 @@ public class Advisor {
 	
 	
 	
-	
+	/*
+	 * This class was made to allow the use of certain variable types in the table.
+	 * In particular, this allows the use of booleans, because it forces the table to 
+	 * return variable classes rather than "Object." 
+	 */
 	private static class MyTableModel extends DefaultTableModel{
 		public Class<?> getColumnClass(int index){
-			return getValueAt(0, index).getClass();
+			Class<?> temp = String.class;
+			
+			try{
+				temp = getValueAt(0, index).getClass();
+			} catch(NullPointerException npe){  }
+			
+			return temp;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public void setValueAt(Object value, int row, int col) {  
+			// overridden code
+			Vector rowVector = (Vector)dataVector.elementAt(row);  
+			rowVector.setElementAt(value, col);  
+			fireTableCellUpdated(row, col);  
+			
+			// my code
+			saveTable();
+			
+			switch(lastTab){
+				case 0:
+					initTableRecords();
+					break;
+				case 1:
+					initTableStuds();
+					break;
+				case 2:
+					initTableGrad();
+					break;
+				default:
+			} 
 		}
 	} // class MyTableModel
 
-	//main method--> main entry to application
 	public static void main(String[] args) throws FileNotFoundException{
 		
 		//Call to Advisor--> the name of the GUI: once Advisor is called: The UI loads and adds all 
 		// relevant components
 		Advisor();
+<<<<<<< HEAD
 	}
 <<<<<<< HEAD
 	//loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{	
 =======
+=======
+	} // main
+>>>>>>> master
 	
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		frame = new JFrame();
 		frame.setSize(1070,575);
-		
-		/*
-		 * This snippet may be removed. It setup a button that is no longer used.
-		 *
-		close.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				saveTable();
-				studs.close();
-				
-				System.exit(0);
-			}
-		});
-		*/
 		
 		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
@@ -142,15 +129,10 @@ public class Advisor {
 			
 		});
 		
-		textField_Major_Credits.setColumns(10);
-		textField_Major_GPA.setColumns(10);
-		textField_2.setColumns(10);
-		textField_total_gpa.setColumns(10);
-		textField_Name.setVisible(false);
-		textField_Major_Credits.setVisible(false);
 		close.setVisible(false);
 		
 		
+<<<<<<< HEAD
 		 
 >>>>>>> master
 		/**
@@ -161,41 +143,23 @@ public class Advisor {
 		 *
 		 */
 		
+=======
+		// instantiate a new list of students
+>>>>>>> master
 		studs = new studentList();
 		
-		/**********************************************
-		* 
-		* 
-		* Table
-		* 
-		***********************************************/
+		/*******
+		* Table *
+		********/
 		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
 		
 		scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(808,400));
-		initTableStuds();
+		initTableStuds(); // initialize the table for the students tab
 		
-		table.setFillsViewportHeight(true); // fills out the JScrollPane
+		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
 		
-		
-		/**
-		* 
-		* 			Component Modification Section:
-		* 			Any modification or change to a UI component will be put and located in
-		* 			the following section
-		* 		
-		* 
-		*/
-		
-		
-		
-		
-		
-		//Text fields set parameters --> Must be here, it breaks otherwise--> Dont know why
-		textField_Name.setColumns(10);
-		textField_ID.setColumns(10);
-		textField_Grade.setColumns(10);
 		
 		
 		
@@ -244,19 +208,6 @@ public class Advisor {
 				
 				initTableGrad();
 				
-				// resize the columns to properly accommodate each header
-				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				
-				table.getColumnModel().getColumn(0).setPreferredWidth(150);
-				table.getColumnModel().getColumn(1).setPreferredWidth(50);
-				table.getColumnModel().getColumn(2).setPreferredWidth(75);
-				table.getColumnModel().getColumn(3).setPreferredWidth(75);
-				table.getColumnModel().getColumn(4).setPreferredWidth(70);
-				table.getColumnModel().getColumn(5).setPreferredWidth(75);
-				table.getColumnModel().getColumn(6).setPreferredWidth(90);
-				table.getColumnModel().getColumn(7).setPreferredWidth(90);
-				table.getColumnModel().getColumn(8).setPreferredWidth(130);
-				
 				} catch(NullPointerException npe){ System.out.println("trace"); }
 			}
 		}); //graduation menu button
@@ -265,6 +216,7 @@ public class Advisor {
 		Add = new JButton("Add");
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 				tableModel.addRow(new Object[]{"", "", ""});
 				
@@ -297,6 +249,9 @@ public class Advisor {
 >>>>>>> master
 				selected.setText("Edit Selected");
 =======
+=======
+				// add a blank row to the table
+>>>>>>> master
 				tableModel.addRow(new Object[]{});
 >>>>>>> master
 			}
@@ -396,14 +351,8 @@ public class Advisor {
 		
 		
 		// Adds table to panel
-		panel_1 = new JPanel();
-		panel_1.add(scrollPane);
-		
-		
-		
-		
-		
-		
+		panel = new JPanel();
+		panel.add(scrollPane);
 		
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
@@ -416,7 +365,7 @@ public class Advisor {
 						.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(203)
@@ -425,42 +374,8 @@ public class Advisor {
 							.addComponent(records)
 							.addGap(26)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addComponent(lblNewLabel_8))
 								.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(34)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
-											.addGap(55)
-											.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE))
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(lblNewLabel_9)
-											.addPreferredGap(ComponentPlacement.RELATED)
-											.addComponent(label_1)))
-									.addGap(83)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(label_2)
-										.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										//.addComponent(lblNewLabel)
-										.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE))
-									.addGap(276)
-									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
-											.addGap(8))
-										.addGroup(groupLayout.createSequentialGroup()
-											.addGap(113)
-											.addComponent(textField_Major_Credits, GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
-											.addGap(107)))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addGap(782))
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGap(26)
 									.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
@@ -478,20 +393,13 @@ public class Advisor {
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(6)
 							.addComponent(close)
-							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblNewLabel_9)
-								.addComponent(label_1)
-								.addComponent(label_2)))
-								//.addComponent(lblNewLabel)))
+							.addGap(18))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(records)
 								.addComponent(students)
-								.addComponent(Graduation))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(lblNewLabel_8)))
+								.addComponent(Graduation))))
 					.addGap(43)
 					.addComponent(selected)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -502,27 +410,11 @@ public class Advisor {
 							.addComponent(Delete)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(View))
-						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(textField_total_gpa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(textField_Major_GPA, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(textField_Major_Credits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
 					.addGap(151))
 		);
 		
-		///grabs the current panes content and adds it to the Frame, then makes the frame visible
+		// grabs the current panes content and adds it to the Frame, then makes the frame visible
 		frame.getContentPane().setLayout(groupLayout);
 	
 		frame.setVisible(true);
@@ -536,79 +428,85 @@ public class Advisor {
 		String advDate;
 		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
-		
-		switch(lastTab){
-			case 0: // Records tab
-				for(int i = 0; i < tableModel.getRowCount(); i++){
-					name = (String)tableModel.getValueAt(i, 0);
-					id = (String)tableModel.getValueAt(i, 1);
-					grade = (String)tableModel.getValueAt(i, 2);
-					advised = (boolean)tableModel.getValueAt(i, 3);
-					advDate = (String)tableModel.getValueAt(i, 4);
+		try{
+			switch(lastTab){
+				case 0: // Records tab
+					for(int i = 0; i < tableModel.getRowCount(); i++){
+						name = (String)tableModel.getValueAt(i, 0);
+						id = (String)tableModel.getValueAt(i, 1);
+						grade = (String)tableModel.getValueAt(i, 2);
+						advised = (boolean)tableModel.getValueAt(i, 3);
+						advDate = (String)tableModel.getValueAt(i, 4);
+						
+						
+						try{
+							studs.getNode(i, 0).setName(name);
+							studs.getNode(i, 0).setID(id);
+							studs.getNode(i, 0).setGrade(grade);
+						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						
+						studs.getNode(i, 0).setAdvised(advised);
+						if(!advised)
+							studs.getNode(i, 0).setAdvDate("");
+					}
 					
+					studs.rewrite();
+					break;
+				case 1: // Students tab
+					for(int i = 0; i < tableModel.getRowCount(); i++){
+						name = (String)tableModel.getValueAt(i, 0);
+						id = (String)tableModel.getValueAt(i, 1);
+						grade = (String)tableModel.getValueAt(i, 2);
+						
+						
+						try{
+							studs.getNode(i, 0).setName(name);
+							studs.getNode(i, 0).setID(id);
+							studs.getNode(i, 0).setGrade(grade);
+						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+					}
 					
-					try{
-						studs.getNode(i, 0).setName(name);
-						studs.getNode(i, 0).setID(id);
-						studs.getNode(i, 0).setGrade(grade);
-					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+					studs.rewrite();
+					break;
+				case 2: // Graduation tab
+					for(int i = 0; i < tableModel.getRowCount(); i++){
+						name = (String)tableModel.getValueAt(i, 0);
+						id = (String)tableModel.getValueAt(i, 1);
+						grade = (String)tableModel.getValueAt(i, 2);
+						submitted = (boolean)tableModel.getValueAt(i, 3);
+						totalGPA = (String)tableModel.getValueAt(i, 4);
+						majorGPA = (String)tableModel.getValueAt(i, 5);
+						totalCreds = (String)tableModel.getValueAt(i, 6);
+						majorCreds = (String)tableModel.getValueAt(i, 7);
+						upperCreds = (String)tableModel.getValueAt(i, 8);
+						
+						
+						try{
+							studs.getNode(i, 0).setName(name);
+							studs.getNode(i, 0).setID(id);
+							studs.getNode(i, 0).setGrade(grade);
+						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						
+						studs.getNode(i, 0).setSubmitted(submitted);
+						studs.getNode(i, 0).setTotalGPA(totalGPA);
+						studs.getNode(i, 0).setMajorGPA(majorGPA);
+						studs.getNode(i, 0).setTotalCreds(totalCreds);
+						studs.getNode(i, 0).setMajorCreds(majorCreds);
+						studs.getNode(i, 0).setUpperCreds(upperCreds);
+					}
 					
-					studs.getNode(i, 0).setAdvised(advised);
-					studs.getNode(i, 0).setAdvDate(advDate);
-				}
-				
-				studs.rewrite();
-				break;
-			case 1: // Students tab
-				for(int i = 0; i < tableModel.getRowCount(); i++){
-					name = (String)tableModel.getValueAt(i, 0);
-					id = (String)tableModel.getValueAt(i, 1);
-					grade = (String)tableModel.getValueAt(i, 2);
-					
-					
-					try{
-						studs.getNode(i, 0).setName(name);
-						studs.getNode(i, 0).setID(id);
-						studs.getNode(i, 0).setGrade(grade);
-					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-				}
-				
-				studs.rewrite();
-				break;
-			case 2: // Graduation tab
-				for(int i = 0; i < tableModel.getRowCount(); i++){
-					name = (String)tableModel.getValueAt(i, 0);
-					id = (String)tableModel.getValueAt(i, 1);
-					grade = (String)tableModel.getValueAt(i, 2);
-					submitted = (boolean)tableModel.getValueAt(i, 3);
-					totalGPA = (String)tableModel.getValueAt(i, 4);
-					majorGPA = (String)tableModel.getValueAt(i, 5);
-					totalCreds = (String)tableModel.getValueAt(i, 6);
-					majorCreds = (String)tableModel.getValueAt(i, 7);
-					upperCreds = (String)tableModel.getValueAt(i, 8);
-					
-					
-					try{
-						studs.getNode(i, 0).setName(name);
-						studs.getNode(i, 0).setID(id);
-						studs.getNode(i, 0).setGrade(grade);
-					} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-					
-					studs.getNode(i, 0).setSubmitted(submitted);
-					studs.getNode(i, 0).setTotalGPA(totalGPA);
-					studs.getNode(i, 0).setMajorGPA(majorGPA);
-					studs.getNode(i, 0).setTotalCreds(totalCreds);
-					studs.getNode(i, 0).setMajorCreds(majorCreds);
-					studs.getNode(i, 0).setUpperCreds(upperCreds);
-				}
-				
-				studs.rewrite();
-				break;
-			default:
-				System.out.println("ERROR: saveTable");
-		}
+					studs.rewrite();
+					break;
+				default:
+					System.out.println("ERROR: saveTable");
+			}
+		} catch(NullPointerException e){}
 	} // saveTable
 	
+	/*
+	 * The following three methods will populate the table with the necessary
+	 * information depending on which tab the user switches to.
+	 */
 	private static void initTableRecords(){
 		Node node;
 		tableModel.setColumnCount(0);
@@ -645,7 +543,6 @@ public class Advisor {
 	
 	private static void initTableGrad(){
 		Node node;
-		boolean submitted;
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 	
@@ -661,13 +558,22 @@ public class Advisor {
 		
 		for(int i = 0; i < studs.getSize(); i++){
 			node = studs.getNode(i, 0);
-			submitted = node.getSubmitted();
 			
-			if(submitted)
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), Boolean.TRUE, node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
-			else
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), Boolean.FALSE, node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 		}
+		
+		// resize the columns to properly accommodate each header
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table.getColumnModel().getColumn(1).setPreferredWidth(50);
+		table.getColumnModel().getColumn(2).setPreferredWidth(75);
+		table.getColumnModel().getColumn(3).setPreferredWidth(75);
+		table.getColumnModel().getColumn(4).setPreferredWidth(70);
+		table.getColumnModel().getColumn(5).setPreferredWidth(75);
+		table.getColumnModel().getColumn(6).setPreferredWidth(90);
+		table.getColumnModel().getColumn(7).setPreferredWidth(90);
+		table.getColumnModel().getColumn(8).setPreferredWidth(130);
 	} // initTableStuds
 }
 
