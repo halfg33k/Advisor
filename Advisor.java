@@ -15,7 +15,6 @@ public class Advisor {
 	// main frame and panel of the menu
 	static JFrame frame;
 	static JPanel panel;
-	static JPanel panel_1;
 	
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, View, Delete, Add;	
@@ -31,24 +30,6 @@ public class Advisor {
 	static JScrollPane scrollPane; // scrollPane for table
 	
 	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
-	
-	//labels used for positioning and allignment purposes:
-	//think of it like a measurement guide to position certain components in relative to others
-	//these are basically reference components to get the spacing for certain components correct
-	//there are set to invisible so they dont show, but still take up space...and the space was what I needed
-	private static  JLabel lblNewLabel_8 = new JLabel("");
-	private static  JLabel lblNewLabel_9 = new JLabel("");
-	private static  JLabel label_1 = new JLabel("");
-	private static  JLabel label_2 = new JLabel("");
-	
-	// text fields used for input to add/edit students
-	private static  JTextField textField_Name = new JTextField();
-	private static  JTextField textField_ID = new JTextField();
-	private static  JTextField textField_Grade = new JTextField();
-	private static  JTextField textField_total_gpa = new JTextField();
-	private static  JTextField textField_2 = new JTextField();
-	private static  JTextField textField_Major_GPA = new JTextField();
-	private static  JTextField textField_Major_Credits = new JTextField();
 	
 	static studentList studs; // queue containing students and their information
 	
@@ -103,12 +84,6 @@ public class Advisor {
 			
 		});
 		
-		textField_Major_Credits.setColumns(10);
-		textField_Major_GPA.setColumns(10);
-		textField_2.setColumns(10);
-		textField_total_gpa.setColumns(10);
-		textField_Name.setVisible(false);
-		textField_Major_Credits.setVisible(false);
 		close.setVisible(false);
 		
 		
@@ -127,11 +102,6 @@ public class Advisor {
 		
 		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
 		
-		
-		//Text fields set parameters --> Must be here, it breaks otherwise--> Don't know why
-		textField_Name.setColumns(10);
-		textField_ID.setColumns(10);
-		textField_Grade.setColumns(10);
 		
 		
 		
@@ -243,14 +213,8 @@ public class Advisor {
 		
 		
 		// Adds table to panel
-		panel_1 = new JPanel();
-		panel_1.add(scrollPane);
-		
-		
-		
-		
-		
-		
+		panel = new JPanel();
+		panel.add(scrollPane);
 		
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
@@ -263,7 +227,7 @@ public class Advisor {
 						.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(203)
@@ -272,47 +236,16 @@ public class Advisor {
 							.addComponent(records)
 							.addGap(26)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addComponent(lblNewLabel_8))
 								.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(34)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
-											.addGap(55)
-											.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE))
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(lblNewLabel_9)
-											.addPreferredGap(ComponentPlacement.RELATED)
-											.addComponent(label_1)))
-									.addGap(83)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(label_2)
-										.addComponent(textField_Major_GPA, 0, 0, Short.MAX_VALUE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(textField_total_gpa, 0, 0, Short.MAX_VALUE))
-									.addGap(276)
-									.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-										.addGroup(groupLayout.createSequentialGroup()
-											.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, 0, GroupLayout.PREFERRED_SIZE)
-											.addGap(8))
-										.addGroup(groupLayout.createSequentialGroup()
-											.addGap(113)
-											.addComponent(textField_Major_Credits, GroupLayout.DEFAULT_SIZE, 4, Short.MAX_VALUE)
-											.addGap(107)))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-									.addGap(782))
 								.addGroup(groupLayout.createSequentialGroup()
 									.addGap(26)
 									.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
 									.addComponent(close)
-									.addGap(1235))))
+									.addGap(1235))
+							)
+						)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(selected)
 							.addContainerGap(764, Short.MAX_VALUE))))
@@ -325,18 +258,15 @@ public class Advisor {
 							.addGap(6)
 							.addComponent(close)
 							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblNewLabel_9)
-								.addComponent(label_1)
-								.addComponent(label_2)))
+						)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addContainerGap()
 							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(records)
 								.addComponent(students)
 								.addComponent(Graduation))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(lblNewLabel_8)))
+						)
+					)
 					.addGap(43)
 					.addComponent(selected)
 					.addPreferredGap(ComponentPlacement.RELATED)
@@ -347,23 +277,7 @@ public class Advisor {
 							.addComponent(Delete)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(View))
-						.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(textField_ID, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textField_Name, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-							.addComponent(textField_Grade, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(textField_total_gpa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(textField_Major_GPA, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(textField_Major_Credits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(textField_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
 					.addGap(151))
 		);
 		
