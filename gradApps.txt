@@ -1,6 +1,6 @@
-ID:20 Submitted:true Total GPA:3.79 Major GPA:4.0 Total Credits:90 Major Credits:25 Upper Credits:34 Date:
-ID:21 Submitted:true Total GPA:3.79 Major GPA:3.5 Total Credits:0 Major Credits:0 Upper Credits:16 Date:
-ID:22 Submitted:true Total GPA:3.79 Major GPA:4.0 Total Credits:60 Major Credits:0 Upper Credits:0 Date:
+ID:20 Submitted:true Total GPA:3.79 Major GPA:4.0 Total Credits:90 Major Credits:36 Upper Credits:36 Date:11/28/2014
+ID:21 Submitted:true Total GPA:3.79 Major GPA:3.5 Total Credits:0 Major Credits:0 Upper Credits:16 Date:10/30/2014
+ID:22 Submitted:true Total GPA:3.79 Major GPA:4.0 Total Credits:60 Major Credits:0 Upper Credits:0 Date:11/02/2014
 ID:25 Submitted:false
 ID:14 Submitted:false
-ID:76 Submitted:true Total GPA:2.8 Major GPA:2.2 Total Credits:120 Major Credits:36 Upper Credits:45 Date:null
+ID:76 Submitted:false

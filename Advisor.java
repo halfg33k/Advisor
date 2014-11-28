@@ -57,7 +57,37 @@ public class Advisor {
 	 */
 	private static class MyTableModel extends DefaultTableModel{
 		public Class<?> getColumnClass(int index){
-			return getValueAt(0, index).getClass();
+			Class<?> temp = String.class;
+			
+			try{
+				temp = getValueAt(0, index).getClass();
+			} catch(NullPointerException npe){  }
+			
+			return temp;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public void setValueAt(Object value, int row, int col) {  
+			// overridden code
+			Vector rowVector = (Vector)dataVector.elementAt(row);  
+			rowVector.setElementAt(value, col);  
+			fireTableCellUpdated(row, col);  
+			
+			// my code
+			saveTable();
+			
+			switch(lastTab){
+				case 0:
+					initTableRecords();
+					break;
+				case 1:
+					initTableStuds();
+					break;
+				case 2:
+					initTableGrad();
+					break;
+				default:
+			} 
 		}
 	} // class MyTableModel
 
@@ -149,19 +179,6 @@ public class Advisor {
 				lastTab = 2;
 				
 				initTableGrad();
-				
-				// resize the columns to properly accommodate each header
-				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				
-				table.getColumnModel().getColumn(0).setPreferredWidth(150);
-				table.getColumnModel().getColumn(1).setPreferredWidth(50);
-				table.getColumnModel().getColumn(2).setPreferredWidth(75);
-				table.getColumnModel().getColumn(3).setPreferredWidth(75);
-				table.getColumnModel().getColumn(4).setPreferredWidth(70);
-				table.getColumnModel().getColumn(5).setPreferredWidth(75);
-				table.getColumnModel().getColumn(6).setPreferredWidth(90);
-				table.getColumnModel().getColumn(7).setPreferredWidth(90);
-				table.getColumnModel().getColumn(8).setPreferredWidth(130);
 				
 				} catch(NullPointerException npe){ System.out.println("trace"); }
 			}
@@ -308,7 +325,8 @@ public class Advisor {
 						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
 						
 						studs.getNode(i, 0).setAdvised(advised);
-						studs.getNode(i, 0).setAdvDate(advDate);
+						if(!advised)
+							studs.getNode(i, 0).setAdvDate("");
 					}
 					
 					studs.rewrite();
@@ -404,7 +422,6 @@ public class Advisor {
 	
 	private static void initTableGrad(){
 		Node node;
-		boolean submitted;
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 	
@@ -420,13 +437,22 @@ public class Advisor {
 		
 		for(int i = 0; i < studs.getSize(); i++){
 			node = studs.getNode(i, 0);
-			submitted = node.getSubmitted();
 			
-			if(submitted)
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), Boolean.TRUE, node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
-			else
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), Boolean.FALSE, node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 		}
+		
+		// resize the columns to properly accommodate each header
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(150);
+		table.getColumnModel().getColumn(1).setPreferredWidth(50);
+		table.getColumnModel().getColumn(2).setPreferredWidth(75);
+		table.getColumnModel().getColumn(3).setPreferredWidth(75);
+		table.getColumnModel().getColumn(4).setPreferredWidth(70);
+		table.getColumnModel().getColumn(5).setPreferredWidth(75);
+		table.getColumnModel().getColumn(6).setPreferredWidth(90);
+		table.getColumnModel().getColumn(7).setPreferredWidth(90);
+		table.getColumnModel().getColumn(8).setPreferredWidth(130);
 	} // initTableStuds
 }
 

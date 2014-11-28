@@ -2,6 +2,9 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class studentList{
 	Node root;
@@ -216,6 +219,24 @@ public class studentList{
 		return current;
 	} // getNode
 	
+	// determine whether the given node is qualified to graduate
+	public boolean isQualified(String id){
+		Node node = getNode(id);
+		boolean isQualified = false;
+		
+		double totalGPA = Double.parseDouble(node.getTotalGPA());
+		double majorGPA = Double.parseDouble(node.getMajorGPA());
+		int totalCreds = Integer.parseInt(node.getTotalCreds());
+		int majorCreds = Integer.parseInt(node.getMajorCreds());
+		int upperCreds = Integer.parseInt(node.getUpperCreds());
+		
+		if(totalGPA >= 2.0 && majorGPA >= 2.0
+			&& totalCreds >= 120 && majorCreds >= 45 && upperCreds >= 45)
+			isQualified = true;
+			
+		return isQualified;
+	} // isQualified
+	
 	// remove a particular node by it's id
 	public Node removeNode(String id){		
 		Node current = root;
@@ -319,7 +340,8 @@ public class studentList{
 		
 		return false;
 	} // contains
-		
+	
+	// return the size of the queue
 	public int getSize(){
 		return size;
 	} // getSize
@@ -404,10 +426,14 @@ class Node{
 	private String totalCreds, majorCreds, upperCreds;
 	private Node next; // next node in the queue
 	private String totalGPA, majorGPA;
-	private boolean submitted; // graduation application submitted
+	private boolean submitted, submittedPrev; // graduation application submitted
+	private boolean qualified; // whether this student is qualified to graduate
 	private String gradDate;
-	private boolean advised; // student has received academic advising
+	private boolean advised, advisedPrev; // student has received academic advising
 	private String advDate; // date advising last took place
+	
+	DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	Date date;
 	
 	// initialize this Node with default values
 	public Node(){
@@ -467,6 +493,10 @@ class Node{
 		return submitted;
 	} // getsubmitted
 	
+	public boolean getQualified(){
+		return qualified;
+	} // getQualified
+	
 	public String getGradDate(){
 		return gradDate;
 	} // getGradDate
@@ -516,15 +546,33 @@ class Node{
 	} // setUpperCreds
 	
 	public void setSubmitted(boolean submitted){
+		submittedPrev = this.submitted;
 		this.submitted = submitted;
+		
+		if(submittedPrev != submitted){
+			date = new Date();
+			
+			setGradDate(dateFormat.format(date));
+		}
 	} // set submitted
+	
+	public void setQualified(boolean qualified){
+		this.qualified = qualified;
+	} // setQualified
 	
 	public void setGradDate(String gradDate){
 		this.gradDate = gradDate;
 	} // setGradDate
 	
 	public void setAdvised(boolean advised){
+		advisedPrev = this.advised;
 		this.advised = advised;
+		
+		if(advisedPrev != advised){
+			date = new Date();
+			
+			setAdvDate(dateFormat.format(date));
+		}
 	} // setAdvised
 	
 	public void setAdvDate(String advDate){
