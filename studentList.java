@@ -216,90 +216,6 @@ public class studentList{
 		return current;
 	} // getNode
 	
-	// edit the name of a given node
-	public void editName(String id, String name){
-		getNode(id).setName(name);
-		
-		rewrite();
-	} // editName
-	
-	// edit the id of a given node
-	public void editID(String id, String newID){
-		getNode(id).setID(newID);
-		
-		rewrite();
-	} // editID
-	
-	// edit the grade of a given node
-	public void editGrade(String id, String grade){
-		getNode(id).setGrade(grade);
-		
-		rewrite();
-	} // editGrade
-	
-	// edit the totalGPA of a given node
-	public void editTotalGPA(String id, String totalGPA){
-		getNode(id).setTotalGPA(totalGPA); 
-		
-		rewrite();
-	} // editTotalGPA
-	
-	// edit the majorGPA of a given node
-	public void editMajorGPA(String id, String majorGPA){
-		getNode(id).setMajorGPA(majorGPA); 
-		
-		rewrite();
-	} // editMajorGPA
-	
-	// edit the totalCreds of a given node
-	public void editTotalCreds(String id, String totalCreds){
-		getNode(id).setTotalCreds(totalCreds);
-		
-		rewrite();
-	} // editTotalCreds
-	
-	// edit the majorCreds of a given node
-	public void editMajorCreds(String id, String majorCreds){
-		getNode(id).setMajorCreds(majorCreds);
-		
-		rewrite();
-	} // editMajorCreds
-	
-	// edit the upperCreds of a given node
-	public void editUpperCreds(String id, String upperCreds){
-		getNode(id).setUpperCreds(upperCreds);
-		
-		rewrite();
-	} // editUpperCreds
-	
-	// edit whether a graduation application has been submitted
-	public void editSubmitted(String id, boolean submitted){
-		getNode(id).setSubmitted(submitted);
-		
-		rewrite();
-	} // editSubmitted
-	
-	// edit the date of submission for a student's graduation application
-	public void editGradDate(String id, String gradDate){
-		getNode(id).setGradDate(gradDate);
-		
-		rewrite();
-	} // editGradDate
-	
-	// edit whether the student has been advised
-	public void editAdvised(String id, boolean advised){
-		getNode(id).setAdvised(advised);
-		
-		rewrite();
-	} // editAdvised
-	
-	// edit the date of advising for the given student
-	public void editAdvDate(String id, String advDate){
-		getNode(id).setAdvDate(advDate);
-		
-		rewrite();
-	} // editAdvDate
-	
 	// remove a particular node by it's id
 	public Node removeNode(String id){		
 		Node current = root;
@@ -329,21 +245,7 @@ public class studentList{
 		
 		return current;
 	} // removeNode
-	
-	// list all nodes in the queue
-	private String listAll(){
-		Node current = root;
-		String studentInfo = current.toString() + "\n";
-		
-		while(current.getNext() != null){
-			current = current.getNext();
 			
-			studentInfo += current.toString() + "\n";
-		}
-		
-		return studentInfo;
-	} // listAll
-		
 	// delete the tempFile and transfer its info to studentList.txt
 	public void close(){
 		File file = new File("studentList.txt");
@@ -484,7 +386,16 @@ public class studentList{
 	} // rewrite	
 	
 	public String toString(){
-		return listAll();
+		Node current = root;
+		String studentInfo = current.toString() + "\n";
+		
+		while(current.getNext() != null){
+			current = current.getNext();
+			
+			studentInfo += current.toString() + "\n";
+		}
+		
+		return studentInfo;
 	} // toString
 } // class studentList
 
