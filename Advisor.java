@@ -17,7 +17,7 @@ public class Advisor {
 	static JPanel panel;
 	
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, View, Delete, Add;	
+	static JButton students, records, Graduation, View, Delete, Add,Import;	
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -45,6 +45,7 @@ public class Advisor {
 	 * 2 = Graduation
 	 */
 	private static int lastTab = 1;
+	private static JTextField textField_import;
 	
 	
 	
@@ -217,6 +218,18 @@ public class Advisor {
 				} catch(ArrayIndexOutOfBoundsException ex){}
 			}
 		});
+		//text field to type in the name of the text file you wish to import
+		textField_import = new JTextField();
+		textField_import.setColumns(10);
+		
+		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
+		Import = new JButton("Import");
+		Import.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				//insert code here
+			}
+		});
 		
 		
 		/**
@@ -233,53 +246,46 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
+		
+		
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(55)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(Add, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(Import, 0, 0, Short.MAX_VALUE)
+						.addComponent(textField_import, 0, 0, Short.MAX_VALUE)
+						.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addGap(42)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(203)
+					.addGap(229)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(selected)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(records)
-							.addGap(26)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(26)
-									.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-									.addGap(18)
-									.addComponent(close)
-									.addGap(1235))))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(selected)
-							.addContainerGap(764, Short.MAX_VALUE))))
+							.addGap(29)
+							.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+							.addGap(30)
+							.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+							.addGap(60)
+							.addComponent(close)))
+					.addGap(345))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(close)
-							.addGap(18))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(records)
-								.addComponent(students)
-								.addComponent(Graduation))))
-					.addGap(43)
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(close)
+						.addComponent(records)
+						.addComponent(Graduation)
+						.addComponent(students))
+					.addGap(55)
 					.addComponent(selected)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -288,7 +294,11 @@ public class Advisor {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Delete)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(View))
+							.addComponent(View)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textField_import, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(Import))
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
 					.addGap(151))
 		);
