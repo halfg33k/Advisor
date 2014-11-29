@@ -36,6 +36,8 @@ public class Advisor {
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
 	private static JButton close = new JButton("Close");
 	
+	// the textfield used to import a student file
+	private static JTextField textField_import;
 	
 	/*
 	 * The purpose of this variable is to keep track of which tab was just left.
@@ -45,7 +47,7 @@ public class Advisor {
 	 * 2 = Graduation
 	 */
 	private static int lastTab = 1;
-	private static JTextField textField_import;
+	
 	
 	
 	
@@ -218,6 +220,7 @@ public class Advisor {
 				} catch(ArrayIndexOutOfBoundsException ex){}
 			}
 		});
+		
 		//text field to type in the name of the text file you wish to import
 		textField_import = new JTextField();
 		textField_import.setColumns(10);
@@ -226,8 +229,22 @@ public class Advisor {
 		Import = new JButton("Import");
 		Import.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String fileName = textField_import.getText();
 				
-				//insert code here
+				studs.importStudents(fileName);
+				
+				switch(lastTab){
+					case 0:
+						initTableRecords();
+						break;
+					case 1:
+						initTableStuds();
+						break;
+					case 2:
+						initTableGrad();
+						break;
+					default:
+				} 
 			}
 		});
 		
@@ -407,11 +424,13 @@ public class Advisor {
 		tableModel.addColumn("Advised");
 		tableModel.addColumn("Date");
 		
-		for(int i = 0; i < studs.getSize(); i++){
-			node = studs.getNode(i, 0);
-		
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
-		}
+		try{
+			for(int i = 0; i < studs.getSize(); i++){
+				node = studs.getNode(i, 0);
+			
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
+			}
+		} catch(NullPointerException npe){}
 	} // initTableStuds
 	
 	private static void initTableStuds(){
@@ -423,11 +442,13 @@ public class Advisor {
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
 		
-		for(int i = 0; i < studs.getSize(); i++){
-			node = studs.getNode(i, 0);
-		
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
-		}
+		try{
+			for(int i = 0; i < studs.getSize(); i++){
+				node = studs.getNode(i, 0);
+			
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
+			}
+		} catch(NullPointerException npe){}
 	} // initTableStuds
 	
 	private static void initTableGrad(){
@@ -445,11 +466,13 @@ public class Advisor {
 		tableModel.addColumn("Major Credits");
 		tableModel.addColumn("Upper-Level Credits");
 		
-		for(int i = 0; i < studs.getSize(); i++){
-			node = studs.getNode(i, 0);
-			
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
-		}
+		try{
+			for(int i = 0; i < studs.getSize(); i++){
+				node = studs.getNode(i, 0);
+				
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+			}
+		} catch(NullPointerException npe){}
 		
 		// resize the columns to properly accommodate each header
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

@@ -4,3 +4,5 @@ Name:Jackie Robinson ID:22 Grade:Freshman
 Name:J Jona Jameson Jr. ID:25 Grade:Junior
 Name:Chris Mastree ID:14 Grade:Freshman
 Name:Johnny Appleseed ID:76 Grade:Junior
+Name:Bob Barker ID:78 Grade:Senior
+Name:Mr Clean ID:87 Grade:Sophomore

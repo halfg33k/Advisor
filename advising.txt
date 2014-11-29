@@ -4,3 +4,5 @@ ID:22 Advised:true Date:10/30/2014
 ID:25 Advised:true Date:11/28/2014
 ID:14 Advised:false
 ID:76 Advised:true Date:11/28/2014
+ID:78 Advised:false
+ID:87 Advised:false
