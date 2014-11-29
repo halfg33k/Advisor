@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.FileDialog;
 
 import java.io.*;
 import java.util.*;
@@ -36,9 +37,6 @@ public class Advisor {
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
 	private static JButton close = new JButton("Close");
 	
-	// the textfield used to import a student file
-	private static JTextField textField_import;
-	
 	/*
 	 * The purpose of this variable is to keep track of which tab was just left.
 	 * e.g. If I am on the "Students" tab and I click on "Graduation," then I just left "Students"
@@ -48,7 +46,7 @@ public class Advisor {
 	 */
 	private static int lastTab = 1;
 	
-	
+	private static FileDialog chooseFile = new FileDialog(frame, "Choose a file.", FileDialog.LOAD);
 	
 	
 	
@@ -221,17 +219,17 @@ public class Advisor {
 			}
 		});
 		
-		//text field to type in the name of the text file you wish to import
-		textField_import = new JTextField();
-		textField_import.setColumns(10);
-		
 		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
 		Import = new JButton("Import");
 		Import.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String fileName = textField_import.getText();
+				String fileName;
 				
-				studs.importStudents(fileName);
+				chooseFile.setVisible(true);
+				fileName = chooseFile.getFile();
+				
+				if(fileName != null)
+					studs.importStudents(fileName);
 				
 				switch(lastTab){
 					case 0:
@@ -273,7 +271,6 @@ public class Advisor {
 					.addGap(55)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
 						.addComponent(Import, 0, 0, Short.MAX_VALUE)
-						.addComponent(textField_import, 0, 0, Short.MAX_VALUE)
 						.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -312,8 +309,6 @@ public class Advisor {
 							.addComponent(Delete)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(View)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textField_import, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Import))
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
