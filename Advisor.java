@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.FileDialog;
 
 import java.io.*;
 import java.util.*;
@@ -17,7 +18,7 @@ public class Advisor {
 	static JPanel panel;
 	
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, View, Delete, Add;	
+	static JButton students, records, Graduation, View, Delete, Add,Import;	
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -42,7 +43,6 @@ public class Advisor {
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
 	private static JButton close = new JButton("Close");
 	
-	
 	/*
 	 * The purpose of this variable is to keep track of which tab was just left.
 	 * e.g. If I am on the "Students" tab and I click on "Graduation," then I just left "Students"
@@ -52,6 +52,7 @@ public class Advisor {
 	 */
 	private static int lastTab = 1;
 	
+	private static FileDialog chooseFile = new FileDialog(frame, "Choose a file.", FileDialog.LOAD); // a window to browse for the selected file
 	
 >>>>>>> master
 	
@@ -258,30 +259,143 @@ public class Advisor {
 		});
 		
 		// view button (may remove)
-		View = new JButton("View");
+		View = new JButton("View Report");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// unused and invisible at the moment
+				String reports = "";
+				String id;
+				int[] rows = table.getSelectedRows();
+				Node node;
+				
+				switch(lastTab){
+					case 0:
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							reports += "\nName: " + node.getName() 
+								+ "\nID: " + id + " Grade: " + node.getGrade() 
+								+ "\nAdvised: " + node.getAdvised();
+								
+							if(node.getAdvised())
+								reports += "\nDate Advised: " + node.getAdvDate();
+								
+							reports += "\n";
+						}
+						
+						JOptionPane.showMessageDialog(null, reports, "Academic Advising Reports", JOptionPane.INFORMATION_MESSAGE);
+						break;
+					case 1:
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							reports += "\nName: " + node.getName() 
+								+ "\nID: " + id + " Grade: " + node.getGrade();
+								
+							if(node.getAdvised())
+								reports += "\nDate Advised: " + node.getAdvDate();
+								
+							if(node.getSubmitted())
+								reports += "\nDate Submitted: " + node.getGradDate()
+									+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+									+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								
+							reports += "\n";
+						}
+						
+						JOptionPane.showMessageDialog(null, reports, "Student Reports", JOptionPane.INFORMATION_MESSAGE);
+						break;
+					case 2:
+						reports += "----- Qualified -----";
+						
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							if(node.getQualified() && node.getSubmitted()){
+								reports += "\nName: " + node.getName() 
+									+ "\nID: " + id + " Grade: " + node.getGrade() 
+									+ "\nApplication Submitted: " + node.getSubmitted();
+									
+								//if(node.getSubmitted())
+									reports += "\nDate Submitted: " + node.getGradDate()
+										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								
+								reports += "\n";
+							}
+						}
+						
+						reports += "\n----- Unqualified -----";
+						
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							if(!node.getQualified() && node.getSubmitted()){
+								reports += "\nName: " + node.getName() 
+									+ "\nID: " + id + " Grade: " + node.getGrade() 
+									+ "\nApplication Submitted: " + node.getSubmitted();
+									
+								//if(node.getSubmitted())
+									reports += "\nDate Submitted: " + node.getGradDate()
+										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								
+								reports += "\n";
+							}
+						}
+						
+						reports += "\n----- Not Submitted -----";
+						
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							if(!node.getQualified() && !node.getSubmitted()){
+								reports += "\nName: " + node.getName() 
+									+ "\nID: " + id + " Grade: " + node.getGrade() 
+									+ "\nApplication Submitted: " + node.getSubmitted();
+									
+								/*if(node.getSubmitted())
+									reports += "\nDate Submitted: " + node.getGradDate()
+										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								*/
+								reports += "\n";
+							}
+						}
+						
+						JOptionPane.showMessageDialog(null, reports, "Graduation Application Reports", JOptionPane.INFORMATION_MESSAGE);
+						break;
+					default:
+				}
 			}
 		}); //view button
-		View.setVisible(false);
 		
 		// delete students button
 		Delete = new JButton("Delete");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-					int row = table.getSelectedRow();
-					String id = (String)tableModel.getValueAt(row, 1);
-					Node node;
+					int row = table.getSelectedRow(); // index of the selected row
+					int confirm = -1;
+					String id = (String)tableModel.getValueAt(row, 1); // id of the node in the selected row
 					
-					tableModel.removeRow(row);
+					if(row >= 0)
+						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 					
-					studs.removeNode(id);
+					if(confirm == JOptionPane.YES_OPTION){
+						tableModel.removeRow(row);
+					
+						studs.removeNode(id);
+					}					
 				} catch(ArrayIndexOutOfBoundsException ex){}
 			}
 		});
 		
+<<<<<<< HEAD
 <<<<<<< HEAD
 		// button to submit the information in the input fields
 		/*submit_changes = new JButton("Edit Student");
@@ -333,6 +447,35 @@ public class Advisor {
 		*/
 =======
 >>>>>>> master
+=======
+		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
+		Import = new JButton("Import");
+		Import.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String fileName;
+				
+				chooseFile.setVisible(true);
+				fileName = chooseFile.getFile();
+				
+				if(fileName != null)
+					studs.importStudents(fileName);
+				
+				switch(lastTab){
+					case 0:
+						initTableRecords();
+						break;
+					case 1:
+						initTableStuds();
+						break;
+					case 2:
+						initTableGrad();
+						break;
+					default:
+				} 
+			}
+		});
+		
+>>>>>>> master
 		
 		/**
 		 * 
@@ -354,53 +497,45 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
+		
+		
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(55)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(Add, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(View, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(Delete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(Import, 0, 0, Short.MAX_VALUE)
+						.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addGap(18)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(203)
+					.addGap(229)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(selected)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(records)
-							.addGap(26)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE))
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(26)
-									.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-									.addGap(18)
-									.addComponent(close)
-									.addGap(1235))))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(selected)
-							.addContainerGap(764, Short.MAX_VALUE))))
+							.addGap(30)
+							.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+							.addGap(30)
+							.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+							.addGap(60)
+							.addComponent(close)))
+					.addGap(345))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(close)
-							.addGap(18))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(records)
-								.addComponent(students)
-								.addComponent(Graduation))))
-					.addGap(43)
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(close)
+						.addComponent(records)
+						.addComponent(Graduation)
+						.addComponent(students))
+					.addGap(55)
 					.addComponent(selected)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
@@ -409,7 +544,9 @@ public class Advisor {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Delete)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(View))
+							.addComponent(View)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(Import))
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
 					.addGap(151))
 		);
@@ -518,11 +655,13 @@ public class Advisor {
 		tableModel.addColumn("Advised");
 		tableModel.addColumn("Date");
 		
-		for(int i = 0; i < studs.getSize(); i++){
-			node = studs.getNode(i, 0);
-		
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
-		}
+		try{
+			for(int i = 0; i < studs.getSize(); i++){
+				node = studs.getNode(i, 0);
+			
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
+			}
+		} catch(NullPointerException npe){}
 	} // initTableStuds
 	
 	private static void initTableStuds(){
@@ -534,11 +673,13 @@ public class Advisor {
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
 		
-		for(int i = 0; i < studs.getSize(); i++){
-			node = studs.getNode(i, 0);
-		
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
-		}
+		try{
+			for(int i = 0; i < studs.getSize(); i++){
+				node = studs.getNode(i, 0);
+			
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
+			}
+		} catch(NullPointerException npe){}
 	} // initTableStuds
 	
 	private static void initTableGrad(){
@@ -556,11 +697,13 @@ public class Advisor {
 		tableModel.addColumn("Major Credits");
 		tableModel.addColumn("Upper-Level Credits");
 		
-		for(int i = 0; i < studs.getSize(); i++){
-			node = studs.getNode(i, 0);
-			
-			tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
-		}
+		try{
+			for(int i = 0; i < studs.getSize(); i++){
+				node = studs.getNode(i, 0);
+				
+				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+			}
+		} catch(NullPointerException npe){}
 		
 		// resize the columns to properly accommodate each header
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
