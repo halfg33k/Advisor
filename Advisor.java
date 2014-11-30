@@ -46,7 +46,7 @@ public class Advisor {
 	 */
 	private static int lastTab = 1;
 	
-	private static FileDialog chooseFile = new FileDialog(frame, "Choose a file.", FileDialog.LOAD);
+	private static FileDialog chooseFile = new FileDialog(frame, "Choose a file.", FileDialog.LOAD); // a window to browse for the selected file
 	
 	
 	
@@ -195,13 +195,120 @@ public class Advisor {
 		});
 		
 		// view button (may remove)
-		View = new JButton("View");
+		View = new JButton("View Report");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// unused and invisible at the moment
+				String reports = "";
+				String id;
+				int[] rows = table.getSelectedRows();
+				Node node;
+				
+				switch(lastTab){
+					case 0:
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							reports += "\nName: " + node.getName() 
+								+ "\nID: " + id + " Grade: " + node.getGrade() 
+								+ "\nAdvised: " + node.getAdvised();
+								
+							if(node.getAdvised())
+								reports += "\nDate Advised: " + node.getAdvDate();
+								
+							reports += "\n";
+						}
+						
+						JOptionPane.showMessageDialog(null, reports, "Academic Advising Reports", JOptionPane.INFORMATION_MESSAGE);
+						break;
+					case 1:
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							reports += "\nName: " + node.getName() 
+								+ "\nID: " + id + " Grade: " + node.getGrade();
+								
+							if(node.getAdvised())
+								reports += "\nDate Advised: " + node.getAdvDate();
+								
+							if(node.getSubmitted())
+								reports += "\nDate Submitted: " + node.getGradDate()
+									+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+									+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								
+							reports += "\n";
+						}
+						
+						JOptionPane.showMessageDialog(null, reports, "Student Reports", JOptionPane.INFORMATION_MESSAGE);
+						break;
+					case 2:
+						reports += "----- Qualified -----";
+						
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							if(node.getQualified() && node.getSubmitted()){
+								reports += "\nName: " + node.getName() 
+									+ "\nID: " + id + " Grade: " + node.getGrade() 
+									+ "\nApplication Submitted: " + node.getSubmitted();
+									
+								//if(node.getSubmitted())
+									reports += "\nDate Submitted: " + node.getGradDate()
+										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								
+								reports += "\n";
+							}
+						}
+						
+						reports += "\n----- Unqualified -----";
+						
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							if(!node.getQualified() && node.getSubmitted()){
+								reports += "\nName: " + node.getName() 
+									+ "\nID: " + id + " Grade: " + node.getGrade() 
+									+ "\nApplication Submitted: " + node.getSubmitted();
+									
+								//if(node.getSubmitted())
+									reports += "\nDate Submitted: " + node.getGradDate()
+										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								
+								reports += "\n";
+							}
+						}
+						
+						reports += "\n----- Not Submitted -----";
+						
+						for(int i = 0; i < rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							node = studs.getNode(id);
+							
+							if(!node.getQualified() && !node.getSubmitted()){
+								reports += "\nName: " + node.getName() 
+									+ "\nID: " + id + " Grade: " + node.getGrade() 
+									+ "\nApplication Submitted: " + node.getSubmitted();
+									
+								/*if(node.getSubmitted())
+									reports += "\nDate Submitted: " + node.getGradDate()
+										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								*/
+								reports += "\n";
+							}
+						}
+						
+						JOptionPane.showMessageDialog(null, reports, "Graduation Application Reports", JOptionPane.INFORMATION_MESSAGE);
+						break;
+					default:
+				}
 			}
 		}); //view button
-		View.setVisible(false);
 		
 		// delete students button
 		Delete = new JButton("Delete");
@@ -209,8 +316,11 @@ public class Advisor {
 			public void actionPerformed(ActionEvent e) {
 				try{
 					int row = table.getSelectedRow(); // index of the selected row
-					int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+					int confirm = -1;
 					String id = (String)tableModel.getValueAt(row, 1); // id of the node in the selected row
+					
+					if(row >= 0)
+						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 					
 					if(confirm == JOptionPane.YES_OPTION){
 						tableModel.removeRow(row);
@@ -276,7 +386,7 @@ public class Advisor {
 						.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(42)
+					.addGap(18)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(229)
@@ -284,7 +394,7 @@ public class Advisor {
 						.addComponent(selected)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(records)
-							.addGap(29)
+							.addGap(30)
 							.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
 							.addGap(30)
 							.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)

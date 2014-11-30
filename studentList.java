@@ -428,21 +428,12 @@ class Node{
 	private String totalGPA, majorGPA;
 	private boolean submitted, submittedPrev; // graduation application submitted
 	private boolean qualified; // whether this student is qualified to graduate
-	private String gradDate;
+	private String gradDate; // date graduation application was submitted
 	private boolean advised, advisedPrev; // student has received academic advising
 	private String advDate; // date advising last took place
 	
 	DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	Date date;
-	
-	// initialize this Node with default values
-	public Node(){
-		name = "John Doe";
-		//id = -1;
-		grade = null;
-		next = null;
-		submitted = false;
-	} // Node constructor
 	
 	// initialize this Node with given values
 	public Node(String name, String id, String grade){
@@ -450,7 +441,13 @@ class Node{
 		this.id = id;
 		this.grade = grade;
 		next = null;
-		submitted = false;
+		totalGPA = "0";
+		majorGPA = "0";
+		totalCreds = "0";
+		majorCreds = "0";
+		upperCreds = "0";
+		gradDate = "--/--/----";
+		advDate = "--/--/----";
 	} // Node constructor
 	
 	public Node getNext(){
@@ -494,7 +491,17 @@ class Node{
 	} // getsubmitted
 	
 	public boolean getQualified(){
-		return qualified;
+		double totalGPA = Double.parseDouble(this.totalGPA);
+		double majorGPA = Double.parseDouble(this.majorGPA);
+		int totalCreds = Integer.parseInt(this.totalCreds);
+		int majorCreds = Integer.parseInt(this.majorCreds);
+		int upperCreds = Integer.parseInt(this.upperCreds);
+		
+		if(totalGPA >= 2.0 && majorGPA >= 2.0
+			&& totalCreds >= 120 && majorCreds >= 45 && upperCreds >= 45)
+			return true;
+			
+		return false;
 	} // getQualified
 	
 	public String getGradDate(){
