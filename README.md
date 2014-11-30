@@ -5,7 +5,7 @@ This is the repository for the Academic Advisor project for CMSC 355. Here, we w
 
 The requirements are as follows:
 
-1. Manage student information: ~~The faculty is able to use the software to create students information. For each student, the student’s name, user ID, and grade (freshman, sophomore, junior or senior) must be provided.  The software should allow the user to import a text file that contains a list of students’ information, or to enter this information for each student via the keyboard.  The user should be able to import a list of additional students and/or add, delete, or edit student information at any time.~~  Deleting a student for whom academic advising or graduation information has been entered must require user confirmation.
+1. Manage student information: ~~The faculty is able to use the software to create students information. For each student, the student’s name, user ID, and grade (freshman, sophomore, junior or senior) must be provided.  The software should allow the user to import a text file that contains a list of students’ information, or to enter this information for each student via the keyboard.  The user should be able to import a list of additional students and/or add, delete, or edit student information at any time.  Deleting a student for whom academic advising or graduation information has been entered must require user confirmation.~~
 
 2. ~~Record academic advising:  Once the student finishes the academic advising with the faculty, the faculty is able to mark the student’s academic advising is done.~~
 
