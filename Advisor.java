@@ -208,13 +208,15 @@ public class Advisor {
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-					int row = table.getSelectedRow();
-					String id = (String)tableModel.getValueAt(row, 1);
-					Node node;
+					int row = table.getSelectedRow(); // index of the selected row
+					int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+					String id = (String)tableModel.getValueAt(row, 1); // id of the node in the selected row
 					
-					tableModel.removeRow(row);
+					if(confirm == JOptionPane.YES_OPTION){
+						tableModel.removeRow(row);
 					
-					studs.removeNode(id);
+						studs.removeNode(id);
+					}					
 				} catch(ArrayIndexOutOfBoundsException ex){}
 			}
 		});
