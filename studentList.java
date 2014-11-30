@@ -516,6 +516,33 @@ class Node{
 		return advDate;
 	} // getAdvDate
 	
+	public String getReasons(){
+		String reasons = "";
+		
+		double totalGPA = Double.parseDouble(this.totalGPA);
+		double majorGPA = Double.parseDouble(this.majorGPA);
+		int totalCreds = Integer.parseInt(this.totalCreds);
+		int majorCreds = Integer.parseInt(this.majorCreds);
+		int upperCreds = Integer.parseInt(this.upperCreds);
+		
+		if(totalGPA < 2.0)
+			reasons += "**Total GPA too low\n";
+			
+		if(majorGPA < 2.0)
+			reasons += "**Major GPA too low\n";
+			
+		if(totalCreds < 120)
+			reasons += "**Not enough total credits\n";
+			
+		if(majorCreds < 45)
+			reasons += "**Not enough major credits\n";
+			
+		if(upperCreds < 45)
+			reasons += "**Not enough upper-level credits\n";
+		
+		return reasons;
+	} // getReasons
+	
 	public void setNext(Node next){
 		this.next = next;
 	} // setNext

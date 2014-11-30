@@ -267,6 +267,13 @@ public class Advisor {
 				int[] rows = table.getSelectedRows();
 				Node node;
 				
+				if(rows.length <= 0){
+					rows = new int[studs.getSize()];
+					for(int i = 0; i < rows.length; i++){
+						rows[i] = i;
+					}
+				}
+				
 				switch(lastTab){
 					case 0:
 						for(int i = 0; i < rows.length; i++){
@@ -343,7 +350,7 @@ public class Advisor {
 										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
 										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
 								
-								reports += "\n";
+								reports += "\nReasons:\n" + node.getReasons() + "\n";
 							}
 						}
 						
