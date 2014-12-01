@@ -341,6 +341,18 @@ public class studentList{
 		return false;
 	} // contains
 	
+	// whether the list contains a given id
+	public boolean contains(String id, int index){
+		for(int i = 0; i < size; i++){
+			try{
+				if(getNode(i, 0).getID().equals(id) && i != index)
+					return true;
+			} catch(NullPointerException e){}
+		}
+		
+		return false;
+	} // contains
+	
 	// return the size of the queue
 	public int getSize(){
 		return size;
