@@ -7,7 +7,6 @@ import javax.swing.SwingUtilities;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FileDialog;
-
 import java.io.*;
 import java.util.*;
 
@@ -20,6 +19,10 @@ public class Advisor {
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, View, Delete, Add,Import;	
 	
+	//Impliments a JComboBox to provide a dropdown selection Menu
+	private static JComboBox comboBox = new JComboBox();
+	
+	
 	// reading and writing variables
 	static Scanner scan; 
 	static BufferedReader reader;
@@ -31,7 +34,7 @@ public class Advisor {
 	static JScrollPane scrollPane; // scrollPane for table
 	
 	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
-	
+	static 	JLabel label_Selections = new JLabel("Select List");
 	static studentList studs; // queue containing students and their information
 	
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
@@ -47,6 +50,7 @@ public class Advisor {
 	private static int lastTab = 1;
 	
 	private static FileDialog chooseFile = new FileDialog(frame, "Select file...", FileDialog.LOAD); // a window to browse for the selected file
+	
 	
 	
 	
@@ -118,6 +122,8 @@ public class Advisor {
 		});
 		
 		close.setVisible(false);
+		label_Selections.setDisplayedMnemonic('s');
+		label_Selections.setLabelFor(comboBox);
 		
 		
 		// instantiate a new list of students
@@ -130,7 +136,7 @@ public class Advisor {
 		table = new JTable( tableModel );
 		
 		scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(808,400));
+		scrollPane.setPreferredSize(new Dimension(808,485));
 		initTableStuds(); // initialize the table for the students tab
 		
 		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
@@ -371,6 +377,27 @@ public class Advisor {
 		/**
 		 * 
 		 * 
+		 * 				ComboBox
+		 * 				Impliments a combo box to add a drop down menu for user selection
+		 * 				Can be used to replace the JButtons --> May replace JButtons
+		 * 
+		 * 
+		 * 
+		 */
+		
+		
+		//set the records, students, and Graduation buttons to not visible as they might be taken our  and overrode by a ComboBox
+		records.setVisible(false);
+		students.setVisible(false);
+		Graduation.setVisible(false);
+		
+		
+		
+		
+		
+		/**
+		 * 
+		 * 
 		 * Layout Section:
 		 * 	Defines the Position within the Layout of all the Components
 		 * 
@@ -382,6 +409,79 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
+		//adds selectable item to the combo box
+		//the blank item must be there to allow for a default "none selected" option to be present
+		comboBox.addItem("");
+		comboBox.addItem("records");
+		comboBox.addItem("students");
+		comboBox.addItem("Graduation");
+		
+		/**
+		 * Combo Box to add a drop down selection menu for easier and more intuitive use
+		 * By clicking on the option and selecting the option you want you can view the information about the current selection 
+		 * 	
+		 */
+		comboBox.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				// TODO Auto-generated method stub
+				JComboBox<String> combo = (JComboBox<String>) event.getSource();
+				
+				String userSelection = (String)combo.getSelectedItem();
+				
+				switch(userSelection){
+				
+						case "records": 
+								
+								//Insert Stuff From records
+								
+								saveTable();
+								lastTab = 0;
+								
+								initTableRecords();
+								
+								table.setAutoResizeMode(1);
+
+								selected.setText("Advising Report");
+						break;
+						case "students": 
+										
+										//Insert Stuff From student
+										saveTable();
+										lastTab = 1;
+										
+										selected.setText("Students");
+										
+										initTableStuds();
+										
+										table.setAutoResizeMode(1);
+						break;
+						case "Graduation":
+										
+										//insert stuff from Graduation
+										selected.setText("Graduation Report");
+										
+										try{
+										saveTable();
+										
+										lastTab = 2;
+										
+										initTableGrad();
+										
+										} catch(NullPointerException npe){ System.out.println("trace"); }
+						break;
+						
+				}
+			}
+			
+			
+		}); //end ComboBox action Listener
+		
+	
+		
+		
+		
 		
 		
 		//Layout for all the button, labels, and other UI stuff
@@ -389,27 +489,32 @@ public class Advisor {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(55)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(Import, 0, 0, Short.MAX_VALUE)
-						.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(18)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(229)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(selected)
 						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(55)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(Import, 0, 0, Short.MAX_VALUE)
+								.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 920, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(280)
+							.addComponent(selected)
+							.addGap(49)
 							.addComponent(records)
-							.addGap(30)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-							.addGap(30)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-							.addGap(60)
-							.addComponent(close)))
-					.addGap(345))
+							.addGap(18)
+							.addComponent(close)
+							.addGap(18)
+							.addComponent(label_Selections)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -417,11 +522,12 @@ public class Advisor {
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(close)
-						.addComponent(records)
 						.addComponent(Graduation)
-						.addComponent(students))
-					.addGap(55)
-					.addComponent(selected)
+						.addComponent(students)
+						.addComponent(records)
+						.addComponent(selected)
+						.addComponent(label_Selections)
+						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
@@ -432,8 +538,8 @@ public class Advisor {
 							.addComponent(View)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(Import))
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
-					.addGap(151))
+						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 497, GroupLayout.PREFERRED_SIZE))
+					.addGap(35))
 		);
 		
 		// grabs the current panes content and adds it to the Frame, then makes the frame visible
