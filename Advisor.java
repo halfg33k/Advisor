@@ -46,7 +46,7 @@ public class Advisor {
 	 */
 	private static int lastTab = 1;
 	
-	private static FileDialog chooseFile = new FileDialog(frame, "Choose a file.", FileDialog.LOAD); // a window to browse for the selected file
+	private static FileDialog chooseFile = new FileDialog(frame, "Select file...", FileDialog.LOAD); // a window to browse for the selected file
 	
 	
 	
@@ -69,7 +69,7 @@ public class Advisor {
 		
 		@SuppressWarnings("unchecked")
 		public void setValueAt(Object value, int row, int col) {  
-			// overridden code
+			// default code
 			Vector rowVector = (Vector)dataVector.elementAt(row);  
 			rowVector.setElementAt(value, col);  
 			fireTableCellUpdated(row, col);  
@@ -190,7 +190,7 @@ public class Advisor {
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// add a blank row to the table
-				tableModel.addRow(new Object[]{});
+				tableModel.addRow(new Object[]{"","","",Boolean.FALSE,""});
 			}
 		});
 		
@@ -540,12 +540,12 @@ public class Advisor {
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
-				node = studs.getNode(i, 0);
+				node = studs.getNode(i, 0); // get node by index
 			
 				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
 			}
 		} catch(NullPointerException npe){}
-	} // initTableStuds
+	} // initTableRecords
 	
 	private static void initTableStuds(){
 		Node node;
@@ -600,6 +600,6 @@ public class Advisor {
 		table.getColumnModel().getColumn(6).setPreferredWidth(90);
 		table.getColumnModel().getColumn(7).setPreferredWidth(90);
 		table.getColumnModel().getColumn(8).setPreferredWidth(130);
-	} // initTableStuds
+	} // initTableGrad
 }
 
