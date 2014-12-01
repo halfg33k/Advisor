@@ -461,7 +461,7 @@ public class Advisor {
 						advDate = (String)tableModel.getValueAt(i, 4);
 						
 						
-						if(studs.contains(id) && i > studs.getSize() - 1){
+						if(studs.contains(id, i)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
 						}
 						else{
@@ -512,7 +512,7 @@ public class Advisor {
 						majorCreds = (String)tableModel.getValueAt(i, 7);
 						upperCreds = (String)tableModel.getValueAt(i, 8);
 						
-						if(studs.contains(id) && i > studs.getSize() - 1){
+						if(studs.contains(id, i)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
 						}
 						else{
