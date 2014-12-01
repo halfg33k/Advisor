@@ -335,7 +335,7 @@ public class studentList{
 			try{
 				if(getNode(i, 0).getID().equals(id))
 					return true;
-			} catch(NullPointerException e){ System.out.println("NullPointerException: contains"); }
+			} catch(NullPointerException e){}
 		}
 		
 		return false;

@@ -75,20 +75,22 @@ public class Advisor {
 			fireTableCellUpdated(row, col);  
 			
 			// my code
-			saveTable();
-			
-			switch(lastTab){
-				case 0:
-					initTableRecords();
-					break;
-				case 1:
-					initTableStuds();
-					break;
-				case 2:
-					initTableGrad();
-					break;
-				default:
-			} 
+			if(col == 1 || col == 3){
+				saveTable();
+				
+				switch(lastTab){
+					case 0:
+						initTableRecords();
+						break;
+					case 1:
+						initTableStuds();
+						break;
+					case 2:
+						initTableGrad();
+						break;
+					default:
+				} 
+			}
 		}
 	} // class MyTableModel
 
@@ -459,15 +461,20 @@ public class Advisor {
 						advDate = (String)tableModel.getValueAt(i, 4);
 						
 						
-						try{
-							studs.getNode(i, 0).setName(name);
-							studs.getNode(i, 0).setID(id);
-							studs.getNode(i, 0).setGrade(grade);
-						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-						
-						studs.getNode(i, 0).setAdvised(advised);
-						if(!advised)
-							studs.getNode(i, 0).setAdvDate("");
+						if(studs.contains(id) && i > studs.getSize() - 1){
+							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else{
+							try{
+								studs.getNode(i, 0).setName(name);
+								studs.getNode(i, 0).setID(id);
+								studs.getNode(i, 0).setGrade(grade);
+							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+							
+							studs.getNode(i, 0).setAdvised(advised);
+							if(!advised)
+								studs.getNode(i, 0).setAdvDate("");
+						}
 					}
 					
 					studs.rewrite();
@@ -477,13 +484,18 @@ public class Advisor {
 						name = (String)tableModel.getValueAt(i, 0);
 						id = (String)tableModel.getValueAt(i, 1);
 						grade = (String)tableModel.getValueAt(i, 2);
+						boolean add = false;
 						
-						
-						try{
-							studs.getNode(i, 0).setName(name);
-							studs.getNode(i, 0).setID(id);
-							studs.getNode(i, 0).setGrade(grade);
-						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						if(studs.contains(id) && i > studs.getSize() - 1){
+							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else{
+							try{
+								studs.getNode(i, 0).setName(name);
+								studs.getNode(i, 0).setID(id);
+								studs.getNode(i, 0).setGrade(grade);
+							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						}
 					}
 					
 					studs.rewrite();
@@ -500,19 +512,23 @@ public class Advisor {
 						majorCreds = (String)tableModel.getValueAt(i, 7);
 						upperCreds = (String)tableModel.getValueAt(i, 8);
 						
-						
-						try{
-							studs.getNode(i, 0).setName(name);
-							studs.getNode(i, 0).setID(id);
-							studs.getNode(i, 0).setGrade(grade);
-						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-						
-						studs.getNode(i, 0).setSubmitted(submitted);
-						studs.getNode(i, 0).setTotalGPA(totalGPA);
-						studs.getNode(i, 0).setMajorGPA(majorGPA);
-						studs.getNode(i, 0).setTotalCreds(totalCreds);
-						studs.getNode(i, 0).setMajorCreds(majorCreds);
-						studs.getNode(i, 0).setUpperCreds(upperCreds);
+						if(studs.contains(id) && i > studs.getSize() - 1){
+							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else{
+							try{
+								studs.getNode(i, 0).setName(name);
+								studs.getNode(i, 0).setID(id);
+								studs.getNode(i, 0).setGrade(grade);
+							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+							
+							studs.getNode(i, 0).setSubmitted(submitted);
+							studs.getNode(i, 0).setTotalGPA(totalGPA);
+							studs.getNode(i, 0).setMajorGPA(majorGPA);
+							studs.getNode(i, 0).setTotalCreds(totalCreds);
+							studs.getNode(i, 0).setMajorCreds(majorCreds);
+							studs.getNode(i, 0).setUpperCreds(upperCreds);
+						}
 					}
 					
 					studs.rewrite();
