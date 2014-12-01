@@ -486,7 +486,7 @@ public class Advisor {
 						grade = (String)tableModel.getValueAt(i, 2);
 						boolean add = false;
 						
-						if(studs.contains(id, i)){// && i > studs.getSize() - 1){
+						if(studs.contains(id, i)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
 						}
 						else{
