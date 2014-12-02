@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.event.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
@@ -17,10 +18,7 @@ public class Advisor {
 	static JPanel panel;
 	
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, View, Delete, Add,Import;	
-	//used to select all of the currect entries on the current table
-	static 	JButton Select_All = new JButton("Select All");
-	
+	static JButton students, records, Graduation, View, Delete, Add,Import;		
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -31,6 +29,7 @@ public class Advisor {
 	static MyTableModel tableModel;
 	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
+	static ListSelectionModel listModel;// = table.getSelectionModel();
 	
 	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
 	static studentList studs; // queue containing students and their information
@@ -77,7 +76,7 @@ public class Advisor {
 			fireTableCellUpdated(row, col);  
 			
 			// my code
-			if(col == 1 || col == 3){
+			if(col == 2 || col == 4){
 				saveTable();
 				
 				switch(lastTab){
@@ -93,6 +92,14 @@ public class Advisor {
 					default:
 				} 
 			}
+			
+			if(col == 0){
+				for(int i = 0; i < table.getRowCount(); i++){
+					if(table.isRowSelected(i) || (boolean)table.getValueAt(i, 0)){
+						listModel.addSelectionInterval(i, i);
+					}
+				}
+			}
 		}
 	} // class MyTableModel
 
@@ -105,7 +112,7 @@ public class Advisor {
 	
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
-		frame = new JFrame("Advisor");
+		frame = new JFrame();
 		frame.setSize(1070,800);
 		
 		// perform certain actions when the window is closed
@@ -136,6 +143,10 @@ public class Advisor {
 		initTableStuds(); // initialize the table for the students tab
 		
 		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
+		
+		listModel = table.getSelectionModel();
+		
+		//listModel.addSelectionListener(new ListSelection());
 		
 		
 		
@@ -194,7 +205,7 @@ public class Advisor {
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// add a blank row to the table
-				tableModel.addRow(new Object[]{"","","",Boolean.FALSE,""});
+				tableModel.addRow(new Object[]{Boolean.FALSE,"","","",Boolean.FALSE,""});
 			}
 		});
 		
@@ -202,11 +213,14 @@ public class Advisor {
 		View = new JButton("View Report");
 		View.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				saveTable();
+				
 				String reports = "";
 				String id;
 				int[] rows = table.getSelectedRows();
 				Node node;
 				
+				// choose all if none are selected
 				if(rows.length <= 0){
 					rows = new int[studs.getSize()];
 					for(int i = 0; i < rows.length; i++){
@@ -217,7 +231,7 @@ public class Advisor {
 				switch(lastTab){
 					case 0:
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], 2); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							reports += "\nName: " + node.getName() 
@@ -234,7 +248,7 @@ public class Advisor {
 						break;
 					case 1:
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], 2); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							reports += "\nName: " + node.getName() 
@@ -257,7 +271,7 @@ public class Advisor {
 						reports += "----- Qualified -----";
 						
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], 2); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							if(node.getQualified() && node.getSubmitted()){
@@ -277,7 +291,7 @@ public class Advisor {
 						reports += "\n----- Unqualified -----";
 						
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], 2); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							if(!node.getQualified() && node.getSubmitted()){
@@ -297,7 +311,7 @@ public class Advisor {
 						reports += "\n----- Not Submitted -----";
 						
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], 2); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							if(!node.getQualified() && !node.getSubmitted()){
@@ -339,6 +353,8 @@ public class Advisor {
 						studs.removeNode(id);
 					}					
 				} catch(ArrayIndexOutOfBoundsException ex){}
+				
+				saveTable();
 			}
 		});
 		
@@ -366,9 +382,22 @@ public class Advisor {
 						break;
 					default:
 				} 
+				
+				saveTable();
 			}
 		});
 		
+		
+		/**
+		 * 
+		 * 
+		 * 				ComboBox
+		 * 				Impliments a combo box to add a drop down menu for user selection
+		 * 				Can be used to replace the JButtons --> May replace JButtons
+		 * 
+		 * 
+		 * 
+		 */
 		
 		
 		//set the records, students, and Graduation buttons to not visible as they might be taken our  and overrode by a ComboBox
@@ -394,12 +423,9 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
+		JButton Select_All = new JButton("Select All");
 		
-		
-		
-		
-		
-	
+		//JButton Update_Records = new JButton("Update Records");
 		
 	
 		
@@ -410,31 +436,32 @@ public class Advisor {
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(37)
 					.addComponent(selected)
-					.addGap(151)
-					.addComponent(close)
-					.addGap(357)
+					.addGap(242)
 					.addComponent(records)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-					.addGap(37))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(327)
-					.addComponent(Add, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(Delete, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(Import, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addComponent(View)
+					.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(close)
+					.addPreferredGap(ComponentPlacement.RELATED)
+				)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addGap(385)
+					.addComponent(Add, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(Select_All, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
-					.addGap(36))
+					.addComponent(Delete, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Import, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(View, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Select_All, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addGap(37))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 1047, GroupLayout.PREFERRED_SIZE)
@@ -446,19 +473,21 @@ public class Advisor {
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(selected)
-						.addComponent(close)
-						.addComponent(Graduation)
+						.addComponent(records)
 						.addComponent(students)
-						.addComponent(records))
+						.addComponent(Graduation)
+						.addComponent(close)
+					)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(Select_All)
-						.addComponent(View)
-						.addComponent(Import)
+						.addComponent(Add)
 						.addComponent(Delete)
-						.addComponent(Add))
+						.addComponent(Import)
+						.addComponent(View)
+						.addComponent(Select_All)
+					)
 					.addGap(195))
 		);
 		
@@ -466,13 +495,12 @@ public class Advisor {
 		frame.getContentPane().setLayout(groupLayout);
 	
 		frame.setVisible(true);
-		
 	}
 	
 	// save the contents of the table before switching tabs
 	private static void saveTable(){
 		String name, id, grade;
-		boolean advised, submitted,select;
+		boolean advised, submitted,isSelected;
 		String advDate;
 		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
@@ -480,15 +508,19 @@ public class Advisor {
 			switch(lastTab){
 				case 0: // Records tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						name = (String)tableModel.getValueAt(i, 0);
-						id = (String)tableModel.getValueAt(i, 1);
-						grade = (String)tableModel.getValueAt(i, 2);
-						advised = (boolean)tableModel.getValueAt(i, 3);
-						advDate = (String)tableModel.getValueAt(i, 4);
+						isSelected = (boolean)tableModel.getValueAt(i, 0);
+						name = (String)tableModel.getValueAt(i, 1);
+						id = (String)tableModel.getValueAt(i, 2);
+						grade = (String)tableModel.getValueAt(i, 3);
+						advised = (boolean)tableModel.getValueAt(i, 4);
+						advDate = (String)tableModel.getValueAt(i, 5);
 						
 						
-						if(studs.contains(id, i)){
+						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else if(id.length() < 1 || id.equals(null)){
+							//JOptionPane.showMessageDialog(null, "Please enter an id.");
 						}
 						else{
 							try{
@@ -507,13 +539,17 @@ public class Advisor {
 					break;
 				case 1: // Students tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						name = (String)tableModel.getValueAt(i, 0);
-						id = (String)tableModel.getValueAt(i, 1);
-						grade = (String)tableModel.getValueAt(i, 2);
+						isSelected = (boolean)tableModel.getValueAt(i, 0);
+						name = (String)tableModel.getValueAt(i, 1);
+						id = (String)tableModel.getValueAt(i, 2);
+						grade = (String)tableModel.getValueAt(i, 3);
 						boolean add = false;
 						
-						if(studs.contains(id, i)){
+						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else if(id.length() < 1 || id.equals(null)){
+							//JOptionPane.showMessageDialog(null, "Please enter an id.");
 						}
 						else{
 							try{
@@ -528,19 +564,22 @@ public class Advisor {
 					break;
 				case 2: // Graduation tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						name = (String)tableModel.getValueAt(i, 0);
-						id = (String)tableModel.getValueAt(i, 1);
-						grade = (String)tableModel.getValueAt(i, 2);
-						submitted = (boolean)tableModel.getValueAt(i, 3);
-						totalGPA = (String)tableModel.getValueAt(i, 4);
-						majorGPA = (String)tableModel.getValueAt(i, 5);
-						totalCreds = (String)tableModel.getValueAt(i, 6);
-						majorCreds = (String)tableModel.getValueAt(i, 7);
-						upperCreds = (String)tableModel.getValueAt(i, 8);
-						select = (boolean)tableModel.getValueAt(i,9 );
+						isSelected = (boolean)tableModel.getValueAt(i, 0);
+						name = (String)tableModel.getValueAt(i, 1);
+						id = (String)tableModel.getValueAt(i, 2);
+						grade = (String)tableModel.getValueAt(i, 3);
+						submitted = (boolean)tableModel.getValueAt(i, 4);
+						totalGPA = (String)tableModel.getValueAt(i, 5);
+						majorGPA = (String)tableModel.getValueAt(i, 6);
+						totalCreds = (String)tableModel.getValueAt(i, 7);
+						majorCreds = (String)tableModel.getValueAt(i, 8);
+						upperCreds = (String)tableModel.getValueAt(i, 9);
 						
-						if(studs.contains(id, i)){
+						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else if(id.length() < 1 || id.equals(null)){
+							//JOptionPane.showMessageDialog(null, "Please enter an id.");
 						}
 						else{
 							try{
@@ -575,21 +614,22 @@ public class Advisor {
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 	
+		tableModel.addColumn("Select");
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
 		tableModel.addColumn("Advised");
 		tableModel.addColumn("Date");
-		//row to mark the current record for select
-		tableModel.addColumn("Select All");
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0); // get node by index
-				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
+			
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
 			}
 		} catch(NullPointerException npe){}
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(87);
 	} // initTableRecords
 	
 	private static void initTableStuds(){
@@ -597,26 +637,28 @@ public class Advisor {
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 		
+		tableModel.addColumn("Select");
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
-		//row to mark the current record for select
-		tableModel.addColumn("Select All");
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
-				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
+			
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade()});
 			}
 		} catch(NullPointerException npe){}
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(87);
 	} // initTableStuds
 	
 	private static void initTableGrad(){
 		Node node;
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
-	
+		
+		tableModel.addColumn("Select");
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
@@ -626,31 +668,49 @@ public class Advisor {
 		tableModel.addColumn("Total Credits");
 		tableModel.addColumn("Major Credits");
 		tableModel.addColumn("Upper-Level Credits");
-		//row to mark the current record for select
-		tableModel.addColumn("Select All");
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
 				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
 		} catch(NullPointerException npe){}
 		
 		// resize the columns to properly accommodate each header
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
-		table.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table.getColumnModel().getColumn(1).setPreferredWidth(50);
-		table.getColumnModel().getColumn(2).setPreferredWidth(75);
+		table.getColumnModel().getColumn(0).setPreferredWidth(87);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		table.getColumnModel().getColumn(2).setPreferredWidth(50);
 		table.getColumnModel().getColumn(3).setPreferredWidth(75);
-		table.getColumnModel().getColumn(4).setPreferredWidth(70);
-		table.getColumnModel().getColumn(5).setPreferredWidth(120);
+		table.getColumnModel().getColumn(4).setPreferredWidth(75);
+		table.getColumnModel().getColumn(5).setPreferredWidth(70);
 		table.getColumnModel().getColumn(6).setPreferredWidth(120);
 		table.getColumnModel().getColumn(7).setPreferredWidth(120);
-		table.getColumnModel().getColumn(8).setPreferredWidth(130);
-		table.getColumnModel().getColumn(9).setPreferredWidth(87);
+		table.getColumnModel().getColumn(8).setPreferredWidth(120);
+		table.getColumnModel().getColumn(9).setPreferredWidth(130);
+		
 	} // initTableGrad
 }
 
+// keeps track of selected elements
+class ListSelection implements ListSelectionListener{
+	public void valueChanged(ListSelectionEvent lse){
+		ListSelectionModel model = (ListSelectionModel)lse.getSource();
+		
+		int index = lse.getFirstIndex();
+		boolean isAdjusting = lse.getValueIsAdjusting();
+		
+		if(!model.isSelectionEmpty()){
+			int min = model.getMinSelectionIndex();
+			int max = model.getMaxSelectionIndex();
+			
+			for(int i = min; i < max; i++){
+			
+			}
+		}
+		
+	}
+} // class ListSelection
