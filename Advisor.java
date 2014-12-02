@@ -108,7 +108,7 @@ public class Advisor {
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		frame = new JFrame();
-		frame.setSize(1070,575);
+		frame.setSize(1070,800);
 		
 		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
@@ -136,7 +136,7 @@ public class Advisor {
 		table = new JTable( tableModel );
 		
 		scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(808,485));
+		scrollPane.setPreferredSize(new Dimension(1000,465));
 		initTableStuds(); // initialize the table for the students tab
 		
 		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
@@ -478,6 +478,10 @@ public class Advisor {
 			
 		}); //end ComboBox action Listener
 		
+		JButton Select_All = new JButton("Select All");
+		
+		JButton Update_Records = new JButton("Update Records");
+		
 	
 		
 		
@@ -489,57 +493,63 @@ public class Advisor {
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(55)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(Import, 0, 0, Short.MAX_VALUE)
-								.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 920, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(280)
-							.addComponent(selected)
-							.addGap(49)
-							.addComponent(records)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(close)
-							.addGap(18)
-							.addComponent(label_Selections)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
+					.addGap(37)
+					.addComponent(selected)
+					.addGap(242)
+					.addComponent(records)
+					.addGap(18)
+					.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(close)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(label_Selections)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
+					.addGap(47))
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addGap(156)
+					.addComponent(Add, GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Delete, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Import, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(View)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Update_Records, GroupLayout.PREFERRED_SIZE, 159, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Select_All, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
+					.addGap(31))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 1047, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(close)
-						.addComponent(Graduation)
-						.addComponent(students)
-						.addComponent(records)
 						.addComponent(selected)
+						.addComponent(records)
+						.addComponent(students)
+						.addComponent(Graduation)
+						.addComponent(close)
 						.addComponent(label_Selections)
 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(Add)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(Delete)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(View)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(Import))
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 497, GroupLayout.PREFERRED_SIZE))
-					.addGap(35))
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(Add)
+						.addComponent(Delete)
+						.addComponent(Import)
+						.addComponent(View)
+						.addComponent(Select_All)
+						.addComponent(Update_Records))
+					.addGap(195))
 		);
 		
 		// grabs the current panes content and adds it to the Frame, then makes the frame visible
@@ -552,7 +562,7 @@ public class Advisor {
 	// save the contents of the table before switching tabs
 	private static void saveTable(){
 		String name, id, grade;
-		boolean advised, submitted;
+		boolean advised, submitted,select;
 		String advDate;
 		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
@@ -617,6 +627,7 @@ public class Advisor {
 						totalCreds = (String)tableModel.getValueAt(i, 6);
 						majorCreds = (String)tableModel.getValueAt(i, 7);
 						upperCreds = (String)tableModel.getValueAt(i, 8);
+						select = (boolean)tableModel.getValueAt(i,9 );
 						
 						if(studs.contains(id, i)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
@@ -701,11 +712,13 @@ public class Advisor {
 		tableModel.addColumn("Total Credits");
 		tableModel.addColumn("Major Credits");
 		tableModel.addColumn("Upper-Level Credits");
+		tableModel.addColumn("Select All");
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
+				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
 				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
 		} catch(NullPointerException npe){}
@@ -718,10 +731,11 @@ public class Advisor {
 		table.getColumnModel().getColumn(2).setPreferredWidth(75);
 		table.getColumnModel().getColumn(3).setPreferredWidth(75);
 		table.getColumnModel().getColumn(4).setPreferredWidth(70);
-		table.getColumnModel().getColumn(5).setPreferredWidth(75);
-		table.getColumnModel().getColumn(6).setPreferredWidth(90);
-		table.getColumnModel().getColumn(7).setPreferredWidth(90);
+		table.getColumnModel().getColumn(5).setPreferredWidth(120);
+		table.getColumnModel().getColumn(6).setPreferredWidth(120);
+		table.getColumnModel().getColumn(7).setPreferredWidth(120);
 		table.getColumnModel().getColumn(8).setPreferredWidth(130);
+		table.getColumnModel().getColumn(9).setPreferredWidth(87);
 	} // initTableGrad
 }
 
