@@ -18,9 +18,8 @@ public class Advisor {
 	
 	// all of the buttons in the menu
 	static JButton students, records, Graduation, View, Delete, Add,Import;	
-	
-	//Impliments a JComboBox to provide a dropdown selection Menu
-	private static JComboBox comboBox = new JComboBox();
+	//used to select all of the currect entries on the current table
+	static 	JButton Select_All = new JButton("Select All");
 	
 	
 	// reading and writing variables
@@ -34,7 +33,6 @@ public class Advisor {
 	static JScrollPane scrollPane; // scrollPane for table
 	
 	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
-	static 	JLabel label_Selections = new JLabel("Select List");
 	static studentList studs; // queue containing students and their information
 	
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
@@ -107,7 +105,7 @@ public class Advisor {
 	
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
-		frame = new JFrame();
+		frame = new JFrame("Advisor");
 		frame.setSize(1070,800);
 		
 		// perform certain actions when the window is closed
@@ -122,8 +120,6 @@ public class Advisor {
 		});
 		
 		close.setVisible(false);
-		label_Selections.setDisplayedMnemonic('s');
-		label_Selections.setLabelFor(comboBox);
 		
 		
 		// instantiate a new list of students
@@ -374,22 +370,11 @@ public class Advisor {
 		});
 		
 		
-		/**
-		 * 
-		 * 
-		 * 				ComboBox
-		 * 				Impliments a combo box to add a drop down menu for user selection
-		 * 				Can be used to replace the JButtons --> May replace JButtons
-		 * 
-		 * 
-		 * 
-		 */
-		
 		
 		//set the records, students, and Graduation buttons to not visible as they might be taken our  and overrode by a ComboBox
-		records.setVisible(false);
-		students.setVisible(false);
-		Graduation.setVisible(false);
+		records.setVisible(true);
+		students.setVisible(true);
+		Graduation.setVisible(true);
 		
 		
 		
@@ -409,78 +394,12 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
-		//adds selectable item to the combo box
-		//the blank item must be there to allow for a default "none selected" option to be present
-		comboBox.addItem("");
-		comboBox.addItem("records");
-		comboBox.addItem("students");
-		comboBox.addItem("Graduation");
 		
-		/**
-		 * Combo Box to add a drop down selection menu for easier and more intuitive use
-		 * By clicking on the option and selecting the option you want you can view the information about the current selection 
-		 * 	
-		 */
-		comboBox.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				// TODO Auto-generated method stub
-				JComboBox<String> combo = (JComboBox<String>) event.getSource();
-				
-				String userSelection = (String)combo.getSelectedItem();
-				
-				switch(userSelection){
-				
-						case "records": 
-								
-								//Insert Stuff From records
-								
-								saveTable();
-								lastTab = 0;
-								
-								initTableRecords();
-								
-								table.setAutoResizeMode(1);
-
-								selected.setText("Advising Report");
-						break;
-						case "students": 
-										
-										//Insert Stuff From student
-										saveTable();
-										lastTab = 1;
-										
-										selected.setText("Students");
-										
-										initTableStuds();
-										
-										table.setAutoResizeMode(1);
-						break;
-						case "Graduation":
-										
-										//insert stuff from Graduation
-										selected.setText("Graduation Report");
-										
-										try{
-										saveTable();
-										
-										lastTab = 2;
-										
-										initTableGrad();
-										
-										} catch(NullPointerException npe){ System.out.println("trace"); }
-						break;
-						
-				}
-			}
-			
-			
-		}); //end ComboBox action Listener
 		
-		JButton Select_All = new JButton("Select All");
 		
-		JButton Update_Records = new JButton("Update Records");
+		
+		
+	
 		
 	
 		
@@ -491,26 +410,22 @@ public class Advisor {
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(37)
 					.addComponent(selected)
-					.addGap(242)
-					.addComponent(records)
-					.addGap(18)
-					.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addGap(151)
 					.addComponent(close)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(label_Selections)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)
-					.addGap(47))
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addGap(156)
-					.addComponent(Add, GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+					.addGap(357)
+					.addComponent(records)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+					.addGap(37))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(327)
+					.addComponent(Add, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(Delete, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -518,10 +433,8 @@ public class Advisor {
 					.addGap(18)
 					.addComponent(View)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(Update_Records, GroupLayout.PREFERRED_SIZE, 159, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(Select_All, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-					.addGap(31))
+					.addComponent(Select_All, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
+					.addGap(36))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 1047, GroupLayout.PREFERRED_SIZE)
@@ -533,22 +446,19 @@ public class Advisor {
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(selected)
-						.addComponent(records)
-						.addComponent(students)
-						.addComponent(Graduation)
 						.addComponent(close)
-						.addComponent(label_Selections)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(Graduation)
+						.addComponent(students)
+						.addComponent(records))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(Add)
-						.addComponent(Delete)
-						.addComponent(Import)
-						.addComponent(View)
 						.addComponent(Select_All)
-						.addComponent(Update_Records))
+						.addComponent(View)
+						.addComponent(Import)
+						.addComponent(Delete)
+						.addComponent(Add))
 					.addGap(195))
 		);
 		
@@ -670,11 +580,13 @@ public class Advisor {
 		tableModel.addColumn("Grade");
 		tableModel.addColumn("Advised");
 		tableModel.addColumn("Date");
+		//row to mark the current record for select
+		tableModel.addColumn("Select All");
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0); // get node by index
-			
+				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
 				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
 			}
 		} catch(NullPointerException npe){}
@@ -688,11 +600,13 @@ public class Advisor {
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
+		//row to mark the current record for select
+		tableModel.addColumn("Select All");
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
-			
+				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
 				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
 			}
 		} catch(NullPointerException npe){}
@@ -712,6 +626,7 @@ public class Advisor {
 		tableModel.addColumn("Total Credits");
 		tableModel.addColumn("Major Credits");
 		tableModel.addColumn("Upper-Level Credits");
+		//row to mark the current record for select
 		tableModel.addColumn("Select All");
 		
 		try{
