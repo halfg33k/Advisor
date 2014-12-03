@@ -35,7 +35,7 @@ public class Advisor {
 	static JScrollPane scrollPane; // scrollPane for table
 	static ListSelectionModel listModel;
 	
-	static JLabel selected = new JLabel("Students", SwingConstants.RIGHT); // label declaring which tab the user is currently on
+	static JLabel selectedLabel = new JLabel("Students", SwingConstants.RIGHT); // label declaring which tab the user is currently on
 	static studentList studs; // queue containing studentsButton and their information
 	
 	/*
@@ -197,7 +197,7 @@ public class Advisor {
 				
 				table.setAutoResizeMode(1);
 
-				selected.setText("Advising Report");
+				selectedLabel.setText("Advising Report");
 				
 				layout();
 			}
@@ -210,7 +210,7 @@ public class Advisor {
 				saveTable();
 				currentTab = 1;
 				
-				selected.setText("Students");
+				selectedLabel.setText("Students");
 				
 				initTableStuds();
 				
@@ -224,7 +224,7 @@ public class Advisor {
 		graduationButton = new JButton("Graduation");
 		graduationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selected.setText("Graduation Report");
+				selectedLabel.setText("Graduation Report");
 				
 				try{
 				saveTable();
@@ -467,9 +467,8 @@ public class Advisor {
 		
 	}
 	
+	//Layout for all the buttons, labels, and other UI stuff
 	private static void layout(){
-	
-		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -480,8 +479,8 @@ public class Advisor {
 					.addComponent(studentsButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
 					.addGap(20)
 					.addComponent(graduationButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-					.addGap(598 - (int)selected.getPreferredSize().getWidth())
-					.addComponent(selected)
+					.addGap(598 - (int)selectedLabel.getPreferredSize().getWidth()) // right-align selectedLabel
+					.addComponent(selectedLabel)
 				)
 				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addGap(385)
@@ -508,7 +507,7 @@ public class Advisor {
 						.addComponent(advisingButton)
 						.addComponent(studentsButton)
 						.addComponent(graduationButton)
-						.addComponent(selected)
+						.addComponent(selectedLabel)
 					)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
