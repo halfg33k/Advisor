@@ -129,7 +129,6 @@ public class Advisor {
 	} // class MyTableModel
 
 	public static void main(String[] args) throws FileNotFoundException{
-		
 		//Call to Advisor--> the name of the GUI: once Advisor is called: The UI loads and adds all 
 		// relevant components
 		Advisor();
@@ -200,6 +199,10 @@ public class Advisor {
 				selectedLabel.setText("Advising Report");
 				
 				layout();
+				
+				// allows selectAllButton to work
+				table.selectAll();
+				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 			}
 		});//advising menu button
 		
@@ -217,6 +220,10 @@ public class Advisor {
 				table.setAutoResizeMode(1);
 				
 				layout();
+				
+				// allows selectAllButton to work
+				table.selectAll();
+				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 			}
 		});//students menu button
 		
@@ -236,6 +243,10 @@ public class Advisor {
 				} catch(NullPointerException npe){ System.out.println("trace"); }
 				
 				layout();
+				
+				// allows selectAllButton to work
+				table.selectAll();
+				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 			}
 		}); //graduation menu button
 		
@@ -247,8 +258,6 @@ public class Advisor {
 				tableModel.addRow(new Object[]{Boolean.FALSE,"","","",Boolean.FALSE,""});
 			}
 		});
-		
-		
 		
 		// delete studentsButton button
 		deleteButton = new JButton("Delete");
@@ -273,7 +282,7 @@ public class Advisor {
 			}
 		}); // delete button
 		
-		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
+		//takes the name in the textfield above and when clicked loads the specified text file information into the Table
 		importButton = new JButton("Import");
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -464,7 +473,8 @@ public class Advisor {
 		
 		layout();
 		
-		
+		table.selectAll();
+		listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 	}
 	
 	//Layout for all the buttons, labels, and other UI stuff
