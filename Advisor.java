@@ -22,7 +22,7 @@ public class Advisor {
 	static JPanel panel;
 	
 	// all of the buttons in the menu
-	static JButton studentsButton, advisingButton, graduationButton, viewButton, deleteButton, addButton,importButton;		
+	static JButton studentsButton, advisingButton, graduationButton, viewButton, deleteButton, addButton, importButton, selectAllButton;		
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -35,11 +35,8 @@ public class Advisor {
 	static JScrollPane scrollPane; // scrollPane for table
 	static ListSelectionModel listModel;
 	
-	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
+	static JLabel selected = new JLabel("Students", SwingConstants.RIGHT); // label declaring which tab the user is currently on
 	static studentList studs; // queue containing studentsButton and their information
-	
-	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
-	private static JButton close = new JButton("Close");
 	
 	/*
 	 * The purpose of this variable is to keep track of which tab was just left.
@@ -52,9 +49,9 @@ public class Advisor {
 	
 	private static FileDialog chooseFile = new FileDialog(frame, "Select file...", FileDialog.LOAD); // a window to browse for the selected file
 	
-	private static final int selectCol = 0;
-	private static final int idCol = 2;
-	private static final int adSubCol = 4;
+	private static final int selectCol = 0; // column which contains selection check boxes
+	private static final int idCol = 2; // column which contains student ID
+	private static final int adSubCol = 4; // column which contains advising or submitted check boxes
 	
 	
 	
@@ -154,7 +151,6 @@ public class Advisor {
 			
 		});
 		
-		close.setVisible(false);
 		
 		
 		// instantiate a new list of studentsButton
@@ -202,6 +198,8 @@ public class Advisor {
 				table.setAutoResizeMode(1);
 
 				selected.setText("Advising Report");
+				
+				layout();
 			}
 		});//advising menu button
 		
@@ -217,6 +215,8 @@ public class Advisor {
 				initTableStuds();
 				
 				table.setAutoResizeMode(1);
+				
+				layout();
 			}
 		});//students menu button
 		
@@ -234,6 +234,8 @@ public class Advisor {
 				initTableGrad();
 				
 				} catch(NullPointerException npe){ System.out.println("trace"); }
+				
+				layout();
 			}
 		}); //graduation menu button
 		
@@ -246,7 +248,61 @@ public class Advisor {
 			}
 		});
 		
-		// view button (may remove)
+		
+		
+		// delete studentsButton button
+		deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					int row = table.getSelectedRow(); // index of the selected row
+					int confirm = -1;
+					String id = (String)tableModel.getValueAt(row, idCol); // id of the node in the selected row
+					
+					if(row >= 0)
+						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm deleteButton", JOptionPane.YES_NO_OPTION);
+					
+					if(confirm == JOptionPane.YES_OPTION){
+						tableModel.removeRow(row);
+					
+						studs.removeNode(id);
+					}					
+				} catch(ArrayIndexOutOfBoundsException ex){}
+				
+				saveTable();
+			}
+		}); // delete button
+		
+		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
+		importButton = new JButton("Import");
+		importButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String fileName;
+				
+				chooseFile.setVisible(true);
+				fileName = chooseFile.getFile();
+				
+				if(fileName != null)
+					studs.importStudents(fileName);
+				
+				switch(currentTab){
+					case 0:
+						initTableRecords();
+						break;
+					case 1:
+						initTableStuds();
+						break;
+					case 2:
+						initTableGrad();
+						break;
+					default:
+				} 
+				
+				saveTable();
+			}
+		}); // import button
+		
+		// view button
 		viewButton = new JButton("View Report");
 		viewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -372,72 +428,18 @@ public class Advisor {
 			}
 		}); //view button
 		
-		// delete studentsButton button
-		deleteButton = new JButton("Delete");
-		deleteButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try{
-					int row = table.getSelectedRow(); // index of the selected row
-					int confirm = -1;
-					String id = (String)tableModel.getValueAt(row, idCol); // id of the node in the selected row
-					
-					if(row >= 0)
-						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm deleteButton", JOptionPane.YES_NO_OPTION);
-					
-					if(confirm == JOptionPane.YES_OPTION){
-						tableModel.removeRow(row);
-					
-						studs.removeNode(id);
-					}					
-				} catch(ArrayIndexOutOfBoundsException ex){}
-				
-				saveTable();
+		// select all menu button
+		selectAllButton = new JButton("Select All");
+		selectAllButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				for(int i = 0; i < table.getRowCount(); i++){
+					tableModel.setValueAt(Boolean.TRUE, i, selectCol);
+				}
 			}
-		}); // delete button
-		
-		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
-		importButton = new JButton("Import");
-		importButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String fileName;
+		});
 				
-				chooseFile.setVisible(true);
-				fileName = chooseFile.getFile();
-				
-				if(fileName != null)
-					studs.importStudents(fileName);
-				
-				switch(currentTab){
-					case 0:
-						initTableRecords();
-						break;
-					case 1:
-						initTableStuds();
-						break;
-					case 2:
-						initTableGrad();
-						break;
-					default:
-				} 
-				
-				saveTable();
-			}
-		}); // import button
 		
-		
-		/**
-		 * 
-		 * 
-		 * 				ComboBox
-		 * 				Impliments a combo box to add a drop down menu for user selection
-		 * 				Can be used to replace the JButtons --> May replace JButtons
-		 * 
-		 * 
-		 * 
-		 */
-		
-		
-		//set the advisingButton, studentsButton, and graduationButton buttons to not visible as they might be taken our  and overrode by a ComboBox
+		//set the advisingButton, studentsButton, and graduationButton buttons to visible
 		advisingButton.setVisible(true);
 		studentsButton.setVisible(true);
 		graduationButton.setVisible(true);
@@ -460,37 +462,26 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
-		JButton selectAllButton = new JButton("Select All");
-		selectAllButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				for(int i = 0; i < table.getRowCount(); i++){
-					tableModel.setValueAt(Boolean.TRUE, i, selectCol);
-				}
-			}
-		});
+		layout();
 		
+		
+	}
 	
-		
-		
-		
-		
-		
+	private static void layout(){
+	
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(37)
-					.addComponent(selected)
-					.addGap(242)
+					.addGap(35)
 					.addComponent(advisingButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addGap(20)
 					.addComponent(studentsButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addGap(20)
 					.addComponent(graduationButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(close)
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGap(598 - (int)selected.getPreferredSize().getWidth())
+					.addComponent(selected)
 				)
 				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addGap(385)
@@ -514,11 +505,10 @@ public class Advisor {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(selected)
 						.addComponent(advisingButton)
 						.addComponent(studentsButton)
 						.addComponent(graduationButton)
-						.addComponent(close)
+						.addComponent(selected)
 					)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
