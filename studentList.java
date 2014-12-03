@@ -335,7 +335,21 @@ public class studentList{
 			try{
 				if(getNode(i, 0).getID().equals(id))
 					return true;
-			} catch(NullPointerException e){ System.out.println("NullPointerException: contains"); }
+			} catch(NullPointerException e){}
+		}
+		
+		return false;
+	} // contains
+	
+	/* whether the list contains a given id
+	 * also checks that the node currently being checked is not the same node that's checking
+	 * see the switch in Advisor.saveTable() for example */
+	public boolean contains(String id, int index){
+		for(int i = 0; i < size; i++){
+			try{
+				if(getNode(i, 0).getID().equals(id) && i != index)
+					return true;
+			} catch(NullPointerException e){}
 		}
 		
 		return false;

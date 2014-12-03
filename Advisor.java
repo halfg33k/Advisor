@@ -1,13 +1,17 @@
 import javax.swing.*;
 import javax.swing.table.*;
+import javax.swing.event.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FileDialog;
-
 import java.io.*;
 import java.util.*;
 
@@ -18,7 +22,7 @@ public class Advisor {
 	static JPanel panel;
 	
 	// all of the buttons in the menu
-	static JButton students, records, Graduation, View, Delete, Add,Import;	
+	static JButton studentsButton, advisingButton, graduationButton, viewButton, deleteButton, addButton, importButton, selectAllButton;		
 	
 	// reading and writing variables
 	static Scanner scan; 
@@ -29,7 +33,9 @@ public class Advisor {
 	static MyTableModel tableModel;
 	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
+	static ListSelectionModel listModel;
 	
+<<<<<<< HEAD
 	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
 	
 <<<<<<< HEAD
@@ -42,17 +48,26 @@ public class Advisor {
 	
 	//temporary fix to close the application as the setDefaultClose operation is not working for some reason.....
 	private static JButton close = new JButton("Close");
+=======
+	static JLabel selected = new JLabel("Students", SwingConstants.RIGHT); // label declaring which tab the user is currently on
+	static studentList studs; // queue containing studentsButton and their information
+>>>>>>> master
 	
 	/*
 	 * The purpose of this variable is to keep track of which tab was just left.
-	 * e.g. If I am on the "Students" tab and I click on "Graduation," then I just left "Students"
+	 * e.g. If I am on the "Students" tab and I click on "graduationButton," then I just left "Students"
 	 * 0 = Records
 	 * 1 = Students
-	 * 2 = Graduation
+	 * 2 = graduationButton
 	 */
-	private static int lastTab = 1;
+	private static int currentTab = 1;
 	
-	private static FileDialog chooseFile = new FileDialog(frame, "Choose a file.", FileDialog.LOAD); // a window to browse for the selected file
+	private static FileDialog chooseFile = new FileDialog(frame, "Select file...", FileDialog.LOAD); // a window to browse for the selected file
+	
+	private static final int selectCol = 0; // column which contains selection check boxes
+	private static final int idCol = 2; // column which contains student ID
+	private static final int adSubCol = 4; // column which contains advising or submitted check boxes
+	
 	
 >>>>>>> master
 	
@@ -76,26 +91,56 @@ public class Advisor {
 		
 		@SuppressWarnings("unchecked")
 		public void setValueAt(Object value, int row, int col) {  
-			// overridden code
+			// default code
 			Vector rowVector = (Vector)dataVector.elementAt(row);  
 			rowVector.setElementAt(value, col);  
 			fireTableCellUpdated(row, col);  
 			
 			// my code
-			saveTable();
+			if(col == idCol || col == adSubCol){
+				saveTable();
+				
+				switch(currentTab){
+					case 0:
+						initTableRecords();
+						break;
+					case 1:
+						initTableStuds();
+						break;
+					case 2:
+						initTableGrad();
+						break;
+					default:
+				} 
+			}
 			
-			switch(lastTab){
-				case 0:
-					initTableRecords();
-					break;
-				case 1:
-					initTableStuds();
-					break;
-				case 2:
-					initTableGrad();
-					break;
-				default:
-			} 
+			if(col == selectCol){
+				for(int i = 0; i < table.getRowCount(); i++){
+					if((boolean)table.getValueAt(i, selectCol)){
+						listModel.addSelectionInterval(i, i);
+					}
+					 else if(!(boolean)table.getValueAt(i, selectCol)){
+						try{
+							listModel.removeSelectionInterval(i, i);
+						}catch(Exception e){ System.out.println("Exception: Advisor>MyTableModel>setValueAt>if(col == selectCol)"); }
+					}
+				}
+			}
+		}
+		
+		/*
+		 * This method contains the default code for setValueAt(). It will set
+		 * set a value in the table without attempting to save any information
+		 * or rewrite the table. This was done to avoid conflicts the List Selection
+		 * Listener was having with the above SetValueAt() method.
+		 */
+		 @SuppressWarnings("unchecked")
+		public void setValueAt(Object value, int row, int col, int unused){
+			try{
+				Vector rowVector = (Vector)dataVector.elementAt(row);  
+				rowVector.setElementAt(value, col);  
+				fireTableCellUpdated(row, col); 
+			} catch(ArrayIndexOutOfBoundsException e){}
 		}
 	} // class MyTableModel
 
@@ -117,7 +162,7 @@ public class Advisor {
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
 		frame = new JFrame();
-		frame.setSize(1070,575);
+		frame.setSize(1070,800);
 		
 		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
@@ -130,9 +175,9 @@ public class Advisor {
 			
 		});
 		
-		close.setVisible(false);
 		
 		
+<<<<<<< HEAD
 <<<<<<< HEAD
 		 
 >>>>>>> master
@@ -147,6 +192,9 @@ public class Advisor {
 =======
 		// instantiate a new list of students
 >>>>>>> master
+=======
+		// instantiate a new list of studentsButton
+>>>>>>> master
 		studs = new studentList();
 		
 		/*******
@@ -154,68 +202,87 @@ public class Advisor {
 		********/
 		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
-		
-		scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(808,400));
-		initTableStuds(); // initialize the table for the students tab
-		
 		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
 		
+		scrollPane = new JScrollPane(table);
+		scrollPane.setPreferredSize(new Dimension(1000,465));
+		
+		initTableStuds(); // initialize the table for the studentsButton tab
+		
+		
+		listModel = table.getSelectionModel();
+		// reset all check boxes when a row is clicked
+		listModel.addListSelectionListener(new ListSelectionListener(){
+			public void valueChanged(ListSelectionEvent lse){
+				if(table.getSelectedColumn() != selectCol){
+					for(int i = 0; i < table.getRowCount(); i++){
+						tableModel.setValueAt(Boolean.FALSE, i, selectCol, 0);
+					}
+				}
+			}
+		});
 		
 		
 		
 		
 		
-		// records menu button
-		records = new JButton("Records");
-		records.addActionListener(new ActionListener() {
+		
+		// advising menu button
+		advisingButton = new JButton("Advising");
+		advisingButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveTable();
-				lastTab = 0;
+				currentTab = 0;
 				
 				initTableRecords();
 				
 				table.setAutoResizeMode(1);
 
 				selected.setText("Advising Report");
+				
+				layout();
 			}
-		});//records menu button
+		});//advising menu button
 		
 		// students menu button
-		students = new JButton("Students");
-		students.addActionListener(new ActionListener() {
+		studentsButton = new JButton("Students");
+		studentsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveTable();
-				lastTab = 1;
+				currentTab = 1;
 				
 				selected.setText("Students");
 				
 				initTableStuds();
 				
 				table.setAutoResizeMode(1);
+				
+				layout();
 			}
-		});//student menu button
+		});//students menu button
 		
 		// graduation menu button
-		Graduation = new JButton("Graduation");
-		Graduation.addActionListener(new ActionListener() {
+		graduationButton = new JButton("Graduation");
+		graduationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selected.setText("Graduation Report");
 				
 				try{
 				saveTable();
 				
-				lastTab = 2;
+				currentTab = 2;
 				
 				initTableGrad();
 				
 				} catch(NullPointerException npe){ System.out.println("trace"); }
+				
+				layout();
 			}
 		}); //graduation menu button
 		
-		// add students button
-		Add = new JButton("Add");
-		Add.addActionListener(new ActionListener() {
+		// add studentsButton button
+		addButton = new JButton("Add");
+		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -252,21 +319,82 @@ public class Advisor {
 =======
 =======
 				// add a blank row to the table
+<<<<<<< HEAD
 >>>>>>> master
 				tableModel.addRow(new Object[]{});
+>>>>>>> master
+=======
+				tableModel.addRow(new Object[]{Boolean.FALSE,"","","",Boolean.FALSE,""});
 >>>>>>> master
 			}
 		});
 		
-		// view button (may remove)
-		View = new JButton("View Report");
-		View.addActionListener(new ActionListener() {
+		
+		
+		// delete studentsButton button
+		deleteButton = new JButton("Delete");
+		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try{
+					int row = table.getSelectedRow(); // index of the selected row
+					int confirm = -1;
+					String id = (String)tableModel.getValueAt(row, idCol); // id of the node in the selected row
+					
+					if(row >= 0)
+						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm deleteButton", JOptionPane.YES_NO_OPTION);
+					
+					if(confirm == JOptionPane.YES_OPTION){
+						tableModel.removeRow(row);
+					
+						studs.removeNode(id);
+					}					
+				} catch(ArrayIndexOutOfBoundsException ex){}
+				
+				saveTable();
+			}
+		}); // delete button
+		
+		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
+		importButton = new JButton("Import");
+		importButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String fileName;
+				
+				chooseFile.setVisible(true);
+				fileName = chooseFile.getFile();
+				
+				if(fileName != null)
+					studs.importStudents(fileName);
+				
+				switch(currentTab){
+					case 0:
+						initTableRecords();
+						break;
+					case 1:
+						initTableStuds();
+						break;
+					case 2:
+						initTableGrad();
+						break;
+					default:
+				} 
+				
+				saveTable();
+			}
+		}); // import button
+		
+		// view button
+		viewButton = new JButton("View Report");
+		viewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				saveTable();
+				
 				String reports = "";
 				String id;
 				int[] rows = table.getSelectedRows();
 				Node node;
 				
+				// choose all if none are selected
 				if(rows.length <= 0){
 					rows = new int[studs.getSize()];
 					for(int i = 0; i < rows.length; i++){
@@ -274,10 +402,10 @@ public class Advisor {
 					}
 				}
 				
-				switch(lastTab){
+				switch(currentTab){
 					case 0:
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							reports += "\nName: " + node.getName() 
@@ -294,7 +422,7 @@ public class Advisor {
 						break;
 					case 1:
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							reports += "\nName: " + node.getName() 
@@ -317,7 +445,7 @@ public class Advisor {
 						reports += "----- Qualified -----";
 						
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							if(node.getQualified() && node.getSubmitted()){
@@ -337,7 +465,7 @@ public class Advisor {
 						reports += "\n----- Unqualified -----";
 						
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							if(!node.getQualified() && node.getSubmitted()){
@@ -357,7 +485,7 @@ public class Advisor {
 						reports += "\n----- Not Submitted -----";
 						
 						for(int i = 0; i < rows.length; i++){
-							id = (String)tableModel.getValueAt(rows[i], 1); // id of the node in the selected row
+							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
 							
 							if(!node.getQualified() && !node.getSubmitted()){
@@ -374,33 +502,23 @@ public class Advisor {
 							}
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "Graduation Application Reports", JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(null, reports, "graduationButton Application Reports", JOptionPane.INFORMATION_MESSAGE);
 						break;
 					default:
 				}
 			}
 		}); //view button
 		
-		// delete students button
-		Delete = new JButton("Delete");
-		Delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try{
-					int row = table.getSelectedRow(); // index of the selected row
-					int confirm = -1;
-					String id = (String)tableModel.getValueAt(row, 1); // id of the node in the selected row
-					
-					if(row >= 0)
-						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
-					
-					if(confirm == JOptionPane.YES_OPTION){
-						tableModel.removeRow(row);
-					
-						studs.removeNode(id);
-					}					
-				} catch(ArrayIndexOutOfBoundsException ex){}
+		// select all menu button
+		selectAllButton = new JButton("Select All");
+		selectAllButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				for(int i = 0; i < table.getRowCount(); i++){
+					tableModel.setValueAt(Boolean.TRUE, i, selectCol);
+				}
 			}
 		});
+<<<<<<< HEAD
 		
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -463,28 +581,21 @@ public class Advisor {
 				
 				chooseFile.setVisible(true);
 				fileName = chooseFile.getFile();
+=======
+>>>>>>> master
 				
-				if(fileName != null)
-					studs.importStudents(fileName);
-				
-				switch(lastTab){
-					case 0:
-						initTableRecords();
-						break;
-					case 1:
-						initTableStuds();
-						break;
-					case 2:
-						initTableGrad();
-						break;
-					default:
-				} 
-			}
-		});
+		
+		//set the advisingButton, studentsButton, and graduationButton buttons to visible
+		advisingButton.setVisible(true);
+		studentsButton.setVisible(true);
+		graduationButton.setVisible(true);
+		
 		
 >>>>>>> master
 		
-		/**
+		
+		
+		/*
 		 * 
 		 * 
 <<<<<<< HEAD
@@ -504,139 +615,171 @@ public class Advisor {
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
+		layout();
 		
 		
+	}
+	
+	private static void layout(){
+	
 		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(55)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(Import, 0, 0, Short.MAX_VALUE)
-						.addComponent(Add, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(View, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(Delete, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(18)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 914, GroupLayout.PREFERRED_SIZE))
+					.addGap(35)
+					.addComponent(advisingButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addGap(20)
+					.addComponent(studentsButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addGap(20)
+					.addComponent(graduationButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addGap(598 - (int)selected.getPreferredSize().getWidth())
+					.addComponent(selected)
+				)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addGap(385)
+					.addComponent(addButton, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(deleteButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(importButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(viewButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(selectAllButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
+					.addGap(37))
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(229)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(selected)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(records)
-							.addGap(30)
-							.addComponent(students, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-							.addGap(30)
-							.addComponent(Graduation, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-							.addGap(60)
-							.addComponent(close)))
-					.addGap(345))
+					.addContainerGap()
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 1047, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(close)
-						.addComponent(records)
-						.addComponent(Graduation)
-						.addComponent(students))
-					.addGap(55)
-					.addComponent(selected)
+						.addComponent(advisingButton)
+						.addComponent(studentsButton)
+						.addComponent(graduationButton)
+						.addComponent(selected)
+					)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(Add)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(Delete)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(View)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(Import))
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 412, GroupLayout.PREFERRED_SIZE))
-					.addGap(151))
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(addButton)
+						.addComponent(deleteButton)
+						.addComponent(importButton)
+						.addComponent(viewButton)
+						.addComponent(selectAllButton)
+					)
+					.addGap(195))
 		);
 		
 		// grabs the current panes content and adds it to the Frame, then makes the frame visible
 		frame.getContentPane().setLayout(groupLayout);
 	
 		frame.setVisible(true);
-		
 	}
 	
 	// save the contents of the table before switching tabs
 	private static void saveTable(){
 		String name, id, grade;
-		boolean advised, submitted;
+		boolean advised, submitted,isSelected;
 		String advDate;
 		String gradDate, totalGPA, majorGPA, totalCreds, majorCreds, upperCreds;
 	
 		try{
-			switch(lastTab){
+			switch(currentTab){
 				case 0: // Records tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						name = (String)tableModel.getValueAt(i, 0);
-						id = (String)tableModel.getValueAt(i, 1);
-						grade = (String)tableModel.getValueAt(i, 2);
-						advised = (boolean)tableModel.getValueAt(i, 3);
-						advDate = (String)tableModel.getValueAt(i, 4);
+						isSelected = (boolean)tableModel.getValueAt(i, selectCol);
+						name = (String)tableModel.getValueAt(i, 1);
+						id = (String)tableModel.getValueAt(i, idCol);
+						grade = (String)tableModel.getValueAt(i, 3);
+						advised = (boolean)tableModel.getValueAt(i, adSubCol);
+						advDate = (String)tableModel.getValueAt(i, 5);
 						
 						
-						try{
-							studs.getNode(i, 0).setName(name);
-							studs.getNode(i, 0).setID(id);
-							studs.getNode(i, 0).setGrade(grade);
-						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-						
-						studs.getNode(i, 0).setAdvised(advised);
-						if(!advised)
-							studs.getNode(i, 0).setAdvDate("");
+						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
+							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else if(id.length() < 1 || id.equals(null)){
+							//JOptionPane.showMessageDialog(null, "Please enter an id.");
+						}
+						else{
+							try{
+								studs.getNode(i, 0).setName(name);
+								studs.getNode(i, 0).setID(id);
+								studs.getNode(i, 0).setGrade(grade);
+							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+							
+							studs.getNode(i, 0).setAdvised(advised);
+							if(!advised)
+								studs.getNode(i, 0).setAdvDate("");
+						}
 					}
 					
 					studs.rewrite();
 					break;
 				case 1: // Students tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						name = (String)tableModel.getValueAt(i, 0);
-						id = (String)tableModel.getValueAt(i, 1);
-						grade = (String)tableModel.getValueAt(i, 2);
+						//isSelected = (boolean)tableModel.getValueAt(i, selectCol);
+						name = (String)tableModel.getValueAt(i, 1);
+						id = (String)tableModel.getValueAt(i, idCol);
+						grade = (String)tableModel.getValueAt(i, 3);
+						//boolean add = false;
 						
-						
-						try{
-							studs.getNode(i, 0).setName(name);
-							studs.getNode(i, 0).setID(id);
-							studs.getNode(i, 0).setGrade(grade);
-						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
+							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else if(id.length() < 1 || id.equals(null)){
+							//JOptionPane.showMessageDialog(null, "Please enter an id.");
+						}
+						else{
+							try{
+								studs.getNode(i, 0).setName(name);
+								studs.getNode(i, 0).setID(id);
+								studs.getNode(i, 0).setGrade(grade);
+							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+						}
 					}
 					
 					studs.rewrite();
 					break;
-				case 2: // Graduation tab
+				case 2: // graduationButton tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						name = (String)tableModel.getValueAt(i, 0);
-						id = (String)tableModel.getValueAt(i, 1);
-						grade = (String)tableModel.getValueAt(i, 2);
-						submitted = (boolean)tableModel.getValueAt(i, 3);
-						totalGPA = (String)tableModel.getValueAt(i, 4);
-						majorGPA = (String)tableModel.getValueAt(i, 5);
-						totalCreds = (String)tableModel.getValueAt(i, 6);
-						majorCreds = (String)tableModel.getValueAt(i, 7);
-						upperCreds = (String)tableModel.getValueAt(i, 8);
+						isSelected = (boolean)tableModel.getValueAt(i, selectCol);
+						name = (String)tableModel.getValueAt(i, 1);
+						id = (String)tableModel.getValueAt(i, idCol);
+						grade = (String)tableModel.getValueAt(i, 3);
+						submitted = (boolean)tableModel.getValueAt(i, adSubCol);
+						totalGPA = (String)tableModel.getValueAt(i, 5);
+						majorGPA = (String)tableModel.getValueAt(i, 6);
+						totalCreds = (String)tableModel.getValueAt(i, 7);
+						majorCreds = (String)tableModel.getValueAt(i, 8);
+						upperCreds = (String)tableModel.getValueAt(i, 9);
 						
-						
-						try{
-							studs.getNode(i, 0).setName(name);
-							studs.getNode(i, 0).setID(id);
-							studs.getNode(i, 0).setGrade(grade);
-						} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
-						
-						studs.getNode(i, 0).setSubmitted(submitted);
-						studs.getNode(i, 0).setTotalGPA(totalGPA);
-						studs.getNode(i, 0).setMajorGPA(majorGPA);
-						studs.getNode(i, 0).setTotalCreds(totalCreds);
-						studs.getNode(i, 0).setMajorCreds(majorCreds);
-						studs.getNode(i, 0).setUpperCreds(upperCreds);
+						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
+							JOptionPane.showMessageDialog(null, "That ID is already in use.");
+						}
+						else if(id.length() < 1 || id.equals(null)){
+							//JOptionPane.showMessageDialog(null, "Please enter an id.");
+						}
+						else{
+							try{
+								studs.getNode(i, 0).setName(name);
+								studs.getNode(i, 0).setID(id);
+								studs.getNode(i, 0).setGrade(grade);
+							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
+							
+							studs.getNode(i, 0).setSubmitted(submitted);
+							studs.getNode(i, 0).setTotalGPA(totalGPA);
+							studs.getNode(i, 0).setMajorGPA(majorGPA);
+							studs.getNode(i, 0).setTotalCreds(totalCreds);
+							studs.getNode(i, 0).setMajorCreds(majorCreds);
+							studs.getNode(i, 0).setUpperCreds(upperCreds);
+						}
 					}
 					
 					studs.rewrite();
@@ -656,6 +799,7 @@ public class Advisor {
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 	
+		tableModel.addColumn("Select");
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
@@ -664,18 +808,21 @@ public class Advisor {
 		
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
-				node = studs.getNode(i, 0);
+				node = studs.getNode(i, 0); // get node by index
 			
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
 			}
 		} catch(NullPointerException npe){}
-	} // initTableStuds
+		
+		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
+	} // initTableRecords
 	
 	private static void initTableStuds(){
 		Node node;
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 		
+		tableModel.addColumn("Select");
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
@@ -684,16 +831,19 @@ public class Advisor {
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 			
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade()});
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade()});
 			}
 		} catch(NullPointerException npe){}
+		
+		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
 	} // initTableStuds
 	
 	private static void initTableGrad(){
 		Node node;
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
-	
+		
+		tableModel.addColumn("Select");
 		tableModel.addColumn("Name");
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
@@ -708,22 +858,24 @@ public class Advisor {
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
-				tableModel.addRow(new Object[]{node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
 		} catch(NullPointerException npe){}
 		
 		// resize the columns to properly accommodate each header
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
-		table.getColumnModel().getColumn(0).setPreferredWidth(150);
-		table.getColumnModel().getColumn(1).setPreferredWidth(50);
-		table.getColumnModel().getColumn(2).setPreferredWidth(75);
+		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		table.getColumnModel().getColumn(idCol).setPreferredWidth(50);
 		table.getColumnModel().getColumn(3).setPreferredWidth(75);
-		table.getColumnModel().getColumn(4).setPreferredWidth(70);
-		table.getColumnModel().getColumn(5).setPreferredWidth(75);
-		table.getColumnModel().getColumn(6).setPreferredWidth(90);
-		table.getColumnModel().getColumn(7).setPreferredWidth(90);
-		table.getColumnModel().getColumn(8).setPreferredWidth(130);
-	} // initTableStuds
+		table.getColumnModel().getColumn(adSubCol).setPreferredWidth(75);
+		table.getColumnModel().getColumn(5).setPreferredWidth(70);
+		table.getColumnModel().getColumn(6).setPreferredWidth(120);
+		table.getColumnModel().getColumn(7).setPreferredWidth(120);
+		table.getColumnModel().getColumn(8).setPreferredWidth(120);
+		table.getColumnModel().getColumn(9).setPreferredWidth(130);
+		
+	} // initTableGrad
 }
-

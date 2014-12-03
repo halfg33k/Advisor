@@ -1,6 +1,6 @@
 Name:Adam Johnson ID:20 Grade:Junior
 Name:Yoda ID:21 Grade:Senior
 Name:Jackie Robinson ID:22 Grade:Freshman
-Name:J Jona Jameson Jr. ID:25 Grade:Junior
 Name:Chris Mastree ID:14 Grade:Freshman
 Name:Johnny Appleseed ID:76 Grade:Junior
+Name:J Jona Jameson Junior ID:45 Grade:Junior
