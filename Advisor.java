@@ -5,6 +5,10 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
 
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.FileDialog;
@@ -29,7 +33,7 @@ public class Advisor {
 	static MyTableModel tableModel;
 	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
-	static ListSelectionModel listModel;// = table.getSelectionModel();
+	static ListSelectionModel listModel;
 	
 	static JLabel selected = new JLabel("Students"); // label declaring which tab the user is currently on
 	static studentList studs; // queue containing students and their information
@@ -95,8 +99,13 @@ public class Advisor {
 			
 			if(col == 0){
 				for(int i = 0; i < table.getRowCount(); i++){
-					if(table.isRowSelected(i) || (boolean)table.getValueAt(i, 0)){
+					if((boolean)table.getValueAt(i, 0)){
 						listModel.addSelectionInterval(i, i);
+					}
+					 else if(!(boolean)table.getValueAt(i, 0)){
+						try{
+							listModel.removeSelectionInterval(i, i);
+						}catch(Exception e){ System.out.println("Exception: Advisor>MyTableModel>setValueAt>if(col == 0)"); }
 					}
 				}
 			}
@@ -137,16 +146,28 @@ public class Advisor {
 		********/
 		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
+		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
 		
 		scrollPane = new JScrollPane(table);
 		scrollPane.setPreferredSize(new Dimension(1000,465));
+		
 		initTableStuds(); // initialize the table for the students tab
 		
-		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
 		
 		listModel = table.getSelectionModel();
-		
-		//listModel.addSelectionListener(new ListSelection());
+		/*
+		 * The goal here is to reset all selection check boxes to zero if the user
+		 *  clicks on a row. Somehow, it is clashing with MyTableModel.setValueAt().
+		 */
+		/*listModel.addListSelectionListener(new ListSelectionListener(){
+			public void valueChanged(ListSelectionEvent lse){
+				if(table.getSelectedColumn() != 0){
+					for(int i = 0; i < table.getRowCount(); i++){
+						table.setValueAt(Boolean.FALSE, i, 0);
+					}
+				}
+			}
+		});*/
 		
 		
 		
@@ -425,8 +446,6 @@ public class Advisor {
 		
 		JButton Select_All = new JButton("Select All");
 		
-		//JButton Update_Records = new JButton("Update Records");
-		
 	
 		
 		
@@ -694,23 +713,3 @@ public class Advisor {
 		
 	} // initTableGrad
 }
-
-// keeps track of selected elements
-class ListSelection implements ListSelectionListener{
-	public void valueChanged(ListSelectionEvent lse){
-		ListSelectionModel model = (ListSelectionModel)lse.getSource();
-		
-		int index = lse.getFirstIndex();
-		boolean isAdjusting = lse.getValueIsAdjusting();
-		
-		if(!model.isSelectionEmpty()){
-			int min = model.getMinSelectionIndex();
-			int max = model.getMaxSelectionIndex();
-			
-			for(int i = min; i < max; i++){
-			
-			}
-		}
-		
-	}
-} // class ListSelection
