@@ -57,7 +57,10 @@ public class studentList{
 				id = scan.next();
 				grade = scan.next();
 				
-				addNode(name, id, grade);
+				if(!contains(id))
+					addNode(name, id, grade);
+				else
+					JOptionPane.showMessageDialog(null, "The ID " + id + " is already in use.");
 				
 				scan.nextLine();
 			}
