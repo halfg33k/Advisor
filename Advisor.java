@@ -696,6 +696,6 @@ public class Advisor {
 		// resize the columns to properly accommodate certain headers
 		table.getColumnModel().getColumn(selectCol).setMaxWidth(50); // first column
 		table.getColumnModel().getColumn(1).setMinWidth(150); // name column
-		table.getColumnModel().getColumn(9).setMinWidth(100); // last column
+		table.getColumnModel().getColumn(9).setMinWidth(120); // last column
 	} // initTableGrad
 } // class Advisor
