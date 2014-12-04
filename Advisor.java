@@ -545,9 +545,12 @@ public class Advisor {
 								studs.getNode(i, 0).setGrade(grade);
 							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
 							
-							studs.getNode(i, 0).setAdvised(advised);
-							if(!advised)
+							studs.getNode(i, 0).setAdvised(advised, advDate);
+							/*if(advised)
+								studs.getNode(i, 0).setAdvDate(advDate);
+							else
 								studs.getNode(i, 0).setAdvDate("--/--/----");
+							*/
 						}
 					}
 					

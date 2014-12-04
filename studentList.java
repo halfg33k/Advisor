@@ -614,7 +614,7 @@ class Node{
 		this.gradDate = gradDate;
 	} // setGradDate
 	
-	// set whether this node has been advised, and if so sets the date
+	// set whether this node has been advised, and if so sets the date to today
 	public void setAdvised(boolean advised){
 		advisedPrev = this.advised;
 		this.advised = advised;
@@ -624,6 +624,28 @@ class Node{
 			
 			setAdvDate(dateFormat.format(date));
 		}
+	} // setAdvised
+	
+	// set whether this node has been advised, and if so sets the date to given
+	public void setAdvised(boolean advised, String advDate){
+		advisedPrev = this.advised;
+		this.advised = advised;
+		
+		date = new Date();
+		
+		if(advised){
+			if(!advDate.equals(dateFormat.format(date)) && !advDate.equals("--/--/----"))
+				setAdvDate(advDate);
+			else
+				setAdvDate(dateFormat.format(date));
+		}
+		/*if(advised && !advDate.equals(dateFormat.format(date)))			
+			setAdvDate(advDate);
+		else if(advised && advDate.equals("--/--/----"))
+			setAdvDate(dateFormat.format(date));
+		*/
+		else
+			setAdvDate("--/--/----");
 	} // setAdvised
 	
 	public void setAdvDate(String advDate){
