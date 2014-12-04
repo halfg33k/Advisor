@@ -144,7 +144,7 @@ public class Advisor {
 		frame = new JFrame();
 		frame.setSize(1070,800);
 		
-		// setup the frame to show the student reports
+		// set up the frame to show the student reports
 		reportFrame = new JFrame();
 		reportFrame.setSize(800, 600);
 		reportFrame.add(reportScrollPane);
@@ -588,7 +588,7 @@ public class Advisor {
 							
 							studs.getNode(i, 0).setAdvised(advised);
 							if(!advised)
-								studs.getNode(i, 0).setAdvDate("");
+								studs.getNode(i, 0).setAdvDate("--/--/----");
 						}
 					}
 					
@@ -626,11 +626,11 @@ public class Advisor {
 						id = (String)tableModel.getValueAt(i, idCol);
 						grade = (String)tableModel.getValueAt(i, 3);
 						submitted = (boolean)tableModel.getValueAt(i, adSubCol);
-						totalGPA = (String)tableModel.getValueAt(i, 6);
-						majorGPA = (String)tableModel.getValueAt(i, 7);
-						totalCreds = (String)tableModel.getValueAt(i, 8);
-						majorCreds = (String)tableModel.getValueAt(i, 9);
-						upperCreds = (String)tableModel.getValueAt(i, 10);
+						totalGPA = (String)tableModel.getValueAt(i, 5);
+						majorGPA = (String)tableModel.getValueAt(i, 6);
+						totalCreds = (String)tableModel.getValueAt(i, 7);
+						majorCreds = (String)tableModel.getValueAt(i, 8);
+						upperCreds = (String)tableModel.getValueAt(i, 9);
 						
 						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
@@ -651,6 +651,9 @@ public class Advisor {
 							studs.getNode(i, 0).setTotalCreds(totalCreds);
 							studs.getNode(i, 0).setMajorCreds(majorCreds);
 							studs.getNode(i, 0).setUpperCreds(upperCreds);
+							
+							if(!submitted)
+								studs.getNode(i, 0).setGradDate("--/--/----");
 						}
 					}
 					
@@ -686,7 +689,7 @@ public class Advisor {
 			}
 		} catch(NullPointerException npe){}
 		
-		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
+		table.getColumnModel().getColumn(selectCol).setMaxWidth(50);
 	} // initTableRecords
 	
 	private static void initTableStuds(){
@@ -707,7 +710,7 @@ public class Advisor {
 			}
 		} catch(NullPointerException npe){}
 		
-		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
+		table.getColumnModel().getColumn(selectCol).setMaxWidth(50);
 	} // initTableStuds
 	
 	private static void initTableGrad(){
@@ -720,7 +723,6 @@ public class Advisor {
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
 		tableModel.addColumn("Submitted");
-		tableModel.addColumn("Date");
 		tableModel.addColumn("Total GPA");
 		tableModel.addColumn("Major GPA");
 		tableModel.addColumn("Total Credits");
@@ -731,24 +733,17 @@ public class Advisor {
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
-				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getGradDate(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
 		} catch(NullPointerException npe){}
 		
 		// resize the columns to properly accommodate each header
-		/*table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
-		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
-		table.getColumnModel().getColumn(1).setPreferredWidth(150);
-		table.getColumnModel().getColumn(idCol).setPreferredWidth(50);
-		table.getColumnModel().getColumn(3).setPreferredWidth(75);
-		table.getColumnModel().getColumn(adSubCol).setPreferredWidth(75);
-		table.getColumnModel().getColumn(5).setPreferredWidth(70);
-		table.getColumnModel().getColumn(6).setPreferredWidth(120);
-		table.getColumnModel().getColumn(7).setPreferredWidth(120);
-		table.getColumnModel().getColumn(8).setPreferredWidth(120);
-		table.getColumnModel().getColumn(9).setPreferredWidth(130);
-		*/
+		table.getColumnModel().getColumn(selectCol).setMaxWidth(50); // first column
+		table.getColumnModel().getColumn(1).setMinWidth(150); // name column
+		table.getColumnModel().getColumn(9).setMinWidth(100); // last column
+		
 		
 	} // initTableGrad
 }
