@@ -7,20 +7,22 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class studentList{
-	Node root;
+	Node root; // root of the queue
 	Node head; // where to insert new nodes
 	File tempFile = new File("temp.txt"); // file to temporarily store the queue information
 	File tempGrad = new File("tempGrad.txt"); // temporary storage of graduation info
 	File tempAdv = new File("tempAdv.txt"); // temporary storage of advising info
 	BufferedWriter writer; // to write to a file
 	BufferedReader reader; // to read from a file
-	int size = 0;
+	int size = 0; // number of elements in the queue
 	
 	public studentList(){
 		try{
 			// this file only exists while the program is running
 			// think of it like RAM
 			tempFile.createNewFile();
+			
+			// import default files
 			importStudents("studentList.txt");
 			importGradApps("gradApps.txt");
 			importAdvising("advising.txt");
@@ -52,7 +54,7 @@ public class studentList{
 		finally{scan.close();}
     } // importStudents
 	
-	// import the information for students with graduation applications submitted
+	// import graduation application information from a given file
 	public void importGradApps(String fileName){
 		File file = new File(fileName);
 		Scanner scan = null;
@@ -63,7 +65,7 @@ public class studentList{
 		try{
 			scan = new Scanner(file);
 			scan.useDelimiter("ID:| Submitted:| Total GPA:| Major GPA:| Total Credits:| Major Credits:| Upper Credits:| Date:|\\n|\\r");
-		} catch(IOException ioe){ System.out.println("IOException: importGradApps --> try"); }
+		} catch(IOException ioe){ System.out.println("IOException: importGradApps>scan"); }
 			
 		while(scan.hasNext()){
 			try{
@@ -89,14 +91,12 @@ public class studentList{
 					node.setGradDate(gradDate);
 				}
 				
-				
-				
 				scan.nextLine();
 			}catch(InputMismatchException ime){ System.out.println("InputMismatchException: importGradApps"); }
 			catch(NoSuchElementException nse){ }
 		}
 		
-		rewrite();
+		rewrite(); // rewrite the temp files
 		
 	} // importGradApps
 	
@@ -111,7 +111,7 @@ public class studentList{
 		try{
 			scan = new Scanner(file);
 			scan.useDelimiter("ID:| Advised:| Date:|\\n|\\r");
-		} catch(IOException ioe){ System.out.println("IOException: importAdvising --> try"); }
+		} catch(IOException ioe){ System.out.println("IOException: importAdvising>scan"); }
 			
 		while(scan.hasNext()){
 			try{
@@ -132,7 +132,7 @@ public class studentList{
 			catch(NoSuchElementException nse){ }
 		}
 		
-		rewrite();
+		rewrite(); // rewrite the temp files
 	} // importAdvising
 	
 	// return the root node
@@ -178,10 +178,10 @@ public class studentList{
 		} catch(IOException e){ System.out.println("IOException: addNode"); }
 		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		
-		size++;
+		size++; // the size of the queue has increased
 	} // addNode(name, id, grade)
 	
-	// insert a given node into the studentList
+	// add a given node to the end of the queue
 	public void addNode(Node node){
 		String name = node.getName();
 		String id = node.getID();
@@ -208,7 +208,7 @@ public class studentList{
 		return current;
 	} // getNode
 	
-	// find a node by it's place in the queue
+	// find a node by it's position in the queue
 	public Node getNode(int index, int unused){
 		Node current = root;
 		
@@ -218,25 +218,7 @@ public class studentList{
 		
 		return current;
 	} // getNode
-	
-	// determine whether the given node is qualified to graduate
-	public boolean isQualified(String id){
-		Node node = getNode(id);
-		boolean isQualified = false;
 		
-		double totalGPA = Double.parseDouble(node.getTotalGPA());
-		double majorGPA = Double.parseDouble(node.getMajorGPA());
-		int totalCreds = Integer.parseInt(node.getTotalCreds());
-		int majorCreds = Integer.parseInt(node.getMajorCreds());
-		int upperCreds = Integer.parseInt(node.getUpperCreds());
-		
-		if(totalGPA >= 2.0 && majorGPA >= 2.0
-			&& totalCreds >= 120 && majorCreds >= 45 && upperCreds >= 45)
-			isQualified = true;
-			
-		return isQualified;
-	} // isQualified
-	
 	// remove a particular node by it's id
 	public Node removeNode(String id){		
 		Node current = root;
@@ -260,17 +242,18 @@ public class studentList{
 			prev.setNext(current.getNext());
 		}
 		
-		size--;
+		size--; // the size of the queue has decreased
 		
-		rewrite();
+		rewrite(); // rewrite the temp files
 		
-		return current;
+		return current; // return the node that was removed
 	} // removeNode
 			
-	// delete the tempFile and transfer its info to studentList.txt
+	// save the information in the temp files
+	// should be called just before closing the program
 	public void close(){
+		// save the general student information
 		File file = new File("studentList.txt");
-		
 		try{
 			file.createNewFile();
 			
@@ -286,11 +269,10 @@ public class studentList{
 		} catch(Exception e){ System.out.println("Exception: close --> studentList"); }
 		finally{try{writer.close(); reader.close();}catch(Exception e){}}
 		
-		tempFile.delete();
+		tempFile.delete(); // delete the temp file
 		
-		// now close tempGrad.txt
+		// save the graduation information
 		file = new File("gradApps.txt");
-		
 		try{
 			file.createNewFile();
 			
@@ -306,11 +288,10 @@ public class studentList{
 		} catch(Exception e){ System.out.println("Exception: close --> gradApps"); }
 		finally{try{writer.close(); reader.close();}catch(Exception e){}}
 		
-		tempGrad.delete();
+		tempGrad.delete(); // delete the temp grad file
 		
-		// now close tempAdv.txt
+		// save the advising information
 		file = new File("advising.txt");
-		
 		try{
 			file.createNewFile();
 			
@@ -326,7 +307,7 @@ public class studentList{
 		} catch(Exception e){ System.out.println("Exception: close --> gradApps"); }
 		finally{try{writer.close(); reader.close();}catch(Exception e){}}
 		
-		tempAdv.delete();
+		tempAdv.delete(); // delete the temp advising file
 	} // close
 	
 	// whether the list contains a given id
@@ -355,12 +336,12 @@ public class studentList{
 		return false;
 	} // contains
 	
-	// return the size of the queue
+	// return the number of elements in the queue
 	public int getSize(){
 		return size;
 	} // getSize
 	
-	// rewrite the contents of the temp file
+	// rewrite the contents of the temp files
 	public void rewrite(){
 		File file = new File("temp2.txt");
 		Node node;
@@ -421,6 +402,7 @@ public class studentList{
 		file.renameTo(tempAdv);
 	} // rewrite	
 	
+	// return the information of each node in the queue
 	public String toString(){
 		Node current = root;
 		String studentInfo = current.toString() + "\n";
@@ -446,6 +428,7 @@ class Node{
 	private boolean advised, advisedPrev; // student has received academic advising
 	private String advDate; // date advising last took place
 	
+	// will be used to determine today's date
 	DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	Date date;
 	
@@ -454,6 +437,7 @@ class Node{
 		this.name = name;
 		this.id = id;
 		this.grade = grade;
+		
 		next = null;
 		totalGPA = "0";
 		majorGPA = "0";
@@ -502,8 +486,9 @@ class Node{
 	
 	public boolean getSubmitted(){
 		return submitted;
-	} // getsubmitted
+	} // getSubmitted
 	
+	// whether this node is qualified to graduate
 	public boolean getQualified(){
 		double totalGPA = Double.parseDouble(this.totalGPA);
 		double majorGPA = Double.parseDouble(this.majorGPA);
@@ -530,6 +515,7 @@ class Node{
 		return advDate;
 	} // getAdvDate
 	
+	// return a string outlining the reasons why this node is not qualified to graduate
 	public String getReasons(){
 		String reasons = "";
 		
@@ -593,6 +579,7 @@ class Node{
 		this.upperCreds = upperCreds;
 	} // setUpperCreds
 	
+	// set whether a grad app has been submitted and if so sets the date
 	public void setSubmitted(boolean submitted){
 		submittedPrev = this.submitted;
 		this.submitted = submitted;
@@ -612,6 +599,7 @@ class Node{
 		this.gradDate = gradDate;
 	} // setGradDate
 	
+	// set whether this node has been advised, and if so sets the date
 	public void setAdvised(boolean advised){
 		advisedPrev = this.advised;
 		this.advised = advised;
