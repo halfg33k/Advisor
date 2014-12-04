@@ -626,11 +626,11 @@ public class Advisor {
 						id = (String)tableModel.getValueAt(i, idCol);
 						grade = (String)tableModel.getValueAt(i, 3);
 						submitted = (boolean)tableModel.getValueAt(i, adSubCol);
-						totalGPA = (String)tableModel.getValueAt(i, 5);
-						majorGPA = (String)tableModel.getValueAt(i, 6);
-						totalCreds = (String)tableModel.getValueAt(i, 7);
-						majorCreds = (String)tableModel.getValueAt(i, 8);
-						upperCreds = (String)tableModel.getValueAt(i, 9);
+						totalGPA = (String)tableModel.getValueAt(i, 6);
+						majorGPA = (String)tableModel.getValueAt(i, 7);
+						totalCreds = (String)tableModel.getValueAt(i, 8);
+						majorCreds = (String)tableModel.getValueAt(i, 9);
+						upperCreds = (String)tableModel.getValueAt(i, 10);
 						
 						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
@@ -720,6 +720,7 @@ public class Advisor {
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
 		tableModel.addColumn("Submitted");
+		tableModel.addColumn("Date");
 		tableModel.addColumn("Total GPA");
 		tableModel.addColumn("Major GPA");
 		tableModel.addColumn("Total Credits");
@@ -730,13 +731,12 @@ public class Advisor {
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
-				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
-				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
+				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getGradDate(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
 		} catch(NullPointerException npe){}
 		
 		// resize the columns to properly accommodate each header
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		/*table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
 		table.getColumnModel().getColumn(1).setPreferredWidth(150);
@@ -748,6 +748,7 @@ public class Advisor {
 		table.getColumnModel().getColumn(7).setPreferredWidth(120);
 		table.getColumnModel().getColumn(8).setPreferredWidth(120);
 		table.getColumnModel().getColumn(9).setPreferredWidth(130);
+		*/
 		
 	} // initTableGrad
 }
