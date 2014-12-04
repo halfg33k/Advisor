@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import javax.swing.*;
 
 public class studentList{
 	Node root; // root of the queue
@@ -30,11 +31,23 @@ public class studentList{
 	} // studentList constructor
 	
 	// import students from a given file
-    public void importStudents(String fileName){
+    public int importStudents(String fileName){
         File file = new File(fileName);
         Scanner scan = null;
 		String name, grade, id;
         
+		try{
+			scan = new Scanner(fileName);
+			scan.useDelimiter("[.]");
+			scan.next();
+			
+			if(!scan.next().equals("txt")){
+				JOptionPane.showMessageDialog(null, "Please select a valid txt file.");
+				return 0;
+			}
+		} catch(Exception e){ System.out.println(e); }
+		finally{scan.close();}
+		
         try{
             scan = new Scanner(file);
             scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
@@ -52,6 +65,8 @@ public class studentList{
         catch(InputMismatchException e){ System.out.println("InputMismatchException: importStudents"); }
         catch(NoSuchElementException nse){  }
 		finally{scan.close();}
+		
+		return 0;
     } // importStudents
 	
 	// import graduation application information from a given file

@@ -266,8 +266,6 @@ public class Advisor {
 							tableModel.removeRow(rows[i] - i);
 						
 							studs.removeNode(id);
-							
-							System.out.println(rows[i] - i + " " + id);
 						}
 					}					
 				} catch(ArrayIndexOutOfBoundsException ex){}
