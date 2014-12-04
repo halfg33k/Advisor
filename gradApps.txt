@@ -3,4 +3,4 @@ ID:22 Submitted:false
 ID:76 Submitted:false
 ID:36 Submitted:false
 ID:45 Submitted:false
-ID:65 Submitted:true Total GPA:1.8 Major GPA:2.6 Total Credits:120 Major Credits:45 Upper Credits:45 Date:12/03/2014
+ID:66 Submitted:true Total GPA:1.8 Major GPA:2.6 Total Credits:120 Major Credits:45 Upper Credits:45 Date:12/03/2014

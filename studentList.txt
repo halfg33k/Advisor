@@ -3,4 +3,4 @@ Name:Jackie Robinson ID:22 Grade:Freshman
 Name:Johnny Appleseed ID:76 Grade:Junior
 Name:J Jona Jameson Junior ID:36 Grade:Junior
 Name:Chris Mastree ID:45 Grade:Sophomore
-Name:Ronald McDonald ID:65 Grade:Senior
+Name:Ronald McDonald ID:66 Grade:Senior

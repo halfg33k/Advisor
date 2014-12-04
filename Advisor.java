@@ -189,10 +189,6 @@ public class Advisor {
 				table.setAutoResizeMode(1); // make the table auto-resize the columns
 
 				layout(); // redraw the frame
-				
-				// select and deselect all rows; allows selectAllButton to work
-				table.selectAll();
-				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 			}
 		});//advising menu button
 		
@@ -210,10 +206,6 @@ public class Advisor {
 				table.setAutoResizeMode(1); // make the table auto-resize the columns
 				
 				layout(); // redraw the frame
-				
-				// select and deselect all rows; allows selectAllButton to work
-				table.selectAll();
-				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 			}
 		});//students menu button
 		
@@ -229,10 +221,6 @@ public class Advisor {
 				initTableGrad();
 				
 				layout(); // redraw the frame
-				
-				// select and deselect all rows; allows selectAllButton to work
-				table.selectAll();
-				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 			}
 		}); //graduation menu button
 		
@@ -434,6 +422,10 @@ public class Advisor {
 		selectAllButton = new JButton("Select All");
 		selectAllButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				// select and deselect all rows; allows selectAllButton to work
+				table.selectAll();
+				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
+				
 				for(int i = 0; i < table.getRowCount(); i++){
 					tableModel.setValueAt(Boolean.TRUE, i, selectCol); // check all check boxes in the first column
 				}
@@ -450,10 +442,6 @@ public class Advisor {
 		panel.add(scrollPane);
 		
 		layout(); // define the layout of the frame
-		
-		// select and deselect all rows; allows selectAllButton to work
-		table.selectAll();
-		listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 	} // main
 	
 	//Layout for all the buttons, labels, and other UI stuff
