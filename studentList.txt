@@ -1,6 +1,6 @@
 Name:Yoda ID:21 Grade:Senior
 Name:Jackie Robinson ID:22 Grade:Freshman
-Name:Chris Mastree ID:14 Grade:Freshman
 Name:Johnny Appleseed ID:76 Grade:Junior
 Name:J Jona Jameson Junior ID:36 Grade:Junior
-Name:Ronald McDonald ID:34 Grade:Sophomore
+Name:Chris Mastree ID:45 Grade:Sophomore
+Name:Ronald McDonald ID:65 Grade:Senior

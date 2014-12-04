@@ -250,19 +250,25 @@ public class Advisor {
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-					int row = table.getSelectedRow(); // index of the selected row
+					int[] rows = table.getSelectedRows(); // indices of the selected rows
 					int confirm = -1; // yes or no
-					String id = (String)tableModel.getValueAt(row, idCol); // id of the node in the selected row
+					String id; // id of the node in the selected row
 					
 					// confirm decision when user tries to delete a student
-					if(row >= 0)
-						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm deleteButton", JOptionPane.YES_NO_OPTION);
+					if(rows.length > 0)
+						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete these students?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 					
-					// only delete the selected student if the user confirms
+					// only delete the selected students if the user confirms
 					if(confirm == JOptionPane.YES_OPTION){
-						tableModel.removeRow(row);
-					
-						studs.removeNode(id);
+						for(int i = 0; i <= rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i] - i, idCol);
+							
+							tableModel.removeRow(rows[i] - i);
+						
+							studs.removeNode(id);
+							
+							System.out.println(rows[i] - i + " " + id);
+						}
 					}					
 				} catch(ArrayIndexOutOfBoundsException ex){}
 				
