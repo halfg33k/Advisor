@@ -53,6 +53,11 @@ public class Advisor {
 	private static final int idCol = 2; // column which contains student ID
 	private static final int adSubCol = 4; // column which contains advising or submitted check boxes
 	
+	// variables for the student reports
+	static JFrame reportFrame;
+	static JTextArea reportTextArea = new JTextArea();
+	static JScrollPane reportScrollPane = new JScrollPane(reportTextArea);
+	
 	
 	
 	
@@ -138,6 +143,11 @@ public class Advisor {
 	public static void Advisor() throws FileNotFoundException{
 		frame = new JFrame();
 		frame.setSize(1070,800);
+		
+		// setup the frame to show the student reports
+		reportFrame = new JFrame();
+		reportFrame.setSize(800, 600);
+		reportFrame.add(reportScrollPane);
 		
 		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
@@ -346,7 +356,9 @@ public class Advisor {
 							reports += "\n";
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "Academic Advising Reports", JOptionPane.INFORMATION_MESSAGE);
+						reportTextArea.setText(reports);
+						reportFrame.setVisible(true);
+						
 						break;
 					case 1:
 						for(int i = 0; i < rows.length; i++){
@@ -367,10 +379,12 @@ public class Advisor {
 							reports += "\n";
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "Student Reports", JOptionPane.INFORMATION_MESSAGE);
+						reportTextArea.setText(reports);
+						reportFrame.setVisible(true);
+						
 						break;
 					case 2:
-						reports += "----- Qualified -----";
+						reports += "==============================\n===========Qualified============\n==============================";
 						
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
@@ -390,7 +404,7 @@ public class Advisor {
 							}
 						}
 						
-						reports += "\n----- Unqualified -----";
+						reports += "\n==============================\n==========Unqualified===========\n==============================";
 						
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
@@ -410,7 +424,7 @@ public class Advisor {
 							}
 						}
 						
-						reports += "\n----- Not Submitted -----";
+						reports += "\n==============================\n=========Not Submitted==========\n==============================";
 						
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
@@ -430,7 +444,9 @@ public class Advisor {
 							}
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "graduationButton Application Reports", JOptionPane.INFORMATION_MESSAGE);
+						reportTextArea.setText(reports);
+						reportFrame.setVisible(true);
+						
 						break;
 					default:
 				}
