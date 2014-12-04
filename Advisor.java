@@ -24,15 +24,11 @@ public class Advisor {
 	// all of the buttons in the menu
 	static JButton studentsButton, advisingButton, graduationButton, viewButton, deleteButton, addButton, importButton, selectAllButton;		
 	
-	// reading and writing variables
-	static Scanner scan; 
-	static BufferedReader reader;
-	static FileWriter file_writer;
-	
 	// table variables
 	static MyTableModel tableModel;
 	static JTable table;
 	static JScrollPane scrollPane; // scrollPane for table
+<<<<<<< HEAD
 	static ListSelectionModel listModel;
 	
 <<<<<<< HEAD
@@ -52,21 +48,31 @@ public class Advisor {
 	static JLabel selected = new JLabel("Students", SwingConstants.RIGHT); // label declaring which tab the user is currently on
 	static studentList studs; // queue containing studentsButton and their information
 >>>>>>> master
+=======
+	static ListSelectionModel listModel; // used for table selection management
+>>>>>>> master
 	
 	/*
-	 * The purpose of this variable is to keep track of which tab was just left.
-	 * e.g. If I am on the "Students" tab and I click on "graduationButton," then I just left "Students"
-	 * 0 = Records
+	 * The purpose of this variable is to keep track of which tab the user is currently on.
+	 * 0 = Advising
 	 * 1 = Students
-	 * 2 = graduationButton
+	 * 2 = Graduation
 	 */
 	private static int currentTab = 1;
-	
-	private static FileDialog chooseFile = new FileDialog(frame, "Select file...", FileDialog.LOAD); // a window to browse for the selected file
-	
 	private static final int selectCol = 0; // column which contains selection check boxes
 	private static final int idCol = 2; // column which contains student ID
 	private static final int adSubCol = 4; // column which contains advising or submitted check boxes
+	
+	// variables for the student reports
+	static JFrame reportFrame;
+	static JTextArea reportTextArea = new JTextArea();
+	static JScrollPane reportScrollPane = new JScrollPane(reportTextArea);
+	
+	// misc variables
+	static JLabel selectedLabel = new JLabel("Students"); // label declaring which tab the user is currently on
+	static studentList studs; // queue containing studentsButton and their information
+	private static FileDialog chooseFile = new FileDialog(frame, "Select file...", FileDialog.LOAD); // a window to browse for the selected file
+	static Scanner scan;
 	
 	
 >>>>>>> master
@@ -96,13 +102,13 @@ public class Advisor {
 			rowVector.setElementAt(value, col);  
 			fireTableCellUpdated(row, col);  
 			
-			// my code
+			// update the table when the id is changed or Advised/Submitted is checked
 			if(col == idCol || col == adSubCol){
 				saveTable();
 				
 				switch(currentTab){
 					case 0:
-						initTableRecords();
+						initTableAdvising();
 						break;
 					case 1:
 						initTableStuds();
@@ -114,6 +120,7 @@ public class Advisor {
 				} 
 			}
 			
+			// select rows which have Select checked
 			if(col == selectCol){
 				for(int i = 0; i < table.getRowCount(); i++){
 					if((boolean)table.getValueAt(i, selectCol)){
@@ -145,6 +152,7 @@ public class Advisor {
 	} // class MyTableModel
 
 	public static void main(String[] args) throws FileNotFoundException{
+<<<<<<< HEAD
 		
 		//Call to Advisor--> the name of the GUI: once Advisor is called: The UI loads and adds all 
 		// relevant components
@@ -161,8 +169,15 @@ public class Advisor {
 	
 	// loads Advisor GUI
 	public static void Advisor() throws FileNotFoundException{
+=======
+>>>>>>> master
 		frame = new JFrame();
 		frame.setSize(1070,800);
+		
+		// set up the frame to show the student reports
+		reportFrame = new JFrame();
+		reportFrame.setSize(800, 600);
+		reportFrame.add(reportScrollPane);
 		
 		// perform certain actions when the window is closed
 		frame.addWindowListener(new WindowAdapter(){
@@ -172,11 +187,11 @@ public class Advisor {
 				
 				System.exit(0);
 			}
-			
 		});
 		
 		
 		
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 		 
@@ -195,11 +210,12 @@ public class Advisor {
 =======
 		// instantiate a new list of studentsButton
 >>>>>>> master
+=======
+		// instantiate a new list of students
+>>>>>>> master
 		studs = new studentList();
 		
-		/*******
-		* Table *
-		********/
+		// set up the table
 		tableModel = new MyTableModel();
 		table = new JTable( tableModel );
 		table.setFillsViewportHeight(true); // the table fills out the JScrollPane
@@ -222,25 +238,20 @@ public class Advisor {
 			}
 		});
 		
-		
-		
-		
-		
-		
 		// advising menu button
 		advisingButton = new JButton("Advising");
 		advisingButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				selectedLabel.setText("Advising Report");
+				
 				saveTable();
 				currentTab = 0;
 				
-				initTableRecords();
+				initTableAdvising();
 				
-				table.setAutoResizeMode(1);
+				table.setAutoResizeMode(1); // make the table auto-resize the columns
 
-				selected.setText("Advising Report");
-				
-				layout();
+				layout(); // redraw the frame
 			}
 		});//advising menu button
 		
@@ -248,16 +259,16 @@ public class Advisor {
 		studentsButton = new JButton("Students");
 		studentsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				selectedLabel.setText("Students");
+				
 				saveTable();
 				currentTab = 1;
 				
-				selected.setText("Students");
-				
 				initTableStuds();
 				
-				table.setAutoResizeMode(1);
+				table.setAutoResizeMode(1); // make the table auto-resize the columns
 				
-				layout();
+				layout(); // redraw the frame
 			}
 		});//students menu button
 		
@@ -265,18 +276,14 @@ public class Advisor {
 		graduationButton = new JButton("Graduation");
 		graduationButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				selected.setText("Graduation Report");
+				selectedLabel.setText("Graduation Report");
 				
-				try{
 				saveTable();
-				
 				currentTab = 2;
 				
 				initTableGrad();
 				
-				} catch(NullPointerException npe){ System.out.println("trace"); }
-				
-				layout();
+				layout(); // redraw the frame
 			}
 		}); //graduation menu button
 		
@@ -329,24 +336,28 @@ public class Advisor {
 			}
 		});
 		
-		
-		
 		// delete studentsButton button
 		deleteButton = new JButton("Delete");
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-					int row = table.getSelectedRow(); // index of the selected row
-					int confirm = -1;
-					String id = (String)tableModel.getValueAt(row, idCol); // id of the node in the selected row
+					int[] rows = table.getSelectedRows(); // indices of the selected rows
+					int confirm = -1; // yes or no
+					String id; // id of the node in the selected row
 					
-					if(row >= 0)
-						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this student?", "Confirm deleteButton", JOptionPane.YES_NO_OPTION);
+					// confirm decision when user tries to delete a student
+					if(rows.length > 0)
+						confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete these students?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
 					
+					// only delete the selected students if the user confirms
 					if(confirm == JOptionPane.YES_OPTION){
-						tableModel.removeRow(row);
-					
-						studs.removeNode(id);
+						for(int i = 0; i <= rows.length; i++){
+							id = (String)tableModel.getValueAt(rows[i] - i, idCol);
+							
+							tableModel.removeRow(rows[i] - i);
+						
+							studs.removeNode(id);
+						}
 					}					
 				} catch(ArrayIndexOutOfBoundsException ex){}
 				
@@ -354,7 +365,7 @@ public class Advisor {
 			}
 		}); // delete button
 		
-		//takes the name in the textfield above and when clicked loads the specified textfile information into the Table
+		// opens a file browser for the user to select a text file to import
 		importButton = new JButton("Import");
 		importButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -366,9 +377,10 @@ public class Advisor {
 				if(fileName != null)
 					studs.importStudents(fileName);
 				
+				// reload table
 				switch(currentTab){
 					case 0:
-						initTableRecords();
+						initTableAdvising();
 						break;
 					case 1:
 						initTableStuds();
@@ -389,9 +401,9 @@ public class Advisor {
 			public void actionPerformed(ActionEvent e) {
 				saveTable();
 				
-				String reports = "";
-				String id;
-				int[] rows = table.getSelectedRows();
+				String reports = ""; // String containing information about all selected students
+				String id; // id of the selected student
+				int[] rows = table.getSelectedRows(); // array containing indices of selected rows
 				Node node;
 				
 				// choose all if none are selected
@@ -402,8 +414,9 @@ public class Advisor {
 					}
 				}
 				
+				// show report depending on the current tab
 				switch(currentTab){
-					case 0:
+					case 0: // advising tab
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
@@ -418,9 +431,11 @@ public class Advisor {
 							reports += "\n";
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "Academic Advising Reports", JOptionPane.INFORMATION_MESSAGE);
+						reportTextArea.setText(reports);
+						reportFrame.setVisible(true);
+						
 						break;
-					case 1:
+					case 1: // students tab
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
 							node = studs.getNode(id);
@@ -439,10 +454,12 @@ public class Advisor {
 							reports += "\n";
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "Student Reports", JOptionPane.INFORMATION_MESSAGE);
+						reportTextArea.setText(reports);
+						reportFrame.setVisible(true);
+						
 						break;
-					case 2:
-						reports += "----- Qualified -----";
+					case 2: // graduation tab
+						reports += "==============================\n===========Qualified============\n==============================";
 						
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
@@ -453,16 +470,15 @@ public class Advisor {
 									+ "\nID: " + id + " Grade: " + node.getGrade() 
 									+ "\nApplication Submitted: " + node.getSubmitted();
 									
-								//if(node.getSubmitted())
-									reports += "\nDate Submitted: " + node.getGradDate()
-										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
-										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								reports += "\nDate Submitted: " + node.getGradDate()
+									+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+									+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
 								
 								reports += "\n";
 							}
 						}
 						
-						reports += "\n----- Unqualified -----";
+						reports += "\n==============================\n==========Unqualified===========\n==============================";
 						
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
@@ -473,16 +489,15 @@ public class Advisor {
 									+ "\nID: " + id + " Grade: " + node.getGrade() 
 									+ "\nApplication Submitted: " + node.getSubmitted();
 									
-								//if(node.getSubmitted())
-									reports += "\nDate Submitted: " + node.getGradDate()
-										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
-										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
+								reports += "\nDate Submitted: " + node.getGradDate()
+									+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
+									+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
 								
 								reports += "\nReasons:\n" + node.getReasons() + "\n";
 							}
 						}
 						
-						reports += "\n----- Not Submitted -----";
+						reports += "\n==============================\n=========Not Submitted==========\n==============================";
 						
 						for(int i = 0; i < rows.length; i++){
 							id = (String)tableModel.getValueAt(rows[i], idCol); // id of the node in the selected row
@@ -493,16 +508,13 @@ public class Advisor {
 									+ "\nID: " + id + " Grade: " + node.getGrade() 
 									+ "\nApplication Submitted: " + node.getSubmitted();
 									
-								/*if(node.getSubmitted())
-									reports += "\nDate Submitted: " + node.getGradDate()
-										+ "\nTotal GPA: " + node.getTotalGPA() + " Major GPA: " + node.getMajorGPA()
-										+ "\nTotal Credits: " + node.getTotalCreds() + " Major Credits: " + node.getMajorCreds() + " Upper-Level Credits: " + node.getUpperCreds();
-								*/
 								reports += "\n";
 							}
 						}
 						
-						JOptionPane.showMessageDialog(null, reports, "graduationButton Application Reports", JOptionPane.INFORMATION_MESSAGE);
+						reportTextArea.setText(reports);
+						reportFrame.setVisible(true);
+						
 						break;
 					default:
 				}
@@ -513,10 +525,15 @@ public class Advisor {
 		selectAllButton = new JButton("Select All");
 		selectAllButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				// select and deselect all rows; allows selectAllButton to work
+				table.selectAll();
+				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
+				
 				for(int i = 0; i < table.getRowCount(); i++){
-					tableModel.setValueAt(Boolean.TRUE, i, selectCol);
+					tableModel.setValueAt(Boolean.TRUE, i, selectCol); // check all check boxes in the first column
 				}
 			}
+<<<<<<< HEAD
 		});
 <<<<<<< HEAD
 		
@@ -584,11 +601,15 @@ public class Advisor {
 =======
 >>>>>>> master
 				
+=======
+		}); // select all button
+>>>>>>> master
 		
 		//set the advisingButton, studentsButton, and graduationButton buttons to visible
 		advisingButton.setVisible(true);
 		studentsButton.setVisible(true);
 		graduationButton.setVisible(true);
+<<<<<<< HEAD
 		
 		
 >>>>>>> master
@@ -611,18 +632,18 @@ public class Advisor {
 		 */
 		
 		
+=======
+				
+>>>>>>> master
 		// Adds table to panel
 		panel = new JPanel();
 		panel.add(scrollPane);
 		
-		layout();
-		
-		
-	}
+		layout(); // define the layout of the frame
+	} // main
 	
+	//Layout for all the buttons, labels, and other UI stuff
 	private static void layout(){
-	
-		//Layout for all the button, labels, and other UI stuff
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -633,9 +654,8 @@ public class Advisor {
 					.addComponent(studentsButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
 					.addGap(20)
 					.addComponent(graduationButton, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-					.addGap(598 - (int)selected.getPreferredSize().getWidth())
-					.addComponent(selected)
-				)
+					.addGap(598 - (int)selectedLabel.getPreferredSize().getWidth()) // right-align selectedLabel
+					.addComponent(selectedLabel))
 				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addGap(385)
 					.addComponent(addButton, GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
@@ -651,8 +671,7 @@ public class Advisor {
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 1047, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
@@ -661,7 +680,7 @@ public class Advisor {
 						.addComponent(advisingButton)
 						.addComponent(studentsButton)
 						.addComponent(graduationButton)
-						.addComponent(selected)
+						.addComponent(selectedLabel)
 					)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 469, GroupLayout.PREFERRED_SIZE)
@@ -671,8 +690,7 @@ public class Advisor {
 						.addComponent(deleteButton)
 						.addComponent(importButton)
 						.addComponent(viewButton)
-						.addComponent(selectAllButton)
-					)
+						.addComponent(selectAllButton))
 					.addGap(195))
 		);
 		
@@ -691,21 +709,20 @@ public class Advisor {
 	
 		try{
 			switch(currentTab){
-				case 0: // Records tab
+				case 0: // Advising tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						isSelected = (boolean)tableModel.getValueAt(i, selectCol);
 						name = (String)tableModel.getValueAt(i, 1);
 						id = (String)tableModel.getValueAt(i, idCol);
 						grade = (String)tableModel.getValueAt(i, 3);
 						advised = (boolean)tableModel.getValueAt(i, adSubCol);
 						advDate = (String)tableModel.getValueAt(i, 5);
 						
-						
+						// prevent the user from setting a duplicate ID
 						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
 						}
 						else if(id.length() < 1 || id.equals(null)){
-							//JOptionPane.showMessageDialog(null, "Please enter an id.");
+							// Ensure nothing happens if these conditions are met
 						}
 						else{
 							try{
@@ -714,9 +731,12 @@ public class Advisor {
 								studs.getNode(i, 0).setGrade(grade);
 							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
 							
-							studs.getNode(i, 0).setAdvised(advised);
-							if(!advised)
-								studs.getNode(i, 0).setAdvDate("");
+							studs.getNode(i, 0).setAdvised(advised, advDate);
+							/*if(advised)
+								studs.getNode(i, 0).setAdvDate(advDate);
+							else
+								studs.getNode(i, 0).setAdvDate("--/--/----");
+							*/
 						}
 					}
 					
@@ -724,17 +744,16 @@ public class Advisor {
 					break;
 				case 1: // Students tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						//isSelected = (boolean)tableModel.getValueAt(i, selectCol);
 						name = (String)tableModel.getValueAt(i, 1);
 						id = (String)tableModel.getValueAt(i, idCol);
 						grade = (String)tableModel.getValueAt(i, 3);
-						//boolean add = false;
 						
+						// prevent the user from setting a duplicate ID
 						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
 						}
 						else if(id.length() < 1 || id.equals(null)){
-							//JOptionPane.showMessageDialog(null, "Please enter an id.");
+							// Ensure nothing happens if these conditions are met
 						}
 						else{
 							try{
@@ -747,9 +766,8 @@ public class Advisor {
 					
 					studs.rewrite();
 					break;
-				case 2: // graduationButton tab
+				case 2: // Graduation tab
 					for(int i = 0; i < tableModel.getRowCount(); i++){
-						isSelected = (boolean)tableModel.getValueAt(i, selectCol);
 						name = (String)tableModel.getValueAt(i, 1);
 						id = (String)tableModel.getValueAt(i, idCol);
 						grade = (String)tableModel.getValueAt(i, 3);
@@ -760,11 +778,12 @@ public class Advisor {
 						majorCreds = (String)tableModel.getValueAt(i, 8);
 						upperCreds = (String)tableModel.getValueAt(i, 9);
 						
+						// prevent the user from setting a duplicate ID
 						if(studs.contains(id, i) && !(id.length() < 1) && !id.equals(null)){
 							JOptionPane.showMessageDialog(null, "That ID is already in use.");
 						}
 						else if(id.length() < 1 || id.equals(null)){
-							//JOptionPane.showMessageDialog(null, "Please enter an id.");
+							// Ensure nothing happens if these conditions are met
 						}
 						else{
 							try{
@@ -779,23 +798,24 @@ public class Advisor {
 							studs.getNode(i, 0).setTotalCreds(totalCreds);
 							studs.getNode(i, 0).setMajorCreds(majorCreds);
 							studs.getNode(i, 0).setUpperCreds(upperCreds);
+							
+							if(!submitted)
+								studs.getNode(i, 0).setGradDate("--/--/----");
 						}
 					}
 					
 					studs.rewrite();
 					break;
 				default:
-					System.out.println("ERROR: saveTable");
+					System.out.println("ERROR: Advisor>saveTable");
 			}
 		} catch(NullPointerException e){}
 	} // saveTable
 	
-	/*
-	 * The following three methods will populate the table with the necessary
-	 * information depending on which tab the user switches to.
-	 */
-	private static void initTableRecords(){
+	// redraw the table for the Advising tab
+	private static void initTableAdvising(){
 		Node node;
+		// clear the table
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 	
@@ -810,15 +830,19 @@ public class Advisor {
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0); // get node by index
 			
+				// add a row with the current node's information
 				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
 			}
 		} catch(NullPointerException npe){}
 		
-		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
-	} // initTableRecords
+		// keep the Select column at a certain size
+		table.getColumnModel().getColumn(selectCol).setMaxWidth(50);
+	} // initTableAdvising
 	
+	// redraw the table for the Students tab
 	private static void initTableStuds(){
 		Node node;
+		// clear the table
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 		
@@ -830,16 +854,20 @@ public class Advisor {
 		try{
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
-			
+				
+				// add a row with the current node's information
 				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade()});
 			}
 		} catch(NullPointerException npe){}
 		
-		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
+		// keep the Select column at a certain size
+		table.getColumnModel().getColumn(selectCol).setMaxWidth(50);
 	} // initTableStuds
 	
+	// redraw the table for the Graduation tab
 	private static void initTableGrad(){
 		Node node;
+		// clear the table
 		tableModel.setColumnCount(0);
 		tableModel.setRowCount(0);
 		
@@ -858,24 +886,18 @@ public class Advisor {
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
-				//need a  node for "select" a in order to add a select all option --> boolean checkbox 
+				// add a row with the current node's information
 				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
 		} catch(NullPointerException npe){}
 		
-		// resize the columns to properly accommodate each header
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		table.getColumnModel().getColumn(selectCol).setPreferredWidth(87);
-		table.getColumnModel().getColumn(1).setPreferredWidth(150);
-		table.getColumnModel().getColumn(idCol).setPreferredWidth(50);
-		table.getColumnModel().getColumn(3).setPreferredWidth(75);
-		table.getColumnModel().getColumn(adSubCol).setPreferredWidth(75);
-		table.getColumnModel().getColumn(5).setPreferredWidth(70);
-		table.getColumnModel().getColumn(6).setPreferredWidth(120);
-		table.getColumnModel().getColumn(7).setPreferredWidth(120);
-		table.getColumnModel().getColumn(8).setPreferredWidth(120);
-		table.getColumnModel().getColumn(9).setPreferredWidth(130);
-		
+		// resize the columns to properly accommodate certain headers
+		table.getColumnModel().getColumn(selectCol).setMaxWidth(50); // first column
+		table.getColumnModel().getColumn(1).setMinWidth(150); // name column
+		table.getColumnModel().getColumn(9).setMinWidth(100); // last column
 	} // initTableGrad
+<<<<<<< HEAD
 }
+=======
+} // class Advisor
+>>>>>>> master
