@@ -424,7 +424,7 @@ public class Advisor {
 		selectAllButton = new JButton("Select All");
 		selectAllButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				// select and deselect all rows; allows selectAllButton to work
+				// the following two lines select and deselect all rows; allows selectAllButton to work
 				table.selectAll();
 				listModel.removeSelectionInterval(0, table.getRowCount() - 1);
 				
