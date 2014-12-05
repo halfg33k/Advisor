@@ -36,6 +36,7 @@ public class studentList{
         Scanner scan = null;
 		String name, grade, id;
         
+		// only import text files
 		try{
 			scan = new Scanner(fileName);
 			scan.useDelimiter("[.]");
@@ -48,6 +49,7 @@ public class studentList{
 		} catch(Exception e){ System.out.println(e); }
 		finally{scan.close();}
 		
+		// add student if the id is not a duplicate
         try{
             scan = new Scanner(file);
             scan.useDelimiter("Name:| ID:| Grade:|\\n|\\r");
@@ -191,7 +193,7 @@ public class studentList{
 		// write the node to tempAdv
 		try{
 			writer = new BufferedWriter(new FileWriter(tempAdv, true));
-			writer.write(node.getGradInfo());
+			writer.write(node.getAdvisingInfo());
 			writer.newLine();
 		} catch(IOException e){ System.out.println("IOException: addNode"); }
 		finally{try{ writer.close(); }catch(Exception e){}} // close the writer
@@ -238,35 +240,36 @@ public class studentList{
 	} // getNode
 		
 	// remove a particular node by it's id
-	public Node removeNode(String id){		
-		Node current = root;
+	public void removeNode(String id){		
+		Node node;
 		File file = new File("temp2.txt");
 		
-		if(root.getID().equals(id))
-			root = root.getNext();
+		if(root.getID().equals(id)){
+			root = root.getNext(); // new root is the second node in the queue
+			head = root;
+		}
 		else{
-			Node prev = root;
 			try{
-				while(!current.getID().equals(id)){
-					if(current != null){
-						prev = current;
-						current = current.getNext();
+				for(int i = 0; i < size; i++){
+					node = getNode(i, 0);
+					if(node.getID().equals(id) && i < size - 1){
+						getNode(i - 1, 0).setNext(node.getNext());
+						size--;
 					}
-					else
-						return null;
+					else if(node.getID().equals(id) && i == size - 1){
+						head = getNode(i - 1, 0);
+						head.setNext(null);
+						size--;
+					}
 				}
-			} catch( NullPointerException e ){ return null; }
-			
-			prev.setNext(current.getNext());
+			} catch( NullPointerException e ){ System.out.println("NullPointerException: studentList>removeNode"); }
 		}
 		
-		size--; // the size of the queue has decreased
+		//size--; // the size of the queue has decreased
 		
 		rewrite(); // rewrite the temp files
-		
-		return current; // return the node that was removed
 	} // removeNode
-			
+	
 	// save the information in the temp files
 	// should be called just before closing the program
 	public void close(){
@@ -370,12 +373,14 @@ public class studentList{
 				writer = new BufferedWriter(new FileWriter(file, true));
 				writer.write(getNode(i, 0).toString());
 				writer.newLine();
-			} catch(IOException e){ System.out.println("IOException: rewrite --> temp"); }
+			} catch(IOException e){ System.out.println("IOException: studentList>rewrite>temp"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		
-		tempFile.delete();
-		file.renameTo(tempFile);
+		if(!tempFile.delete())
+			System.out.println("Failed to delete tempFile.");
+		if(!file.renameTo(tempFile))
+			System.out.println("Failed to rename tempFile.");
 		
 		// now rewrite tempGrad
 		file = new File("tempGrad2.txt");
@@ -385,18 +390,20 @@ public class studentList{
 				writer = new BufferedWriter(new FileWriter(file, true));
 				node = getNode(i, 0);
 				
-				if(node.getSubmitted())
+				//if(node.getSubmitted())
 					writer.write(node.getGradInfo());
-				else
-					writer.write("ID:" + node.getID() + " Submitted:" + false);
+				//else
+				//	writer.write("ID:" + node.getID() + " Submitted:" + false);
 				
 				writer.newLine();
 			} catch(IOException e){ System.out.println("IOException: rewrite --> tempGrad"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		
-		tempGrad.delete();
-		file.renameTo(tempGrad);
+		if(!tempGrad.delete())
+			System.out.println("Failed to delete tempGrad.");
+		if(!file.renameTo(tempGrad))
+			System.out.println("Failed to rename tempGrad.");
 		
 		// now rewrite tempAdv
 		file = new File("tempAdv2.txt");
@@ -406,18 +413,20 @@ public class studentList{
 				writer = new BufferedWriter(new FileWriter(file, true));
 				node = getNode(i, 0);
 				
-				if(node.getAdvised())
+				//if(node.getAdvised())
 					writer.write(node.getAdvisingInfo());
-				else
-					writer.write("ID:" + node.getID() + " Advised:" + false);
+				//else
+				//	writer.write("ID:" + node.getID() + " Advised:" + false);
 				
 				writer.newLine();
 			} catch(IOException e){ System.out.println("IOException: rewrite --> tempAdv"); }
 			finally{try{ writer.close(); }catch(Exception e){}} // close the writer
 		}
 		
-		tempAdv.delete();
-		file.renameTo(tempAdv);
+		if(!tempAdv.delete())
+			System.out.println("Failed to delete tempAdv");
+		if(!file.renameTo(tempAdv))
+			System.out.println("Failed to rename tempAdv");
 	} // rewrite	
 	
 	// return the information of each node in the queue
@@ -597,7 +606,7 @@ class Node{
 		this.upperCreds = upperCreds;
 	} // setUpperCreds
 	
-	// set whether a grad app has been submitted and if so sets the date
+	// set whether a graduation application has been submitted and if so sets the date
 	public void setSubmitted(boolean submitted){
 		submittedPrev = this.submitted;
 		this.submitted = submitted;
@@ -660,7 +669,7 @@ class Node{
 		if(advised)
 			return "ID:" + id + " Advised:" + advised + " Date:" + advDate;
 		else
-			return "ID:" + id + "Advised:" + advised;
+			return "ID:" + id + " Advised:" + advised;
 	} // getAdvisingInfo
 	
 	// return the student's graduation application information

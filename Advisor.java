@@ -94,6 +94,7 @@ public class Advisor {
 						initTableGrad();
 						break;
 					default:
+						System.out.println("ERROR: MyTableModel>switch");
 				} 
 			}
 			
@@ -256,9 +257,10 @@ public class Advisor {
 							studs.removeNode(id);
 						}
 					}					
-				} catch(ArrayIndexOutOfBoundsException ex){}
+				} catch(ArrayIndexOutOfBoundsException ex){  }
 				
 				saveTable();
+				initTableStuds();
 			}
 		}); // delete button
 		
@@ -534,11 +536,6 @@ public class Advisor {
 							} catch(NullPointerException npe){ studs.addNode(name, id, grade); }
 							
 							studs.getNode(i, 0).setAdvised(advised, advDate);
-							/*if(advised)
-								studs.getNode(i, 0).setAdvDate(advDate);
-							else
-								studs.getNode(i, 0).setAdvDate("--/--/----");
-							*/
 						}
 					}
 					
@@ -635,7 +632,7 @@ public class Advisor {
 				// add a row with the current node's information
 				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getAdvised(), node.getAdvDate()});
 			}
-		} catch(NullPointerException npe){}
+		} catch(NullPointerException npe){ System.out.println("NullPointerException: Advisor>initTableAdvising"); }
 		
 		// keep the Select column at a certain size
 		table.getColumnModel().getColumn(selectCol).setMaxWidth(50);
@@ -653,14 +650,14 @@ public class Advisor {
 		tableModel.addColumn("ID");
 		tableModel.addColumn("Grade");
 		
-		try{
+		try{		
 			for(int i = 0; i < studs.getSize(); i++){
 				node = studs.getNode(i, 0);
 				
 				// add a row with the current node's information
 				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade()});
 			}
-		} catch(NullPointerException npe){}
+		} catch(NullPointerException npe){ System.out.println("NullPointerException: Advisor>initTableStuds"); }
 		
 		// keep the Select column at a certain size
 		table.getColumnModel().getColumn(selectCol).setMaxWidth(50);
@@ -691,7 +688,7 @@ public class Advisor {
 				// add a row with the current node's information
 				tableModel.addRow(new Object[]{Boolean.FALSE, node.getName(), node.getID(), node.getGrade(), node.getSubmitted(), node.getTotalGPA(), node.getMajorGPA(), node.getTotalCreds(), node.getMajorCreds(), node.getUpperCreds()});
 			}
-		} catch(NullPointerException npe){}
+		} catch(NullPointerException npe){ System.out.println("NullPointerException: Advisor>initTableGrad"); }
 		
 		// resize the columns to properly accommodate certain headers
 		table.getColumnModel().getColumn(selectCol).setMaxWidth(50); // first column
